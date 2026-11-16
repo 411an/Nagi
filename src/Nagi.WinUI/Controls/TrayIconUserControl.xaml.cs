@@ -48,8 +48,9 @@ public sealed partial class TrayIconUserControl : UserControl, IDisposable
     {
         try
         {
-            // The ViewModel initializes itself and hooks into application events.
             await ViewModel.InitializeAsync();
+            if (ViewModel.IsTrayIconVisible && AppTrayIcon is { IsCreated: false, IsDisposed: false })
+                AppTrayIcon.ForceCreate(enablesEfficiencyMode: false);
         }
         catch (Exception ex)
         {

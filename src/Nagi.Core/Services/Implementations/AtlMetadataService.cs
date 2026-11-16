@@ -30,6 +30,11 @@ public class AtlMetadataService : IMetadataService, IDisposable
     private string? _cachedGenreSplitCharacters;
     private bool _disposed;
 
+    // ATL 7.16.0 builds a shared field-mapping dictionary the first time a Windows Media file is
+    // parsed, and that build is not thread-safe (WMA.generateLowerMappings). A parallel scan corrupts
+    // the dictionary and the read throws, so .wma/.asf files are parsed one at a time.
+    private static readonly SemaphoreSlim WindowsMediaGate = new(1, 1);
+
     static AtlMetadataService()
     {
         ATL.Settings.DisplayValueSeparator = AtlMultiValueSeparator;
@@ -64,55 +69,70 @@ public class AtlMetadataService : IMetadataService, IDisposable
 
             // ATL parsing is synchronous, so enforce the timeout while awaiting it.
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-            var track = await Task.Run(() => new Track(filePath)).WaitAsync(cts.Token).ConfigureAwait(false);
 
-            // Check if the file is valid - ATL is lenient so we need multiple checks
-            // Check 1: AudioFormat.Readable flag
-            // Check 2: Format name is "Unknown" (indicates ATL couldn't identify the format)
-            // Check 3: Duration is 0 and no audio data detected
-            var isUnknownFormat = track.AudioFormat.Name?.Equals("Unknown", StringComparison.OrdinalIgnoreCase) == true ||
-                                  track.AudioFormat.ID == -1;
+            // Track reads the file lazily, so the gate has to cover the tag and cover art work too.
+            var extension = Path.GetExtension(filePath);
+            var isWindowsMedia = extension.Equals(".wma", StringComparison.OrdinalIgnoreCase) ||
+                                 extension.Equals(".asf", StringComparison.OrdinalIgnoreCase);
+            if (isWindowsMedia) await WindowsMediaGate.WaitAsync(cts.Token).ConfigureAwait(false);
 
-            if (!track.AudioFormat.Readable || isUnknownFormat)
+            try
             {
-                metadata.ExtractionFailed = true;
-                metadata.ErrorMessage = isUnknownFormat ? "UnsupportedFormat" : "CorruptFile";
-                return metadata;
+                var track = await Task.Run(() => new Track(filePath)).WaitAsync(cts.Token).ConfigureAwait(false);
+
+                // Check if the file is valid - ATL is lenient so we need multiple checks
+                // Check 1: AudioFormat.Readable flag
+                // Check 2: Format name is "Unknown" (indicates ATL couldn't identify the format)
+                // Check 3: Duration is 0 and no audio data detected
+                var isUnknownFormat = track.AudioFormat.Name?.Equals("Unknown", StringComparison.OrdinalIgnoreCase) == true ||
+                                      track.AudioFormat.ID == -1;
+
+                if (!track.AudioFormat.Readable || isUnknownFormat)
+                {
+                    metadata.ExtractionFailed = true;
+                    metadata.ErrorMessage = isUnknownFormat ? "UnsupportedFormat" : "CorruptFile";
+                    return metadata;
+                }
+
+                var splitCharacters = await GetCachedSplitCharactersAsync().ConfigureAwait(false);
+                var genreSplitCharacters = await GetCachedGenreSplitCharactersAsync().ConfigureAwait(false);
+                PopulateMetadataFromTrack(metadata, track, splitCharacters, genreSplitCharacters, filePath,
+                    baseFolderPath);
+
+                if (includeMediaAssets)
+                {
+                    // Get cached or extract new synchronized lyrics.
+                    using var lrcCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                    try
+                    {
+                        metadata.LrcFilePath = await GetLrcPathAsync(filePath, fileInfo.LastWriteTimeUtc,
+                                metadata.Artists?.FirstOrDefault() ?? Artist.UnknownArtistName, metadata.Album,
+                                metadata.Title, track)
+                            .WaitAsync(lrcCts.Token).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        _logger.LogWarning("LRC extraction timed out for file: {FilePath}", filePath);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(metadata.LrcFilePath))
+                        metadata.LrcFilePath = FindLrcFilePath(filePath);
+
+                    using var albumArtCts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+                    try
+                    {
+                        await ProcessAlbumArtAsync(metadata, track, baseFolderPath).WaitAsync(albumArtCts.Token)
+                            .ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        _logger.LogWarning("Album art extraction timed out for file: {FilePath}", filePath);
+                    }
+                }
             }
-
-            var splitCharacters = await GetCachedSplitCharactersAsync().ConfigureAwait(false);
-            var genreSplitCharacters = await GetCachedGenreSplitCharactersAsync().ConfigureAwait(false);
-            PopulateMetadataFromTrack(metadata, track, splitCharacters, genreSplitCharacters);
-
-            if (includeMediaAssets)
+            finally
             {
-                // Get cached or extract new synchronized lyrics.
-                using var lrcCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-                try
-                {
-                    metadata.LrcFilePath = await GetLrcPathAsync(filePath, fileInfo.LastWriteTimeUtc,
-                            metadata.Artists?.FirstOrDefault() ?? Artist.UnknownArtistName, metadata.Album,
-                            metadata.Title, track)
-                        .WaitAsync(lrcCts.Token).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    _logger.LogWarning("LRC extraction timed out for file: {FilePath}", filePath);
-                }
-
-                if (string.IsNullOrWhiteSpace(metadata.LrcFilePath))
-                    metadata.LrcFilePath = FindLrcFilePath(filePath);
-
-                using var albumArtCts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
-                try
-                {
-                    await ProcessAlbumArtAsync(metadata, track, baseFolderPath).WaitAsync(albumArtCts.Token)
-                        .ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    _logger.LogWarning("Album art extraction timed out for file: {FilePath}", filePath);
-                }
+                if (isWindowsMedia) WindowsMediaGate.Release();
             }
         }
         catch (OperationCanceledException)
@@ -141,28 +161,70 @@ public class AtlMetadataService : IMetadataService, IDisposable
             metadata.ErrorMessage = ex.GetType().Name;
         }
 
+        if (!metadata.ExtractionFailed)
+            await CueSheetReader.ExpandAsync(metadata, _fileSystem, _logger).ConfigureAwait(false);
+
         return metadata;
     }
 
     /// <summary>
     ///     Populates the metadata object from the ATL track, providing sane defaults for missing values.
     /// </summary>
-    private void PopulateMetadataFromTrack(SongFileMetadata metadata, Track track, string splitCharacters, string genreSplitCharacters)
+    private void PopulateMetadataFromTrack(SongFileMetadata metadata, Track track, string splitCharacters,
+        string genreSplitCharacters, string filePath, string? libraryRootPath)
     {
-        var rawArtist = SanitizeString(track.Artist) ?? Artist.UnknownArtistName;
-        var rawAlbumArtist = SanitizeString(track.AlbumArtist) ?? rawArtist;
+        var artistTag = SanitizeString(track.Artist, filePath);
+        var albumArtistTag = SanitizeString(track.AlbumArtist, filePath);
+
+        // Track artist: Artist → AlbumArtist → "Artist - Title" file name → folder under library root.
+        var artistResolve = ArtistCreditResolver.Resolve(
+            [artistTag, albumArtistTag], filePath, libraryRootPath);
+        var rawArtist = artistResolve.Artist;
+
+        // Album artist: AlbumArtist → Artist → same file/folder fallbacks (avoids feat noise in the List tab).
+        var albumArtistResolve = ArtistCreditResolver.Resolve(
+            [albumArtistTag, artistTag], filePath, libraryRootPath);
+        var rawAlbumArtist = albumArtistResolve.Artist;
 
         var artists = SplitMetadataList(rawArtist, splitCharacters);
         var albumArtists = SplitMetadataList(rawAlbumArtist, splitCharacters);
+        if (artists.Count == 0) artists = [rawArtist];
+        if (albumArtists.Count == 0) albumArtists = [rawAlbumArtist];
 
-        var album = SanitizeString(track.Album) ?? Album.UnknownAlbumName;
+        var album = SanitizeString(track.Album, filePath) ?? Album.UnknownAlbumName;
 
+        var fileNameNoExt = Path.GetFileNameWithoutExtension(filePath);
+        var titleTag = SanitizeString(track.Title, filePath);
+        var strippedFileName = ArtistCreditResolver.StripLeadingTrackNumber(fileNameNoExt);
+        var titleLooksLikeRawFileName = titleTag is null
+            || titleTag.Equals(fileNameNoExt, StringComparison.OrdinalIgnoreCase)
+            || ArtistCreditResolver.StripLeadingTrackNumber(titleTag)
+                .Equals(strippedFileName, StringComparison.OrdinalIgnoreCase);
 
-        metadata.Title = SanitizeString(track.Title) ?? metadata.Title;
+        // Prefer a file-derived title when tags look like the raw file name, or when artist
+        // came from folder/file because tags were missing/wrong and the file has no "Artist - Title" split
+        // (whole remainder is the title, e.g. "Наша Родина -- СССР").
+        if (!string.IsNullOrWhiteSpace(artistResolve.PreferredTitleFromFile)
+            && (titleLooksLikeRawFileName
+                || (!artistResolve.FileNameHadArtistTitleSplit && !artistResolve.ArtistFromTags)))
+        {
+            metadata.Title = artistResolve.PreferredTitleFromFile;
+        }
+        else if (titleLooksLikeRawFileName
+                 && ArtistCreditResolver.TryParseArtistAndTitleFromFileName(filePath, out _, out var titleFromFile)
+                 && !string.IsNullOrWhiteSpace(titleFromFile))
+        {
+            metadata.Title = titleFromFile;
+        }
+        else
+        {
+            metadata.Title = titleTag ?? strippedFileName;
+        }
+
         metadata.Artists = artists;
         metadata.Album = album;
         metadata.AlbumArtists = albumArtists;
-        metadata.Duration = TimeSpan.FromSeconds(track.Duration);
+        metadata.Duration = TimeSpan.FromMilliseconds(track.DurationMs);
         metadata.Year = track.Year > 0 ? track.Year : null;
         metadata.TrackNumber = track.TrackNumber > 0 ? track.TrackNumber : null;
         metadata.TrackCount = track.TrackTotal > 0 ? track.TrackTotal : null;
@@ -177,13 +239,13 @@ public class AtlMetadataService : IMetadataService, IDisposable
         var lyricsInfo = track.Lyrics?.FirstOrDefault();
         if (lyricsInfo != null)
         {
-            metadata.Lyrics = SanitizeString(lyricsInfo.UnsynchronizedLyrics);
+            metadata.Lyrics = SanitizeString(lyricsInfo.UnsynchronizedLyrics, filePath);
         }
 
-        metadata.Composer = SanitizeString(track.Composer);
-        metadata.Copyright = SanitizeString(track.Copyright);
-        metadata.Comment = SanitizeString(track.Comment);
-        metadata.Conductor = SanitizeString(track.Conductor);
+        metadata.Composer = SanitizeString(track.Composer, filePath);
+        metadata.Copyright = SanitizeString(track.Copyright, filePath);
+        metadata.Comment = SanitizeString(track.Comment, filePath);
+        metadata.Conductor = SanitizeString(track.Conductor, filePath);
 
         // ATL uses AdditionalFields for MusicBrainz IDs
         if (track.AdditionalFields.TryGetValue("MUSICBRAINZ_TRACKID", out var mbTrackId))
@@ -193,7 +255,7 @@ public class AtlMetadataService : IMetadataService, IDisposable
             metadata.MusicBrainzReleaseId = SanitizeString(mbReleaseId);
 
         // Parse genre (ATL returns a single string, may need to split)
-        var genreString = SanitizeString(track.Genre);
+        var genreString = SanitizeString(track.Genre, filePath);
         metadata.Genres = SplitMetadataList(genreString, genreSplitCharacters);
 
         // ATL doesn't have a direct Grouping property, check additional fields
@@ -201,7 +263,7 @@ public class AtlMetadataService : IMetadataService, IDisposable
             track.AdditionalFields.TryGetValue("CONTENTGROUP", out grouping) ||
             track.AdditionalFields.TryGetValue("GROUPING", out grouping) ||
             track.AdditionalFields.TryGetValue("TIT1", out grouping))
-            metadata.Grouping = SanitizeString(grouping);
+            metadata.Grouping = SanitizeString(grouping, filePath);
 
         // Extract ReplayGain tags (case-insensitive lookup)
         var gainKey = track.AdditionalFields.Keys
@@ -508,9 +570,9 @@ public class AtlMetadataService : IMetadataService, IDisposable
     /// <summary>
     ///     Trims a string and returns null if the result is empty or whitespace, ensuring consistent null/empty handling.
     /// </summary>
-    private string? SanitizeString(string? input)
+    private static string? SanitizeString(string? input, string? filePath = null)
     {
-        return ArtistNameHelper.NormalizeStringCore(input);
+        return ArtistNameHelper.NormalizeStringCore(TagTextEncoding.RepairMislabelledWindows1251(input, filePath));
     }
 
     /// <summary>
@@ -522,9 +584,11 @@ public class AtlMetadataService : IMetadataService, IDisposable
     {
         if (string.IsNullOrWhiteSpace(value)) return null;
 
-        // Matches a number optionally preceded by + or -
-        var match = Regex.Match(value.Trim(), @"^[-+]?[0-9]*\.?[0-9]+");
-        if (match.Success && double.TryParse(match.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var result))
+        // Matches a number optionally preceded by + or -. Earlier builds of this fork wrote a decimal
+        // comma on Russian Windows ("-3,21 dB"), so a comma is read as the decimal point too.
+        var match = Regex.Match(value.Trim(), @"^[-+]?[0-9]*[.,]?[0-9]+");
+        if (match.Success &&
+            double.TryParse(match.Value.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var result))
         {
             return result;
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Nagi.Core.Data;
@@ -17,7 +18,8 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<MusicDbCon
         var databasePath = Path.Combine(appDataRoot, "nagi.db");
         Directory.CreateDirectory(appDataRoot);
         var optionsBuilder = new DbContextOptionsBuilder<MusicDbContext>();
-        optionsBuilder.UseSqlite($"Data Source={databasePath}");
+        var connectionString = new SqliteConnectionStringBuilder { DataSource = databasePath }.ConnectionString;
+        optionsBuilder.UseSqlite(connectionString);
         return new MusicDbContext(optionsBuilder.Options);
     }
 }

@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Appi kinni macno Reseti abbeh baqay: {0}. Appi diggah yallabee.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Baqay</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Last.fm adda maay. Diggah abna.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Addam baqay</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Last.fm adda sessiyon maay. Diggah abna.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Last.fm adda saari</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Diggah abay Last.fm akkawnta saari? Kinni Last.fm adda, Nagi baqay scrobble maay.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Saari</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Exporti Diggah</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Fannānān ID qanay (TheAudioDB kee Fanart.tv diggah)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Kaxxa qandis fannānān diggo kee garsi (MusicBrainz diggah)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Kaxxa qandis fannānān diggo xagar (MusicBrainz diggah)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Fannānān diggo xagar</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Fannānān garsi kee diggo (baqay)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Nagi Cula Akaxxa Keenisoh Yaabe</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nagi Baada</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Af Yannah</value>
@@ -1815,90 +1782,6 @@
   </data>
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Inki Taama Rab</value>
-  </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Akaxxa Keenis</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Last.fm Akaxxa Keenisoh Akaxxa.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Akaxxa</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Akeem</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Kaak</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Akaxxa Rab</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Akaxxa Keenisoh</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Nagi Kee Last.fm Akaxxa Keenisoh.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Amma Yaanih Akaxxa</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Last.fm Keenisoh Amma Yaanih Akaxxa.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Teetak qamboolle ListenBrainz-uy qadaanam (Last.fm-uy xagidde kak ittaama gita).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Numma Token</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>ListenBrainz.org/settings-tik tokennak baaxok caddiya.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Cinaata essera</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>{0} kinnim fan cinaate</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Cinaata kak awkaayte: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Teetak qamboolle qadaanam (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Amal "ittooy cinaanam" qadaanam</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Nammaara</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>Server URL</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>ListenBrainz-tik aagittimtaay?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Ah teetak daqayto tokenni baaheem. Awaawa kee waqtii fanat aagittem tekke.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Aagitte</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Diskord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Diskord Keenisoh Akaxxa.</value>
   </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Fayda Pilaaylisi</value>

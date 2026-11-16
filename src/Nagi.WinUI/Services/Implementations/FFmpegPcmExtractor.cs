@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -30,7 +31,9 @@ public class FFmpegPcmExtractor : IPcmExtractor
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    private static ProcessStartInfo CreateFFmpegStartInfo(string filePath)
+    private static readonly PcmExtractionOptions DefaultOptions = new(TargetSampleRate, TargetChannels);
+
+    private static ProcessStartInfo CreateFFmpegStartInfo(string filePath, PcmExtractionOptions options)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -44,14 +47,27 @@ public class FFmpegPcmExtractor : IPcmExtractor
         startInfo.ArgumentList.Add("-v");
         startInfo.ArgumentList.Add("error");
         startInfo.ArgumentList.Add("-nostdin");
+        if (options.Start is { } start && start > TimeSpan.Zero)
+        {
+            // Before -i, so FFmpeg seeks in the input instead of decoding up to the start.
+            startInfo.ArgumentList.Add("-ss");
+            startInfo.ArgumentList.Add(start.TotalSeconds.ToString("0.###", CultureInfo.InvariantCulture));
+        }
+
         startInfo.ArgumentList.Add("-i");
         startInfo.ArgumentList.Add(filePath);
+        if (options.Duration is { } duration && duration > TimeSpan.Zero)
+        {
+            startInfo.ArgumentList.Add("-t");
+            startInfo.ArgumentList.Add(duration.TotalSeconds.ToString("0.###", CultureInfo.InvariantCulture));
+        }
+
         startInfo.ArgumentList.Add("-f");
         startInfo.ArgumentList.Add("f32le");
         startInfo.ArgumentList.Add("-ac");
-        startInfo.ArgumentList.Add(TargetChannels.ToString());
+        startInfo.ArgumentList.Add(options.Channels.ToString(CultureInfo.InvariantCulture));
         startInfo.ArgumentList.Add("-ar");
-        startInfo.ArgumentList.Add(TargetSampleRate.ToString());
+        startInfo.ArgumentList.Add(options.SampleRate.ToString(CultureInfo.InvariantCulture));
         startInfo.ArgumentList.Add("-vn");
         startInfo.ArgumentList.Add("-sn");
         startInfo.ArgumentList.Add("-dn");
@@ -110,8 +126,17 @@ public class FFmpegPcmExtractor : IPcmExtractor
     }
 
     /// <inheritdoc />
+    public IAsyncEnumerable<AudioChunk> ExtractStreamingAsync(
+        string filePath,
+        CancellationToken cancellationToken = default)
+    {
+        return ExtractStreamingAsync(filePath, DefaultOptions, cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async IAsyncEnumerable<AudioChunk> ExtractStreamingAsync(
         string filePath,
+        PcmExtractionOptions options,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Starting optimized streaming FFmpeg extraction: {FilePath}", filePath);
@@ -119,11 +144,24 @@ public class FFmpegPcmExtractor : IPcmExtractor
         Process? process = null;
         try
         {
-            process = Process.Start(CreateFFmpegStartInfo(filePath));
+            process = Process.Start(CreateFFmpegStartInfo(filePath, options));
             if (process == null)
             {
                 _logger.LogError("Failed to start FFmpeg process");
                 yield break;
+            }
+
+            if (options.LowPriority)
+            {
+                try
+                {
+                    process.PriorityClass = ProcessPriorityClass.BelowNormal;
+                }
+                catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception)
+                {
+                    // The process may already have finished a very short file.
+                    _logger.LogDebug(ex, "Could not lower FFmpeg priority for {FilePath}", filePath);
+                }
             }
 
             // Zero-copy strategy:
@@ -165,7 +203,7 @@ public class FFmpegPcmExtractor : IPcmExtractor
                             buffer.AsSpan(0, bytesActuallyConsumedFromBuffer)
                                   .CopyTo(byteSpan.Slice(bytesCopiedFromLeftovers));
 
-                            yield return new AudioChunk(floatArray, floatCount, TargetSampleRate, TargetChannels);
+                            yield return new AudioChunk(floatArray, floatCount, options.SampleRate, options.Channels);
 
                             // Update leftovers
                             leftoverCount = bytesRead - bytesActuallyConsumedFromBuffer;

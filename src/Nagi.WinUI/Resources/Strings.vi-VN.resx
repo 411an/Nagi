@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Đã xảy ra lỗi khi đặt lại dữ liệu ứng dụng: {0}. Vui lòng thử khởi động lại ứng dụng theo cách thủ công.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Lỗi</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Không thể kết nối với Last.fm. Vui lòng thử lại sau.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Xác thực thất bại</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Không thể lấy phiên từ Last.fm. Vui lòng thử kết nối lại.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Ngắt kết nối Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Bạn có chắc chắn muốn ngắt kết nối tài khoản Last.fm của mình không? Lịch sử scrobbling của bạn sẽ được giữ lại trên Last.fm, nhưng Nagi sẽ không còn có thể scrobble nữa.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Ngắt kết nối</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Xuất thành công</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Lấy ID nghệ sĩ (bắt buộc cho TheAudioDB và Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Hình ảnh và tiểu sử nghệ sĩ chất lượng cao (yêu cầu MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Chỉ hình ảnh nghệ sĩ chất lượng cao (yêu cầu MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Chỉ hình ảnh nghệ sĩ</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Tiểu sử và hình ảnh nghệ sĩ (dự phòng)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Mở bằng Trình phát nhạc Nagi</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Khởi động Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Trước</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Đặt lại tất cả dữ liệu</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Tích hợp</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Kết nối tài khoản Last.fm của bạn để scrobble các bản nhạc và hiển thị bài hát đang phát của bạn.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Kết nối</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Hoàn tất</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Hủy</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Ngắt kết nối</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Bật scrobbling</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Tự động thêm các bản nhạc bạn nghe trên Nagi vào hồ sơ Last.fm của bạn.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Cập nhật 'Đang phát'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Hiển thị cho bạn bè trên Last.fm những gì bạn đang nghe theo thời gian thực.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Gửi lượt nghe của bạn tới ListenBrainz (một lựa chọn thay thế mã nguồn mở cho Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Mã người dùng</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Dán mã của bạn từ listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Kiểm tra kết nối</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Đã kết nối với tư cách {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Kết nối thất bại: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Gửi lượt nghe (theo dõi)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Gửi cập nhật "đang phát"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Nâng cao</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL máy chủ</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Ngắt kết nối khỏi ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Thao tác này sẽ xóa mã đã lưu của bạn. Bạn có thể kết nối lại bất cứ lúc nào.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Ngắt kết nối</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Hiển thị hoạt động nghe hiện tại của bạn làm trạng thái trên Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Danh sách phát thông minh</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0} phút {1} giây</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Phát kèm thư mục con</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Thêm kèm thư mục con</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Quay lại</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Dừng</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Danh sách</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Danh sách phát</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Hàng đợi</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Phổ</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>TIÊU ĐỀ</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>NGHỆ SĨ</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>THỂ LOẠI / NĂM</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Theo thứ tự</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Lặp lại danh sách phát</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Lặp lại bài hát</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Trộn bài hát</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Trộn album</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Ngẫu nhiên</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Thẻ / tên tệp</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>LOSSLESS</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>BÀI</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>TỔNG</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>ĐÃ PHÁT</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>CÒN LẠI</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Tiêu đề</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Thời lượng</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Số bài: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Thông tin tệp</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Thông tin tệp</value>
   </data>
 </root>

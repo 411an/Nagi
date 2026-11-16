@@ -48,10 +48,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
     private readonly IDbContextFactory<MusicDbContext> _contextFactory;
     private readonly IFileSystemService _fileSystem;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILastFmMetadataService _lastFmService;
     private readonly IMusicBrainzService _musicBrainzService;
-    private readonly IFanartTvService _fanartTvService;
-    private readonly ITheAudioDbService _theAudioDbService;
     private readonly ILogger<LibraryService> _logger;
     private readonly SemaphoreSlim _metadataFetchSemaphore = new(1, 1);
     // These locks are only used by the single-song AddSongWithDetailsAsync API (not batch processing)
@@ -64,7 +61,6 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ISettingsService _settingsService;
     private readonly IReplayGainService _replayGainService;
-    private readonly IApiKeyService _apiKeyService;
     private readonly IImageProcessor _imageProcessor;
     private readonly IProviderPipelineProvider _pipelines;
     private bool _disposed;
@@ -80,16 +76,12 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         IDbContextFactory<MusicDbContext> contextFactory,
         IFileSystemService fileSystem,
         IMetadataService metadataService,
-        ILastFmMetadataService lastFmService,
         IMusicBrainzService musicBrainzService,
-        IFanartTvService fanartTvService,
-        ITheAudioDbService theAudioDbService,
         IHttpClientFactory httpClientFactory,
         IServiceScopeFactory serviceScopeFactory,
         IPathConfiguration pathConfig,
         ISettingsService settingsService,
         IReplayGainService replayGainService,
-        IApiKeyService apiKeyService,
         IImageProcessor imageProcessor,
         IProviderPipelineProvider pipelines,
         ILogger<LibraryService> logger)
@@ -97,16 +89,12 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
         _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         _metadataService = metadataService ?? throw new ArgumentNullException(nameof(metadataService));
-        _lastFmService = lastFmService ?? throw new ArgumentNullException(nameof(lastFmService));
         _musicBrainzService = musicBrainzService ?? throw new ArgumentNullException(nameof(musicBrainzService));
-        _fanartTvService = fanartTvService ?? throw new ArgumentNullException(nameof(fanartTvService));
-        _theAudioDbService = theAudioDbService ?? throw new ArgumentNullException(nameof(theAudioDbService));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
         _pathConfig = pathConfig ?? throw new ArgumentNullException(nameof(pathConfig));
         _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         _replayGainService = replayGainService ?? throw new ArgumentNullException(nameof(replayGainService));
-        _apiKeyService = apiKeyService ?? throw new ArgumentNullException(nameof(apiKeyService));
         _imageProcessor = imageProcessor ?? throw new ArgumentNullException(nameof(imageProcessor));
         _pipelines = pipelines ?? throw new ArgumentNullException(nameof(pipelines));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -554,6 +542,110 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
     }
 
     /// <inheritdoc />
+    public async Task<IEnumerable<Folder>> SearchFoldersByNamePagedAsync(string searchTerm, int skip, int take, CancellationToken token = default)
+    {
+        if (take <= 0) return Enumerable.Empty<Folder>();
+        await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
+        var query = context.Folders.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = LikePatternHelper.CreateContainsPattern(NormalizeString(searchTerm) ?? string.Empty);
+            query = query.Where(f => EF.Functions.Like(f.Name, term, LikePatternHelper.EscapeCharacter));
+        }
+
+        return await query
+            .OrderBy(f => f.Name)
+            .ThenBy(f => f.Path)
+            .ThenBy(f => f.Id)
+            .Skip(Math.Max(0, skip))
+            .Take(take)
+            .ToListAsync(token).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<SongTextHit>> SearchSongTextHitsAsync(
+        string searchTerm, int take, SongTextSearchScope scope, CancellationToken token = default)
+    {
+        var normalized = NormalizeString(searchTerm)?.Trim() ?? string.Empty;
+        if (normalized.Length < 3 || take <= 0)
+            return [];
+
+        take = Math.Min(take, 200);
+        await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
+        var term = LikePatternHelper.CreateContainsPattern(normalized);
+        var escape = LikePatternHelper.EscapeCharacter;
+
+        if (scope == SongTextSearchScope.Playlist)
+        {
+            return await context.PlaylistSongs.AsNoTracking()
+                .Where(ps => EF.Functions.Like(ps.Song.Title, term, escape)
+                             || EF.Functions.Like(ps.Song.ArtistName, term, escape)
+                             || EF.Functions.Like(ps.Song.FilePath, term, escape)
+                             || (ps.Song.Album != null && EF.Functions.Like(ps.Song.Album.Title, term, escape)))
+                .OrderBy(ps => ps.Song.Title)
+                .ThenBy(ps => ps.Playlist.Name)
+                .Take(take)
+                .Select(ps => new SongTextHit
+                {
+                    SongId = ps.SongId,
+                    Title = ps.Song.Title,
+                    FilePath = ps.Song.FilePath,
+                    ArtistName = ps.Song.ArtistName,
+                    RootFolderId = ps.Song.FolderId,
+                    DirectoryPath = ps.Song.DirectoryPath,
+                    PlaylistId = ps.PlaylistId,
+                    PlaylistName = ps.Playlist.Name
+                })
+                .ToListAsync(token)
+                .ConfigureAwait(false);
+        }
+
+        if (scope == SongTextSearchScope.AlbumArtist)
+        {
+            return await context.Songs.AsNoTracking()
+                .Where(s => EF.Functions.Like(s.Title, term, escape)
+                            || EF.Functions.Like(s.ArtistName, term, escape)
+                            || EF.Functions.Like(s.FilePath, term, escape)
+                            || (s.Album != null && EF.Functions.Like(s.Album.Title, term, escape)))
+                .Where(s => s.Album != null && s.Album.AlbumArtists.Any())
+                .OrderBy(s => s.Title)
+                .Take(take)
+                .Select(s => new SongTextHit
+                {
+                    SongId = s.Id,
+                    Title = s.Title,
+                    FilePath = s.FilePath,
+                    ArtistName = s.ArtistName,
+                    RootFolderId = s.FolderId,
+                    DirectoryPath = s.DirectoryPath,
+                    ArtistId = s.Album!.AlbumArtists.OrderBy(a => a.Order).Select(a => (Guid?)a.ArtistId).FirstOrDefault()
+                })
+                .ToListAsync(token)
+                .ConfigureAwait(false);
+        }
+
+        return await context.Songs.AsNoTracking()
+            .Where(s => EF.Functions.Like(s.Title, term, escape)
+                        || EF.Functions.Like(s.ArtistName, term, escape)
+                        || EF.Functions.Like(s.FilePath, term, escape)
+                        || (s.Album != null && EF.Functions.Like(s.Album.Title, term, escape)))
+            .OrderBy(s => s.Title)
+            .Take(take)
+            .Select(s => new SongTextHit
+            {
+                SongId = s.Id,
+                Title = s.Title,
+                FilePath = s.FilePath,
+                ArtistName = s.ArtistName,
+                RootFolderId = s.FolderId,
+                DirectoryPath = s.DirectoryPath
+            })
+            .ToListAsync(token)
+            .ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
     public async Task<Folder?> GetFolderByDirectoryPathAsync(Guid rootFolderId, string directoryPath)
     {
         if (string.IsNullOrWhiteSpace(directoryPath)) return null;
@@ -623,6 +715,17 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
     {
         await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
         return await context.Folders.CountAsync(f => f.ParentFolderId == parentFolderId, token).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlySet<Guid>> GetSubFolderIdsWithChildrenAsync(Guid parentFolderId, CancellationToken token = default)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
+        var ids = await context.Folders.AsNoTracking()
+            .Where(f => f.ParentFolderId == parentFolderId && context.Folders.Any(c => c.ParentFolderId == f.Id))
+            .Select(f => f.Id)
+            .ToListAsync(token).ConfigureAwait(false);
+        return ids.ToHashSet();
     }
 
 
@@ -1253,18 +1356,6 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
 
                     var enabledProviderIds = enabledProviders.Select(p => p.Id).ToHashSet();
 
-                    // Pre-warm API keys once for the whole run. ApiKeyService caches via
-                    // Lazy<Task<string?>>, so subsequent per-artist calls are free dictionary hits.
-                    var warmupTasks = new List<Task>();
-                    if (enabledProviderIds.Contains(ServiceProviderIds.TheAudioDb))
-                        warmupTasks.Add(WarmupApiKeyAsync(ServiceProviderIds.TheAudioDb, token));
-                    if (enabledProviderIds.Contains(ServiceProviderIds.FanartTv))
-                        warmupTasks.Add(WarmupApiKeyAsync(ServiceProviderIds.FanartTv, token));
-                    if (enabledProviderIds.Contains(ServiceProviderIds.LastFm))
-                        warmupTasks.Add(WarmupApiKeyAsync(ServiceProviderIds.LastFm, token));
-                    if (warmupTasks.Count > 0)
-                        await Task.WhenAll(warmupTasks).ConfigureAwait(false);
-
                     const int batchSize = 50;
                     while (!token.IsCancellationRequested)
                     {
@@ -1321,8 +1412,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                                 var (updated, newImagePath) = await FetchAndUpdateArtistFromRemoteAsync(
                                     batchContext, artist, token, saveChanges: false, suppressEvents: true,
                                     preloadedEnabledProviders: enabledProviders,
-                                    preloadedSongDirectories: artistDirectories,
-                                    skipWarmup: true).ConfigureAwait(false);
+                                    preloadedSongDirectories: artistDirectories).ConfigureAwait(false);
 
                                 if (updated)
                                 {
@@ -1402,7 +1492,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         ArgumentNullException.ThrowIfNull(songData);
         await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
 
-        var existingSong = await context.Songs.AsNoTracking().FirstOrDefaultAsync(s => s.FilePath == songData.FilePath).ConfigureAwait(false);
+        var existingSong = await context.Songs.AsNoTracking().FirstOrDefaultAsync(s => s.FilePath == songData.FilePath && s.CueTrackNumber == songData.CueTrackNumber).ConfigureAwait(false);
         if (existingSong is not null) return existingSong;
 
         context.Songs.Add(songData);
@@ -1487,7 +1577,21 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
             .Include(s => s.Album)
             .Include(s => s.Folder)
             .AsSplitQuery()
-            .FirstOrDefaultAsync(s => s.FilePath == filePath).ConfigureAwait(false);
+            .Where(s => s.FilePath == filePath)
+            .OrderBy(s => s.CueTrackNumber)
+            .FirstOrDefaultAsync().ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<Song>> GetSongsByFilePathAsync(string filePath)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
+        return await context.Songs.AsNoTracking()
+            .Include(s => s.Album)
+            .Include(s => s.Folder)
+            .Where(s => s.FilePath == filePath)
+            .OrderBy(s => s.CueTrackNumber)
+            .ToListAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -1702,6 +1806,57 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
             ? query.OrderBy(a => a.SortName).ThenBy(a => a.Id)
             : query.OrderBy(a => a.Name).ThenBy(a => a.Id);
         return await ordered.ToListAsync(token).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<(Artist Artist, int SongCount)>> GetAlbumArtistsWithSongCountsAsync(
+        CancellationToken token = default)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
+        var query = context.Artists.AsNoTracking().Where(a => a.AlbumArtists.Any());
+        return await MaterializeAlbumArtistCountsAsync(query, token).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<(Artist Artist, int SongCount)>> SearchAlbumArtistsWithSongCountsAsync(
+        string searchTerm, CancellationToken token = default)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+            return await GetAlbumArtistsWithSongCountsAsync(token).ConfigureAwait(false);
+
+        var normalizedTerm = NormalizeString(searchTerm) ?? string.Empty;
+        await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
+        var query = BuildArtistSearchQuery(context, normalizedTerm).AsNoTracking()
+            .Where(a => a.AlbumArtists.Any());
+        return await MaterializeAlbumArtistCountsAsync(query, token).ConfigureAwait(false);
+    }
+
+    private async Task<IReadOnlyList<(Artist Artist, int SongCount)>> MaterializeAlbumArtistCountsAsync(
+        IQueryable<Artist> query, CancellationToken token)
+    {
+        var ordered = _ignoreArticlesOnSort
+            ? query.OrderBy(a => a.SortName).ThenBy(a => a.Id)
+            : query.OrderBy(a => a.Name).ThenBy(a => a.Id);
+
+        var rows = await ordered
+            .Select(a => new
+            {
+                a.Id,
+                a.Name,
+                a.SortName,
+                SongCount = a.SongArtists.Count
+            })
+            .ToListAsync(token)
+            .ConfigureAwait(false);
+
+        return rows
+            .Select(r => (new Artist
+            {
+                Id = r.Id,
+                Name = r.Name,
+                SortName = r.SortName
+            }, r.SongCount))
+            .ToList();
     }
 
     /// <inheritdoc />
@@ -2411,6 +2566,10 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                         DurationTicks = ps.Song.DurationTicks,
                         AlbumArtUriFromTrack = ps.Song.AlbumArtUriFromTrack,
                         FilePath = ps.Song.FilePath,
+                        CueTrackNumber = ps.Song.CueTrackNumber,
+                        StartOffsetTicks = ps.Song.StartOffsetTicks,
+                        CueFilePath = ps.Song.CueFilePath,
+                        CueFileModifiedDate = ps.Song.CueFileModifiedDate,
                         DirectoryPath = ps.Song.DirectoryPath,
                         Year = ps.Song.Year,
                         TrackNumber = ps.Song.TrackNumber,
@@ -2717,6 +2876,36 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         var normalizedPath = directoryPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         var baseQuery = context.Songs.AsNoTracking()
             .Where(s => s.FolderId == folderId && s.DirectoryPath == normalizedPath);
+
+        var totalCount = await baseQuery.CountAsync(token).ConfigureAwait(false);
+        IEnumerable<Song> items = Enumerable.Empty<Song>();
+        if (take > 0 && totalCount > 0)
+        {
+            var queryWithIncludes = baseQuery
+                .Include(s => s.SongArtists).ThenInclude(sa => sa.Artist)
+                .Include(s => s.Album).ThenInclude(a => a!.AlbumArtists).ThenInclude(aa => aa.Artist);
+
+            items = await ApplySongSortOrder(ExcludeHeavyFields(queryWithIncludes), sortOrder)
+                .Skip(skip).Take(take).AsSplitQuery().ToListAsync(token).ConfigureAwait(false);
+        }
+
+        return new PagedResult<Song> { Items = items, TotalCount = totalCount, PageNumber = 0, PageSize = take };
+    }
+
+    /// <inheritdoc />
+    public async Task<PagedResult<Song>> GetSongsInDirectoryRecursiveOffsetAsync(Guid folderId, string directoryPath,
+        int skip, int take, SongSortOrder sortOrder, CancellationToken token = default)
+    {
+        skip = Math.Max(0, skip);
+        take = Math.Max(0, take);
+        await using var context = await _contextFactory.CreateDbContextAsync().ConfigureAwait(false);
+
+        var normalizedPath = directoryPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var baseQuery = context.Songs.AsNoTracking()
+            .Where(s => s.FolderId == folderId &&
+                        (s.DirectoryPath == normalizedPath ||
+                         s.DirectoryPath.StartsWith(normalizedPath + "\\") ||
+                         s.DirectoryPath.StartsWith(normalizedPath + "/")));
 
         var totalCount = await baseQuery.CountAsync(token).ConfigureAwait(false);
         IEnumerable<Song> items = Enumerable.Empty<Song>();
@@ -3363,17 +3552,22 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         var dbQueryTask = analysisContext.Songs
             .AsNoTracking()
             .Where(s => s.FolderId == folderId)
-            .Select(s => new { s.FilePath, s.FileModifiedDate })
+            .Select(s => new { s.FilePath, s.FileModifiedDate, s.CueFilePath, s.CueFileModifiedDate })
             .ToListAsync(cancellationToken);
 
-        var diskFileMap = _fileSystem.EnumerateFilesWithLastWriteTime(folderPath, "*.*", SearchOption.AllDirectories)
+        var diskEntries = _fileSystem.EnumerateFilesWithLastWriteTime(folderPath, "*.*", SearchOption.AllDirectories).ToList();
+        var cueFileMap = diskEntries.Where(x => Path.GetExtension(x.Path).Equals(".cue", StringComparison.OrdinalIgnoreCase))
+            .ToDictionary(x => x.Path, x => x.LastWriteTimeUtc, StringComparer.OrdinalIgnoreCase);
+        var cueDirectories = cueFileMap.Keys.Select(Path.GetDirectoryName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var diskFileMap = diskEntries
             .Where(x => FileExtensions.MusicFileExtensions.Contains(_fileSystem.GetExtension(x.Path)))
             .ToDictionary(x => x.Path, x => x.LastWriteTimeUtc, StringComparer.OrdinalIgnoreCase);
 
         cancellationToken.ThrowIfCancellationRequested();
 
         var dbFileMap = (await dbQueryTask.ConfigureAwait(false))
-            .ToDictionary(s => s.FilePath, s => s.FileModifiedDate, StringComparer.OrdinalIgnoreCase);
+            .GroupBy(s => s.FilePath, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
 
         // Single-pass classification: iterate disk files once, check DB map for presence/staleness.
         // Eliminates two intermediate HashSets (dbPaths, diskPaths) and three lazy set operations.
@@ -3381,9 +3575,12 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         var filesToUpdate = new List<string>();
         foreach (var (path, diskModTime) in diskFileMap)
         {
-            if (dbFileMap.TryGetValue(path, out var dbModTime))
+            if (dbFileMap.TryGetValue(path, out var existing))
             {
-                if (forceFullScan || diskModTime != dbModTime)
+                var cueChanged = existing.CueFilePath is { } cuePath
+                    ? !cueFileMap.TryGetValue(cuePath, out var cueModified) || cueModified != existing.CueFileModifiedDate
+                    : cueDirectories.Contains(Path.GetDirectoryName(path));
+                if (forceFullScan || diskModTime != existing.FileModifiedDate || cueChanged)
                     filesToUpdate.Add(path);
             }
             else
@@ -3410,7 +3607,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
 
         // Query songs in the folder that don't have an LRC file path set
         var songsWithoutLrc = await context.Songs
-            .Where(s => s.FolderId == folderId && s.LrcFilePath == null)
+            .Where(s => s.FolderId == folderId && s.LrcFilePath == null && s.CueTrackNumber == 0)
             .Select(s => new { s.Id, s.FilePath })
             .ToListAsync(cancellationToken).ConfigureAwait(false);
 
@@ -4076,6 +4273,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         { StatusText = Resources.Strings.Status_ReadingSongDetails, TotalFiles = totalFiles, Percentage = 0 });
 
         var totalSaved = 0;
+        var totalSavedFiles = 0;
 
         // Producer: Extract metadata concurrently and write to channel using Parallel.ForEachAsync
         // This limits both concurrency AND task object allocation (unlike Task.WhenAll which creates all tasks upfront)
@@ -4125,7 +4323,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                             if (!metadata.ExtractionFailed)
                             {
                                 await channel.Writer.WriteAsync(metadata, ct).ConfigureAwait(false);
-                                Interlocked.Increment(ref extractedCount);
+                                Interlocked.Add(ref extractedCount, Math.Max(1, metadata.CueTracks.Count));
                             }
                             else
                             {
@@ -4145,7 +4343,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                                 {
                                     StatusText = Resources.Strings.Status_ReadingSongDetails,
                                     CurrentFilePath = filePath,
-                                    Percentage = (processedCount + Volatile.Read(ref totalSaved)) / (double)(totalFiles * 2) * 100,
+                                    Percentage = (processedCount + Volatile.Read(ref totalSavedFiles)) / (double)(totalFiles * 2) * 100,
                                     TotalFiles = totalFiles,
                                     NewSongsFound = extractedCount
                                 });
@@ -4182,7 +4380,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                         progress?.Report(new ScanProgress
                         {
                             StatusText = Resources.Strings.Status_ReadingSongDetails,
-                            Percentage = (Volatile.Read(ref processedCount) + totalSaved) / (double)(totalFiles * 2) * 100,
+                            Percentage = (Volatile.Read(ref processedCount) + totalSavedFiles) / (double)(totalFiles * 2) * 100,
                             NewSongsFound = extractedCount
                         });
 
@@ -4192,6 +4390,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                             pipelineToken).ConfigureAwait(false);
                         _logger.LogInformation("Consumer finished batch {BatchNumber}. Saved {Count} items.", batchNumber, saved);
                         totalSaved += saved;
+                        totalSavedFiles += batch.Count;
                         batch.Clear();
                     }
                 }
@@ -4204,7 +4403,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                     progress?.Report(new ScanProgress
                     {
                         StatusText = Resources.Strings.Status_ReadingSongDetails,
-                        Percentage = (Volatile.Read(ref processedCount) + totalSaved) / (double)(totalFiles * 2) * 100,
+                        Percentage = (Volatile.Read(ref processedCount) + totalSavedFiles) / (double)(totalFiles * 2) * 100,
                         NewSongsFound = extractedCount
                     });
 
@@ -4212,6 +4411,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                         albumIdCache, genreIdCache, filePathsBeingUpdated, skipMediaAssetsForUpdates,
                         pipelineToken).ConfigureAwait(false);
                     totalSaved += saved;
+                    totalSavedFiles += batch.Count;
                 }
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -4262,20 +4462,33 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
             ? metadataList.Select(m => m.FilePath).Where(filePathsBeingUpdated.Contains).ToList()
             : null;
 
-        Dictionary<string, Song> existingSongs;
+        Dictionary<string, List<Song>> existingSongs;
         if (updatePaths is null or { Count: 0 })
         {
-            existingSongs = new Dictionary<string, Song>(StringComparer.OrdinalIgnoreCase);
+            existingSongs = new Dictionary<string, List<Song>>(StringComparer.OrdinalIgnoreCase);
         }
         else
         {
             // Fetch existing songs for this batch to support updating existing records.
-            existingSongs = await context.Songs
+            var existingRows = await context.Songs
                 .Include(s => s.Genres)
                 .Include(s => s.SongArtists)
                 .Where(s => updatePaths.Contains(s.FilePath))
                 .AsSplitQuery()
-                .ToDictionaryAsync(s => s.FilePath, StringComparer.OrdinalIgnoreCase, cancellationToken).ConfigureAwait(false);
+                .ToListAsync(cancellationToken).ConfigureAwait(false);
+            existingSongs = existingRows.GroupBy(s => s.FilePath, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(g => g.Key, g => g.OrderBy(s => s.CueTrackNumber).ToList(), StringComparer.OrdinalIgnoreCase);
+        }
+
+        // Keep all tracks of an audio file in one batch/transaction. A changed CUE is
+        // reconciled by track number so playlist references and listening history survive.
+        var fileMetadata = metadataList.Where(m => !m.CueReadFailed ||
+            !existingSongs.TryGetValue(m.FilePath, out var rows) || rows.All(s => !s.IsCueTrack)).ToArray();
+        metadataList = fileMetadata.SelectMany(m => m.CueTracks.Count > 0 ? m.CueTracks : [m]).ToArray();
+        if (metadataList.Length == 0)
+        {
+            context.ChangeTracker.Clear();
+            return 0;
         }
 
         // Collect all artist, album, genre names from metadata
@@ -4308,11 +4521,36 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
             Path.GetFileName(metadataList.LastOrDefault()?.FilePath ?? ""));
 
         // Process each song using resolved entities
-        foreach (var metadata in metadataList)
+        foreach (var file in fileMetadata)
         {
-            existingSongs.TryGetValue(metadata.FilePath, out var existingSong);
-            AddSongWithDetailsCached(context, folderId, metadata, artistLookup, albumLookup, genreLookup, existingSong,
-                preserveMediaAssetsForUpdates && existingSong != null);
+            var previous = existingSongs.GetValueOrDefault(file.FilePath) ?? [];
+            var retained = new HashSet<Guid>();
+            var tracks = file.CueTracks.Count > 0 ? file.CueTracks : [file];
+            var artworkSource = previous.FirstOrDefault(s => !string.IsNullOrEmpty(s.AlbumArtUriFromTrack));
+            foreach (var metadata in tracks)
+            {
+                if (preserveMediaAssetsForUpdates && metadata.CueTrackNumber > 0 && artworkSource != null &&
+                    string.IsNullOrEmpty(metadata.CoverArtUri))
+                {
+                    metadata.CoverArtUri = artworkSource.AlbumArtUriFromTrack;
+                    metadata.LightSwatchId = artworkSource.LightSwatchId;
+                    metadata.DarkSwatchId = artworkSource.DarkSwatchId;
+                }
+                var existingSong = previous.FirstOrDefault(s => s.CueTrackNumber == metadata.CueTrackNumber);
+                // Reuse the original whole-file row for the first CUE track (and vice versa).
+                if (existingSong == null && retained.Count == 0)
+                    existingSong = previous.FirstOrDefault(s => s.CueTrackNumber == 0 || metadata.CueTrackNumber == 0);
+                if (existingSong != null) retained.Add(existingSong.Id);
+                var wasCueTrack = existingSong?.IsCueTrack == true;
+                AddSongWithDetailsCached(context, folderId, metadata, artistLookup, albumLookup, genreLookup, existingSong,
+                    preserveMediaAssetsForUpdates && existingSong != null);
+                if (existingSong != null && wasCueTrack != (metadata.CueTrackNumber > 0))
+                {
+                    existingSong.LrcFilePath = null;
+                    existingSong.Lyrics = null;
+                }
+            }
+            context.Songs.RemoveRange(previous.Where(s => !retained.Contains(s.Id)));
         }
 
         _logger.LogInformation("Saving changes for batch...");
@@ -4682,6 +4920,10 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         var song = existingSong ?? new Song();
 
         song.FilePath = metadata.FilePath;
+        song.CueTrackNumber = metadata.CueTrackNumber;
+        song.StartOffsetTicks = metadata.StartOffsetTicks;
+        song.CueFilePath = metadata.CueFilePath;
+        song.CueFileModifiedDate = metadata.CueFileModifiedDate;
         song.DirectoryPath = directoryPath;
         song.Title = metadata.Title;
         song.DurationTicks = metadata.Duration.Ticks;
@@ -4833,10 +5075,14 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
             var existingSong = await context.Songs
                 .Include(s => s.Genres)
                 .Include(s => s.SongArtists)
-                .FirstOrDefaultAsync(s => s.FilePath == metadata.FilePath).ConfigureAwait(false);
+                .FirstOrDefaultAsync(s => s.FilePath == metadata.FilePath && s.CueTrackNumber == metadata.CueTrackNumber).ConfigureAwait(false);
             var song = existingSong ?? new Song();
 
             song.FilePath = metadata.FilePath;
+            song.CueTrackNumber = metadata.CueTrackNumber;
+            song.StartOffsetTicks = metadata.StartOffsetTicks;
+            song.CueFilePath = metadata.CueFilePath;
+            song.CueFileModifiedDate = metadata.CueFileModifiedDate;
             song.DirectoryPath = directoryPath;
             song.Title = metadata.Title;
             song.Duration = metadata.Duration;
@@ -5011,8 +5257,7 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         bool saveChanges = true,
         bool suppressEvents = false,
         IReadOnlyList<ServiceProviderSetting>? preloadedEnabledProviders = null,
-        IReadOnlyList<string?>? preloadedSongDirectories = null,
-        bool skipWarmup = false)
+        IReadOnlyList<string?>? preloadedSongDirectories = null)
     {
         var wasMetadataFoundAndUpdated = false;
         var localImageFound = false;
@@ -5071,35 +5316,14 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
 
         var enabledIds = enabledProviders.Select(p => p.Id).ToHashSet();
 
-        // Initialize task storage
         var tasks = new Dictionary<string, Task<(string? ImageUrl, string? Biography)>>();
 
-        // Pre-warm API keys in parallel for enabled providers only.
-        // Start warmup FIRST so it runs concurrently with all provider tasks.
-        // Warmup failures are acceptable - the actual service calls handle missing keys gracefully.
-        // Batch callers warm up once for the whole run and pass skipWarmup: true.
-        var warmupTasks = new List<Task>();
-        if (!skipWarmup)
-        {
-            if (enabledIds.Contains(ServiceProviderIds.TheAudioDb))
-                warmupTasks.Add(WarmupApiKeyAsync(ServiceProviderIds.TheAudioDb, cancellationToken));
-            if (enabledIds.Contains(ServiceProviderIds.FanartTv))
-                warmupTasks.Add(WarmupApiKeyAsync(ServiceProviderIds.FanartTv, cancellationToken));
-            if (enabledIds.Contains(ServiceProviderIds.LastFm))
-                warmupTasks.Add(WarmupApiKeyAsync(ServiceProviderIds.LastFm, cancellationToken));
-        }
-
-        // Start MusicBrainz lookup in parallel with warmup (don't block other tasks)
         var mbid = artist.MusicBrainzId;
         Task<string?>? musicBrainzTask = null;
         if (string.IsNullOrEmpty(mbid) && enabledIds.Contains(ServiceProviderIds.MusicBrainz))
         {
             musicBrainzTask = _musicBrainzService.SearchArtistAsync(artist.Name, cancellationToken);
         }
-
-        // Start MBID-independent tasks immediately (in parallel with warmup and MusicBrainz)
-        if (enabledIds.Contains(ServiceProviderIds.LastFm))
-            tasks[ServiceProviderIds.LastFm] = FetchFromLastFmAsync(artist.Name, cancellationToken);
 
         // Track whether at least one network call returned (with or without data) so we
         // only stamp MetadataLastCheckedUtc when the run actually reached the providers.
@@ -5132,21 +5356,6 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                 _logger.LogDebug(ex, "MusicBrainz lookup failed for '{ArtistName}'.", artist.Name);
             }
         }
-
-        // Start MBID-dependent tasks now that we have (or don't have) the MBID.
-        // NOTE: TheAudioDB and Fanart.tv require a MusicBrainz ID to function.
-        // If MusicBrainz is disabled and the artist has no existing MBID, these providers will be skipped.
-        if (!string.IsNullOrEmpty(mbid))
-        {
-            if (enabledIds.Contains(ServiceProviderIds.TheAudioDb))
-                tasks[ServiceProviderIds.TheAudioDb] = FetchFromTheAudioDbAsync(mbid, cancellationToken);
-            if (enabledIds.Contains(ServiceProviderIds.FanartTv))
-                tasks[ServiceProviderIds.FanartTv] = FetchFromFanartTvAsync(mbid, cancellationToken);
-        }
-
-        // Wait for warmup tasks to complete (these have been running in parallel with provider tasks above).
-        // This ensures API key cache is populated before we evaluate results, reducing latency for the awaits below.
-        await Task.WhenAll(warmupTasks).ConfigureAwait(false);
 
         // Evaluate results in priority order for image and biography
         string? finalImageUrl = null;
@@ -5257,56 +5466,6 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         }
 
         return (wasMetadataFoundAndUpdated, artist.LocalImageCachePath);
-    }
-
-    /// <summary>
-    ///     Warms up the API key cache for a specific service. Failures are swallowed
-    ///     as this is a best-effort optimization - actual service calls handle missing keys.
-    /// </summary>
-    private async Task WarmupApiKeyAsync(string serviceKey, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await _apiKeyService.GetApiKeyAsync(serviceKey, cancellationToken).ConfigureAwait(false);
-        }
-        catch
-        {
-            // Warmup failures are acceptable - the actual service call will handle missing keys gracefully
-        }
-    }
-
-    private async Task<(string? ImageUrl, string? Biography)> FetchFromTheAudioDbAsync(string mbid, CancellationToken ct)
-    {
-        var result = await _theAudioDbService.GetArtistMetadataAsync(mbid, CultureInfo.CurrentCulture.TwoLetterISOLanguageName, ct).ConfigureAwait(false);
-        if (result.Status == ServiceResultStatus.Success && result.Data is not null)
-        {
-            // Prefer square thumbnail over landscape fanart for round frame display
-            var url = result.Data.ThumbUrl ?? result.Data.FanartUrl;
-            return (url, result.Data.Biography);
-        }
-        return (null, null);
-    }
-
-    private async Task<(string? ImageUrl, string? Biography)> FetchFromFanartTvAsync(string mbid, CancellationToken ct)
-    {
-        var result = await _fanartTvService.GetArtistImagesAsync(mbid, ct).ConfigureAwait(false);
-        if (result.Status == ServiceResultStatus.Success && result.Data is not null)
-        {
-            // Prefer square thumbnail over landscape background for round frame display
-            var url = result.Data.ThumbUrl ?? result.Data.BackgroundUrl;
-            return (url, null); // Fanart.tv doesn't provide biography
-        }
-        return (null, null);
-    }
-
-    private async Task<(string? ImageUrl, string? Biography)> FetchFromLastFmAsync(string artistName, CancellationToken ct)
-    {
-        var result = await _lastFmService.GetArtistInfoAsync(artistName, CultureInfo.CurrentCulture.TwoLetterISOLanguageName, ct).ConfigureAwait(false);
-        if (result.Status == ServiceResultStatus.Success && result.Data is not null)
-        {
-            return (result.Data.ImageUrl, result.Data.Biography);
-        }
-        return (null, null);
     }
 
     private Task<string?> DownloadAndCacheArtistImageAsync(Artist artist, Uri imageUrl, CancellationToken cancellationToken)
@@ -5828,6 +5987,10 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
             DurationTicks = s.DurationTicks,
             AlbumArtUriFromTrack = s.AlbumArtUriFromTrack,
             FilePath = s.FilePath,
+            CueTrackNumber = s.CueTrackNumber,
+            StartOffsetTicks = s.StartOffsetTicks,
+            CueFilePath = s.CueFilePath,
+            CueFileModifiedDate = s.CueFileModifiedDate,
             DirectoryPath = s.DirectoryPath,
             Year = s.Year,
             TrackNumber = s.TrackNumber,
@@ -5938,6 +6101,17 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                     .ThenBy(s => s.DiscNumber ?? 0).ThenBy(s => s.TrackNumber)
                     .ThenBy(s => s.SortTitle).ThenBy(s => s.Id)
                 : query.OrderBy(s => s.Album != null ? s.Album.Title : string.Empty)
+                    .ThenBy(s => s.DiscNumber ?? 0).ThenBy(s => s.TrackNumber)
+                    .ThenBy(s => s.Title).ThenBy(s => s.Id),
+            SongSortOrder.AlbumGroupedAsc => ia
+                ? query.OrderBy(s => s.Album != null ? s.Album.SortTitle : string.Empty)
+                    .ThenBy(s => s.Album != null ? s.Album.PrimaryArtistSortName : string.Empty)
+                    .ThenBy(s => s.AlbumId)
+                    .ThenBy(s => s.DiscNumber ?? 0).ThenBy(s => s.TrackNumber)
+                    .ThenBy(s => s.SortTitle).ThenBy(s => s.Id)
+                : query.OrderBy(s => s.Album != null ? s.Album.Title : string.Empty)
+                    .ThenBy(s => s.Album != null ? s.Album.PrimaryArtistName : string.Empty)
+                    .ThenBy(s => s.AlbumId)
                     .ThenBy(s => s.DiscNumber ?? 0).ThenBy(s => s.TrackNumber)
                     .ThenBy(s => s.Title).ThenBy(s => s.Id),
             SongSortOrder.AlbumDesc => ia
@@ -6194,14 +6368,14 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         // Project minimal columns; we only need Id + FilePath + a few fields to pick a survivor.
         var songs = await context.Songs
             .AsNoTracking()
-            .Select(s => new { s.Id, s.FilePath, s.FileModifiedDate, s.PlayCount, s.IsLoved, s.DateAddedToLibrary })
+            .Select(s => new { s.Id, s.FilePath, s.CueTrackNumber, s.FileModifiedDate, s.PlayCount, s.IsLoved, s.DateAddedToLibrary })
             .ToListAsync(ct).ConfigureAwait(false);
 
         if (songs.Count == 0) return 0;
 
         var groups = songs
             .Where(s => !string.IsNullOrWhiteSpace(s.FilePath))
-            .GroupBy(s => CanonicalizePath(s.FilePath), StringComparer.OrdinalIgnoreCase)
+            .GroupBy(s => $"{CanonicalizePath(s.FilePath)}\0{s.CueTrackNumber}", StringComparer.OrdinalIgnoreCase)
             .Where(g => g.Count() > 1)
             .ToList();
 

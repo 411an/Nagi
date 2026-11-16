@@ -43,12 +43,8 @@
     <!-- Audio & Metadata -->
     <PackageVersion Include="ModernLrc" Version="1.2.0" />
     <PackageVersion Include="z440.atl.core" Version="7.16.0" />
-    <!-- Image Processing -->
     <PackageVersion Include="MaterialColorUtilities" Version="0.3.0" />
-    <PackageVersion Include="SixLabors.ImageSharp" Version="4.1.1" />
     <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
-    <!-- Presence -->
-    <PackageVersion Include="DiscordRichPresence" Version="1.6.1.70" />
     <!-- Azure Functions -->
     <PackageVersion Include="Azure.Identity" Version="1.21.0" />
     <!-- 3.x removes telemetry interfaces still required by Functions.Worker.ApplicationInsights 2.x. -->

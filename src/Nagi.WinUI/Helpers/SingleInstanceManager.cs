@@ -14,8 +14,8 @@ namespace Nagi.WinUI.Helpers;
 /// </summary>
 internal sealed class SingleInstanceManager : IDisposable
 {
-    private const string MutexName = @"Global\NagiMusicPlayer-9A8B7C6D";
-    private const string PipeName = "NagiMusicPlayer-Activation-9A8B7C6D";
+    private const string MutexName = @"Global\NagiPortable-Activation-B7E41C2A";
+    private const string PipeName = "NagiPortable-Activation-B7E41C2A";
     private const int PipeTimeoutMs = 3000;
 
     private readonly ILogger<SingleInstanceManager>? _logger;

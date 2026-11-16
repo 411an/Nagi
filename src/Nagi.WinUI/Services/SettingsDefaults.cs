@@ -21,21 +21,18 @@ public static class SettingsDefaults
     public const bool FetchOnlineMetadataEnabled = false;
     public const bool FetchOnlineLyricsEnabled = false;
     public const bool LyricsRomanizationEnabled = false;
-    public const bool DiscordRichPresenceEnabled = false;
-    public const ElementTheme Theme = ElementTheme.Default;
+    public const ElementTheme Theme = ElementTheme.Dark;
     public const BackdropMaterial DefaultBackdropMaterial = BackdropMaterial.Mica;
-    public const bool DynamicThemingEnabled = true;
+    public const bool DynamicThemingEnabled = false;
     public const bool RestorePlaybackStateEnabled = true;
     public const bool StartMinimizedEnabled = false;
     public const double Volume = 0.5;
     public const bool MuteState = false;
     public const bool ShuffleState = false;
     public const RepeatMode DefaultRepeatMode = RepeatMode.Off;
-    public const bool LastFmScrobblingEnabled = false;
 
     public const string DefaultArtistSplitCharacters = ""; // No splitting by default
     public const string DefaultGenreSplitCharacters = ""; // No splitting by default
-    public const bool LastFmNowPlayingEnabled = false;
     public const bool RememberWindowSizeEnabled = false;
     public const bool RememberWindowPositionEnabled = false;
     public const bool RememberPaneStateEnabled = true;

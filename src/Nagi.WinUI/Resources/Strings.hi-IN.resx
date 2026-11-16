@@ -489,27 +489,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>एप्लिकेशन डेटा रीसेट करते समय एक त्रुटि हुई: {0}। कृपया ऐप को मैन्युअल रूप से पुनरारंभ करने का प्रयास करें।</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>त्रुटि</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Last.fm से कनेक्ट नहीं हो सका। कृपया बाद में पुनः प्रयास करें।</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>प्रमाणीकरण विफल</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Last.fm से एक सत्र प्राप्त नहीं हो सका। कृपया फिर से कनेक्ट करने का प्रयास करें।</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Last.fm डिस्कनेक्ट करें</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>क्या आप अपना Last.fm खाता डिस्कनेक्ट करना चाहते हैं? आपका स्क्रॉबलिंग इतिहास Last.fm पर संरक्षित रहेगा, लेकिन नागी अब स्क्रॉबल नहीं कर पाएगा।</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>डिस्कनेक्ट करें</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>निर्यात सफल</value>
   </data>
@@ -720,17 +699,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>कलाकार ID प्राप्त करता है (TheAudioDB और Fanart.tv के लिए आवश्यक)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>उच्च-गुणवत्ता वाली कलाकार छवियाँ और जीवनियाँ (MusicBrainz आवश्यक है)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>केवल उच्च-गुणवत्ता वाली कलाकार छवियाँ (MusicBrainz आवश्यक है)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>केवल कलाकार छवियाँ</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>कलाकार की जीवनियाँ और छवियाँ (फ़ॉलबैक)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>नागी</value>
@@ -1052,9 +1022,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>नागी म्यूज़िक प्लेयर के साथ खोलें</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>नागी स्टार्टअप</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>पिछला</value>
@@ -1818,90 +1785,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>सभी डेटा रीसेट करें</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>एकीकरण</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>लास्ट.एफएम</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>ट्रैक स्क्रोबल करने और आपके वर्तमान में चल रहे गाने को दिखाने के लिए अपने Last.fm खाते को कनेक्ट करें।</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>कनेक्ट करें</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>पूर्ण</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>रद्द करें</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>डिस्कनेक्ट करें</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>स्क्रोबलिंग सक्षम करें</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>नागी पर आपके द्वारा सुने जाने वाले ट्रैक को स्वचालित रूप से अपने Last.fm प्रोफ़ाइल में जोड़ें।</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>'अभी चल रहा है' अपडेट करें</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>अपने Last.fm दोस्तों को दिखाएँ कि आप वास्तविक समय में क्या सुन रहे हैं।</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>लिसनब्रेन्स</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>अपनी सुनने की जानकारी लिसनब्रेन्स पर सबमिट करें (Last.fm का एक खुला विकल्प)।</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>उपयोगकर्ता टोकन</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>अपना टोकन listenbrainz.org/settings से पेस्ट करें</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>कनेक्शन जाँचें</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>{0} के रूप में कनेक्ट किया गया</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>कनेक्शन विफल रहा: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>सुने गए गाने सबमिट करें (स्क्रॉबलिंग)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>"अब चल रहे" अपडेट सबमिट करें</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>उन्नत</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>सर्वर यूआरएल</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>लिसनब्रेन्स से डिस्कनेक्ट करें?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>यह आपके सहेजे गए टोकन को हटा देगा। आप किसी भी समय फिर से कनेक्ट कर सकते हैं।</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>डिस्कनेक्ट करें</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>डिस्कॉर्ड</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>डिस्कॉर्ड पर अपनी वर्तमान सुनने की गतिविधि को अपनी स्थिति के रूप में दिखाएँ।</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>स्मार्ट प्लेलिस्ट</value>
   </data>
@@ -2228,5 +2111,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}मि {1}से</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>सबफ़ोल्डर सहित चलाएँ</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>सबफ़ोल्डर सहित जोड़ें</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>वापस</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>रोकें</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>खोजें</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>सूची</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>प्लेलिस्ट</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>कतार</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>स्पेक्ट्रम</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>शीर्षक</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>कलाकार</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>एल्बम</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>शैली / वर्ष</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>क्रम से</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>प्लेलिस्ट दोहराएँ</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>ट्रैक दोहराएँ</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>ट्रैक शफ़ल करें</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>एल्बम शफ़ल करें</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>रैंडम</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>टैग / फ़ाइल नाम</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>लॉसलेस</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>ट्रैक</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>कुल</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>बीता</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>शेष</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>शीर्षक</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>अवधि</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>ट्रैक: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>फ़ाइल जानकारी</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>फ़ाइल जानकारी</value>
   </data>
 </root>

@@ -28,8 +28,8 @@ namespace Nagi.WinUI;
 public sealed partial class MainWindow : Window
 {
     // Minimum window size constraints when restoring saved dimensions.
-    private const int MinMainWindowWidth = 400;
-    private const int MinMainWindowHeight = 300;
+    private const int MinMainWindowWidth = 960;
+    private const int MinMainWindowHeight = 640;
 
     // Core windowing and service references.
     private AppWindow? _appWindow;
@@ -134,6 +134,7 @@ public sealed partial class MainWindow : Window
             SetTitleBar(titleBarElement);
             var showSystemButtons = Content is not OnboardingPage && Content is not SplashPage;
             presenter.SetBorderAndTitleBar(true, showSystemButtons);
+            if (Content is MainPage mainPage) mainPage.UpdateTitleBarInset();
         }
         else
         {
@@ -149,6 +150,19 @@ public sealed partial class MainWindow : Window
         SetTitleBar(null);
         presenter ??= _appWindow?.Presenter as OverlappedPresenter;
         presenter?.SetBorderAndTitleBar(true, true);
+    }
+
+    /// <summary>
+    ///     Prevents the three-column shell from collapsing below controls + playlist + library.
+    /// </summary>
+    public void ApplyShellMinimumSize()
+    {
+        _appWindow ??= GetAppWindowForCurrentWindow();
+        if (_appWindow?.Presenter is OverlappedPresenter presenter)
+        {
+            presenter.PreferredMinimumWidth = 1240;
+            presenter.PreferredMinimumHeight = 720;
+        }
     }
 
     private async void OnWindowActivated(object sender, WindowActivatedEventArgs args)

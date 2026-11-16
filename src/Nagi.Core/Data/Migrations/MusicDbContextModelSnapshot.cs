@@ -426,6 +426,16 @@ namespace Nagi.Core.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("CueFileModifiedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CueFilePath")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CueTrackNumber")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Conductor")
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
@@ -539,6 +549,9 @@ namespace Nagi.Core.Data.Migrations
                         .HasColumnType("TEXT")
                         .UseCollation("NOCASE");
 
+                    b.Property<long>("StartOffsetTicks")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -567,7 +580,7 @@ namespace Nagi.Core.Data.Migrations
 
                     b.HasIndex("DirectoryPath");
 
-                    b.HasIndex("FilePath")
+                    b.HasIndex("FilePath", "CueTrackNumber")
                         .IsUnique();
 
                     b.HasIndex("FolderId");

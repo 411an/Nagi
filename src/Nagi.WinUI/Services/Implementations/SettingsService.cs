@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
@@ -14,6 +12,7 @@ using Nagi.Core.Helpers;
 using Nagi.Core.Models;
 using Nagi.Core.Services.Abstractions;
 using Nagi.Core.Services.Data;
+using Nagi.WinUI.Helpers;
 using Nagi.WinUI.Models;
 using Nagi.WinUI.Navigation;
 using Nagi.WinUI.Services.Abstractions;
@@ -21,11 +20,10 @@ using Nagi.WinUI.Services.Abstractions;
 namespace Nagi.WinUI.Services.Implementations;
 
 /// <summary>
-///     Manages application settings by persisting them to local storage using ApplicationData.
+///     Manages application settings by persisting them to datadir/settings.json.
 /// </summary>
 public class SettingsService : IUISettingsService, IDisposable
 {
-    private const string StartupTaskId = "NagiAutolaunchStartup";
     private const string VolumeKey = "AppVolume";
     private const string MuteStateKey = "AppMuteState";
     private const string ShuffleStateKey = "MusicShuffleState";
@@ -43,19 +41,8 @@ public class SettingsService : IUISettingsService, IDisposable
     private const string FetchOnlineMetadataKey = "FetchOnlineMetadataEnabled";
     private const string FetchOnlineLyricsEnabledKey = "FetchOnlineLyricsEnabled";
     private const string LyricsRomanizationEnabledKey = "LyricsRomanizationEnabled";
-    private const string DiscordRichPresenceEnabledKey = "DiscordRichPresenceEnabled";
     private const string NavigationItemsKey = "NavigationItems";
     private const string PlayerButtonSettingsKey = "PlayerButtonSettings";
-    private const string LastFmCredentialResource = "Nagi/LastFm";
-    private const string LastFmAuthTokenKey = "LastFmAuthToken";
-    private const string LastFmScrobblingEnabledKey = "LastFmScrobblingEnabled";
-    private const string LastFmNowPlayingEnabledKey = "LastFmNowPlayingEnabled";
-    private const string ListenBrainzScrobblingEnabledKey = "ListenBrainzScrobblingEnabled";
-    private const string ListenBrainzNowPlayingEnabledKey = "ListenBrainzNowPlayingEnabled";
-    private const string ListenBrainzServerUrlKey = "ListenBrainzServerUrl";
-    private const string ListenBrainzEnabledSinceUtcKey = "ListenBrainzEnabledSinceUtcTicks";
-    private const string ListenBrainzTokenResource = "Nagi/ListenBrainz";
-    private const string ListenBrainzTokenUserName = "token";
     private const string EqualizerSettingsKey = "EqualizerSettings";
     private const string RememberWindowSizeEnabledKey = "RememberWindowSizeEnabled";
     private const string LastWindowSizeKey = "LastWindowSize";
@@ -76,26 +63,23 @@ public class SettingsService : IUISettingsService, IDisposable
     private const string SongsPerPageKey = "SongsPerPage";
     private const string GenreSplitCharactersKey = "GenreSplitCharacters";
     private const string IgnoreLeadingArticlesOnSortKey = "IgnoreLeadingArticlesOnSort";
+    private const string ShellBrowseStateKey = "ShellBrowseState";
 
     private static readonly JsonSerializerOptions _serializerOptions = new() { WriteIndented = true };
-    private readonly ICredentialLockerService _credentialLockerService;
-    private readonly ApplicationDataContainer? _localSettings;
+    private readonly JsonSettingsStore _store;
     private readonly ILogger<SettingsService> _logger;
     private readonly IPathConfiguration _pathConfig;
     private readonly UISettings _uiSettings = new();
     private readonly IDispatcherService _dispatcherService;
     private bool _disposed;
 
-    public SettingsService(IPathConfiguration pathConfig, ICredentialLockerService credentialLockerService,
+    public SettingsService(IPathConfiguration pathConfig,
         ILogger<SettingsService> logger, IDispatcherService dispatcherService)
     {
         _pathConfig = pathConfig ?? throw new ArgumentNullException(nameof(pathConfig));
-        _credentialLockerService =
-            credentialLockerService ?? throw new ArgumentNullException(nameof(credentialLockerService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _dispatcherService = dispatcherService ?? throw new ArgumentNullException(nameof(dispatcherService));
-
-        _localSettings = ApplicationData.Current.LocalSettings;
+        _store = new JsonSettingsStore(_pathConfig.SettingsFilePath, logger);
 
         _uiSettings.AdvancedEffectsEnabledChanged += OnAdvancedEffectsEnabledChanged;
     }
@@ -108,9 +92,6 @@ public class SettingsService : IUISettingsService, IDisposable
     public event Action<bool>? ShowCoverArtInTrayFlyoutSettingChanged;
     public event Action? NavigationSettingsChanged;
     public event Action? PlayerButtonSettingsChanged;
-    public event Action? LastFmSettingsChanged;
-    public event Action? ListenBrainzSettingsChanged;
-    public event Action<bool>? DiscordRichPresenceSettingChanged;
     public event Action<bool>? VolumeNormalizationEnabledChanged;
     public event Action<bool>? FadeOnPlayPauseEnabledChanged;
     public event Action<int>? FadeInDurationChanged;
@@ -135,8 +116,7 @@ public class SettingsService : IUISettingsService, IDisposable
 
     public async Task ResetToDefaultsAsync()
     {
-        _localSettings!.Values.Clear();
-
+        _store.Clear();
 
         var tasks = new List<Task>
         {
@@ -150,7 +130,6 @@ public class SettingsService : IUISettingsService, IDisposable
             SetFetchOnlineMetadataEnabledAsync(SettingsDefaults.FetchOnlineMetadataEnabled),
             SetFetchOnlineLyricsEnabledAsync(SettingsDefaults.FetchOnlineLyricsEnabled),
             SetLyricsRomanizationEnabledAsync(SettingsDefaults.LyricsRomanizationEnabled),
-            SetDiscordRichPresenceEnabledAsync(SettingsDefaults.DiscordRichPresenceEnabled),
             SetThemeAsync(SettingsDefaults.Theme),
             SetBackdropMaterialAsync(SettingsDefaults.DefaultBackdropMaterial),
             SetDynamicThemingAsync(SettingsDefaults.DynamicThemingEnabled),
@@ -162,14 +141,6 @@ public class SettingsService : IUISettingsService, IDisposable
             SaveMuteStateAsync(SettingsDefaults.MuteState),
             SaveShuffleStateAsync(SettingsDefaults.ShuffleState),
             SaveRepeatModeAsync(SettingsDefaults.DefaultRepeatMode),
-            SetLastFmScrobblingEnabledAsync(SettingsDefaults.LastFmScrobblingEnabled),
-            SetLastFmNowPlayingEnabledAsync(SettingsDefaults.LastFmNowPlayingEnabled),
-            ClearLastFmCredentialsAsync(),
-            SetListenBrainzScrobblingEnabledAsync(false),
-            SetListenBrainzNowPlayingEnabledAsync(false),
-            ClearListenBrainzUserTokenAsync(),
-            SetListenBrainzServerUrlAsync(null),
-            SetListenBrainzEnabledSinceUtcAsync(null),
             SetEqualizerSettingsAsync(new EqualizerSettings()),
             SetRememberWindowSizeEnabledAsync(SettingsDefaults.RememberWindowSizeEnabled),
             SetRememberWindowPositionEnabledAsync(SettingsDefaults.RememberWindowPositionEnabled),
@@ -190,6 +161,7 @@ public class SettingsService : IUISettingsService, IDisposable
         };
 
         await Task.WhenAll(tasks).ConfigureAwait(false);
+        _store.Flush();
 
         _logger.LogInformation("All application settings have been reset to their default values.");
     }
@@ -204,14 +176,12 @@ public class SettingsService : IUISettingsService, IDisposable
 
     private T GetValue<T>(string key, T defaultValue)
     {
-        return _localSettings!.Values.TryGetValue(key, out var value) && value is T v ? v : defaultValue;
+        return _store.GetValue(key, defaultValue);
     }
 
     private async Task<T?> GetComplexValueAsync<T>(string key) where T : class
     {
-        string? json = null;
-
-        if (_localSettings!.Values.TryGetValue(key, out var value) && value is string jsonString) json = jsonString;
+        string? json = _store.GetValue<string?>(key, null);
 
         if (json != null)
             try
@@ -229,10 +199,7 @@ public class SettingsService : IUISettingsService, IDisposable
 
     private TEnum GetEnumValue<TEnum>(string key, TEnum defaultValue) where TEnum : struct, Enum
     {
-        string? name = null;
-
-        if (_localSettings!.Values.TryGetValue(key, out var value) && value is string stringValue)
-            name = stringValue;
+        var name = _store.GetValue<string?>(key, null);
 
         if (name != null && Enum.TryParse(name, out TEnum result)) return result;
 
@@ -243,14 +210,14 @@ public class SettingsService : IUISettingsService, IDisposable
     {
         if (value is null)
         {
-            _localSettings!.Values.Remove(key);
+            _store.SetValue<string?>(key, null);
             return Task.CompletedTask;
         }
 
         if (typeof(T).IsClass && typeof(T) != typeof(string))
-            _localSettings!.Values[key] = JsonSerializer.Serialize(value, _serializerOptions);
+            _store.SetValue(key, JsonSerializer.Serialize(value, _serializerOptions));
         else
-            _localSettings!.Values[key] = value!;
+            _store.SetValue(key, value);
 
         return Task.CompletedTask;
     }
@@ -345,10 +312,8 @@ public class SettingsService : IUISettingsService, IDisposable
         return SetValueAsync(RestorePlaybackStateEnabledKey, isEnabled);
     }
 
-    public Task<bool> GetFetchOnlineMetadataEnabledAsync()
-    {
-        return Task.FromResult(GetValue(FetchOnlineMetadataKey, SettingsDefaults.FetchOnlineMetadataEnabled));
-    }
+    // The portable build has no setting for this; nothing in the window shows what it fetched.
+    public Task<bool> GetFetchOnlineMetadataEnabledAsync() => Task.FromResult(false);
 
     public Task SetFetchOnlineMetadataEnabledAsync(bool isEnabled)
     {
@@ -375,19 +340,10 @@ public class SettingsService : IUISettingsService, IDisposable
         return SetValueAndNotifyAsync(LyricsRomanizationEnabledKey, isEnabled, SettingsDefaults.LyricsRomanizationEnabled, LyricsRomanizationEnabledChanged);
     }
 
-    public Task<bool> GetDiscordRichPresenceEnabledAsync()
-    {
-        return Task.FromResult(GetValue(DiscordRichPresenceEnabledKey, SettingsDefaults.DiscordRichPresenceEnabled));
-    }
-
-    public Task SetDiscordRichPresenceEnabledAsync(bool isEnabled)
-    {
-        return SetValueAndNotifyAsync(DiscordRichPresenceEnabledKey, isEnabled, SettingsDefaults.DiscordRichPresenceEnabled,
-            DiscordRichPresenceSettingChanged);
-    }
-
     public async Task SavePlaybackStateAsync(PlaybackState? state)
     {
+        if (_store.IsFrozen) return;
+
         if (state == null)
         {
             await ClearPlaybackStateAsync().ConfigureAwait(false);
@@ -395,20 +351,21 @@ public class SettingsService : IUISettingsService, IDisposable
         }
 
         var jsonState = JsonSerializer.Serialize(state, _serializerOptions);
-
-        var stateFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(
-            Path.GetFileName(_pathConfig.PlaybackStateFilePath), CreationCollisionOption.ReplaceExisting).AsTask().ConfigureAwait(false);
-        await FileIO.WriteTextAsync(stateFile, jsonState).AsTask().ConfigureAwait(false);
+        var path = _pathConfig.PlaybackStateFilePath;
+        var directory = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
+        var tempPath = path + ".tmp";
+        await File.WriteAllTextAsync(tempPath, jsonState).ConfigureAwait(false);
+        File.Move(tempPath, path, overwrite: true);
     }
 
     public async Task<PlaybackState?> GetPlaybackStateAsync()
     {
         try
         {
-            string? jsonState = null;
-            var item = await ApplicationData.Current.LocalFolder.TryGetItemAsync(
-                Path.GetFileName(_pathConfig.PlaybackStateFilePath)).AsTask().ConfigureAwait(false);
-            if (item is IStorageFile stateFile) jsonState = await FileIO.ReadTextAsync(stateFile).AsTask().ConfigureAwait(false);
+            var path = _pathConfig.PlaybackStateFilePath;
+            if (!File.Exists(path)) return null;
+            var jsonState = await File.ReadAllTextAsync(path).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(jsonState)) return null;
             return JsonSerializer.Deserialize<PlaybackState>(jsonState);
@@ -425,136 +382,21 @@ public class SettingsService : IUISettingsService, IDisposable
         }
     }
 
-    public async Task ClearPlaybackStateAsync()
+    public Task ClearPlaybackStateAsync()
     {
+        if (_store.IsFrozen) return Task.CompletedTask;
+
         try
         {
-            var item = await ApplicationData.Current.LocalFolder.TryGetItemAsync(
-                Path.GetFileName(_pathConfig.PlaybackStateFilePath)).AsTask().ConfigureAwait(false);
-            if (item != null) await item.DeleteAsync().AsTask().ConfigureAwait(false);
+            var path = _pathConfig.PlaybackStateFilePath;
+            if (File.Exists(path)) File.Delete(path);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Error clearing PlaybackState file.");
         }
-    }
 
-    public Task<bool> GetLastFmScrobblingEnabledAsync()
-    {
-        return Task.FromResult(GetValue(LastFmScrobblingEnabledKey, SettingsDefaults.LastFmScrobblingEnabled));
-    }
-
-    public async Task SetLastFmScrobblingEnabledAsync(bool isEnabled)
-    {
-        await SetValueAsync(LastFmScrobblingEnabledKey, isEnabled).ConfigureAwait(false);
-        LastFmSettingsChanged?.Invoke();
-    }
-
-    public Task<bool> GetLastFmNowPlayingEnabledAsync()
-    {
-        return Task.FromResult(GetValue(LastFmNowPlayingEnabledKey, SettingsDefaults.LastFmNowPlayingEnabled));
-    }
-
-    public async Task SetLastFmNowPlayingEnabledAsync(bool isEnabled)
-    {
-        await SetValueAsync(LastFmNowPlayingEnabledKey, isEnabled).ConfigureAwait(false);
-        LastFmSettingsChanged?.Invoke();
-    }
-
-    public Task<(string? Username, string? SessionKey)?> GetLastFmCredentialsAsync()
-    {
-        return Task.FromResult(_credentialLockerService.RetrieveCredential(LastFmCredentialResource));
-    }
-
-    public Task SaveLastFmCredentialsAsync(string username, string sessionKey)
-    {
-        _credentialLockerService.SaveCredential(LastFmCredentialResource, username, sessionKey);
         return Task.CompletedTask;
-    }
-
-    public async Task ClearLastFmCredentialsAsync()
-    {
-        _credentialLockerService.RemoveCredential(LastFmCredentialResource);
-        await SetLastFmScrobblingEnabledAsync(false).ConfigureAwait(false);
-        await SetLastFmNowPlayingEnabledAsync(false).ConfigureAwait(false);
-        await SaveLastFmAuthTokenAsync(null).ConfigureAwait(false);
-    }
-
-    public Task SaveLastFmAuthTokenAsync(string? token)
-    {
-        return SetValueAsync(LastFmAuthTokenKey, token);
-    }
-
-    public Task<string?> GetLastFmAuthTokenAsync()
-    {
-        return Task.FromResult(GetValue<string?>(LastFmAuthTokenKey, null));
-    }
-
-    public Task<bool> GetListenBrainzScrobblingEnabledAsync()
-    {
-        return Task.FromResult(GetValue(ListenBrainzScrobblingEnabledKey, false));
-    }
-
-    public async Task SetListenBrainzScrobblingEnabledAsync(bool isEnabled)
-    {
-        await SetValueAsync(ListenBrainzScrobblingEnabledKey, isEnabled).ConfigureAwait(false);
-        ListenBrainzSettingsChanged?.Invoke();
-    }
-
-    public Task<bool> GetListenBrainzNowPlayingEnabledAsync()
-    {
-        return Task.FromResult(GetValue(ListenBrainzNowPlayingEnabledKey, false));
-    }
-
-    public async Task SetListenBrainzNowPlayingEnabledAsync(bool isEnabled)
-    {
-        await SetValueAsync(ListenBrainzNowPlayingEnabledKey, isEnabled).ConfigureAwait(false);
-        ListenBrainzSettingsChanged?.Invoke();
-    }
-
-    public Task<string?> GetListenBrainzUserTokenAsync()
-    {
-        var credential = _credentialLockerService.RetrieveCredential(ListenBrainzTokenResource);
-        return Task.FromResult(credential?.Password);
-    }
-
-    public Task SaveListenBrainzUserTokenAsync(string token)
-    {
-        _credentialLockerService.SaveCredential(ListenBrainzTokenResource, ListenBrainzTokenUserName, token);
-        ListenBrainzSettingsChanged?.Invoke();
-        return Task.CompletedTask;
-    }
-
-    public Task ClearListenBrainzUserTokenAsync()
-    {
-        _credentialLockerService.RemoveCredential(ListenBrainzTokenResource);
-        ListenBrainzSettingsChanged?.Invoke();
-        return Task.CompletedTask;
-    }
-
-    public Task<string?> GetListenBrainzServerUrlAsync()
-    {
-        return Task.FromResult(GetValue<string?>(ListenBrainzServerUrlKey, null));
-    }
-
-    public async Task SetListenBrainzServerUrlAsync(string? url)
-    {
-        await SetValueAsync<string?>(ListenBrainzServerUrlKey, url).ConfigureAwait(false);
-        ListenBrainzSettingsChanged?.Invoke();
-    }
-
-    public Task<DateTime?> GetListenBrainzEnabledSinceUtcAsync()
-    {
-        var ticks = GetValue<long>(ListenBrainzEnabledSinceUtcKey, 0L);
-        if (ticks == 0L) return Task.FromResult<DateTime?>(null);
-        return Task.FromResult<DateTime?>(new DateTime(ticks, DateTimeKind.Utc));
-    }
-
-    public async Task SetListenBrainzEnabledSinceUtcAsync(DateTime? timestamp)
-    {
-        var ticks = timestamp.HasValue ? timestamp.Value.ToUniversalTime().Ticks : 0L;
-        await SetValueAsync(ListenBrainzEnabledSinceUtcKey, ticks).ConfigureAwait(false);
-        ListenBrainzSettingsChanged?.Invoke();
     }
 
     public Task<EqualizerSettings?> GetEqualizerSettingsAsync()
@@ -701,6 +543,16 @@ public class SettingsService : IUISettingsService, IDisposable
         return SetValueAndNotifyAsync(SongsPerPageKey, songsPerPage, SettingsDefaults.DefaultSongsPerPage, SongsPerPageChanged);
     }
 
+    public Task<ShellBrowseState?> GetShellBrowseStateAsync()
+    {
+        return GetComplexValueAsync<ShellBrowseState>(ShellBrowseStateKey);
+    }
+
+    public Task SetShellBrowseStateAsync(ShellBrowseState? state)
+    {
+        return SetValueAsync(ShellBrowseStateKey, state);
+    }
+
     private static List<ServiceProviderSetting> GetDefaultServiceProviders(ServiceCategory category)
     {
         return category switch
@@ -736,33 +588,6 @@ public class SettingsService : IUISettingsService, IDisposable
                     IsEnabled = true,
                     Order = 0,
                     Description = Resources.Strings.Settings_Provider_MusicBrainz_Desc
-                },
-                new()
-                {
-                    Id = ServiceProviderIds.TheAudioDb,
-                    DisplayName = "TheAudioDB",
-                    Category = ServiceCategory.Metadata,
-                    IsEnabled = true,
-                    Order = 1,
-                    Description = Resources.Strings.Settings_Provider_TheAudioDB_Desc
-                },
-                new()
-                {
-                    Id = ServiceProviderIds.FanartTv,
-                    DisplayName = "Fanart.tv",
-                    Category = ServiceCategory.Metadata,
-                    IsEnabled = true,
-                    Order = 2,
-                    Description = Resources.Strings.Settings_Provider_FanartTv_Desc
-                },
-                new()
-                {
-                    Id = ServiceProviderIds.LastFm,
-                    DisplayName = "Last.fm",
-                    Category = ServiceCategory.Metadata,
-                    IsEnabled = true,
-                    Order = 3,
-                    Description = Resources.Strings.Settings_Provider_LastFm_Desc
                 }
             },
             _ => new List<ServiceProviderSetting>()
@@ -773,7 +598,8 @@ public class SettingsService : IUISettingsService, IDisposable
 
     #region UI Settings (IUISettingsService)
 
-    public Task<ElementTheme> GetThemeAsync() => Task.FromResult(GetEnumValue(ThemeKey, SettingsDefaults.Theme));
+    // The portable window is drawn for the dark theme only, so a stored choice is ignored.
+    public Task<ElementTheme> GetThemeAsync() => Task.FromResult(SettingsDefaults.Theme);
 
     public Task SetThemeAsync(ElementTheme theme)
     {
@@ -788,7 +614,8 @@ public class SettingsService : IUISettingsService, IDisposable
         BackdropMaterialChanged?.Invoke(material);
     }
 
-    public Task<bool> GetDynamicThemingAsync() => Task.FromResult(GetValue(DynamicThemingKey, SettingsDefaults.DynamicThemingEnabled));
+    // Colors taken from cover art are not used by the portable window.
+    public Task<bool> GetDynamicThemingAsync() => Task.FromResult(false);
 
     public Task SetDynamicThemingAsync(bool isEnabled)
     {
@@ -802,41 +629,31 @@ public class SettingsService : IUISettingsService, IDisposable
         return SetValueAndNotifyAsync(PlayerAnimationEnabledKey, isEnabled, SettingsDefaults.PlayerAnimationEnabled, PlayerAnimationSettingChanged);
     }
 
-    public async Task<bool> GetAutoLaunchEnabledAsync()
+    public Task<bool> GetAutoLaunchEnabledAsync()
     {
         try
         {
-            var startupTask = await StartupTask.GetAsync(StartupTaskId).AsTask().ConfigureAwait(false);
-            return startupTask.State is StartupTaskState.Enabled;
+            return Task.FromResult(Win32StartupService.IsEnabled());
         }
         catch (Exception ex)
         {
-            if (ex.HResult == unchecked((int)0x80073D5B))
-            {
-                _logger.LogDebug("Auto-launch task check skipped: The package does not have a mutable directory.");
-            }
-            else
-            {
-                _logger.LogWarning(ex, "Failed to get startup task state.");
-            }
-            return false;
+            _logger.LogWarning(ex, "Failed to get startup registration state.");
+            return Task.FromResult(false);
         }
     }
 
-    public async Task SetAutoLaunchEnabledAsync(bool isEnabled)
+    public Task SetAutoLaunchEnabledAsync(bool isEnabled)
     {
-        var startupTask = await StartupTask.GetAsync(StartupTaskId).AsTask().ConfigureAwait(false);
-        if (isEnabled)
+        try
         {
-            var state = await startupTask.RequestEnableAsync().AsTask().ConfigureAwait(false);
-            if (state is not StartupTaskState.Enabled and not StartupTaskState.EnabledByPolicy)
-                _logger.LogWarning(
-                    "StartupTask enable request did not result in 'Enabled' state. Current state: {State}", state);
+            Win32StartupService.SetEnabled(isEnabled);
         }
-        else
+        catch (Exception ex)
         {
-            startupTask.Disable();
+            _logger.LogWarning(ex, "Failed to update startup registration.");
         }
+
+        return Task.CompletedTask;
     }
 
     public Task<bool> GetStartMinimizedEnabledAsync() => Task.FromResult(GetValue(StartMinimizedEnabledKey, SettingsDefaults.StartMinimizedEnabled));
@@ -876,14 +693,8 @@ public class SettingsService : IUISettingsService, IDisposable
             ShowCoverArtInTrayFlyoutSettingChanged);
     }
 
-    public Task<Windows.UI.Color?> GetAccentColorAsync()
-    {
-        var hex = GetValue<string?>(AccentColorKey, null);
-        if (string.IsNullOrEmpty(hex)) return Task.FromResult<Windows.UI.Color?>(null);
-        if (App.CurrentApp!.TryParseHexColor(hex, out var color))
-            return Task.FromResult<Windows.UI.Color?>(color);
-        return Task.FromResult<Windows.UI.Color?>(null);
-    }
+    // The portable window has one fixed color scheme; the accent color is no longer a setting.
+    public Task<Windows.UI.Color?> GetAccentColorAsync() => Task.FromResult(SettingsDefaults.AccentColor);
 
     public Task SetAccentColorAsync(Windows.UI.Color? color)
     {
@@ -1151,9 +962,16 @@ public class SettingsService : IUISettingsService, IDisposable
 
     public Task FlushAsync()
     {
-        _logger.LogDebug("FlushAsync: ApplicationData handles persistence automatically.");
+        _store.Flush();
         return Task.CompletedTask;
     }
+
+    public void FreezeWrites()
+    {
+        _store.FreezeWrites();
+    }
+
+    public bool AreWritesFrozen => _store.IsFrozen;
 
     public void Dispose()
     {
@@ -1161,6 +979,7 @@ public class SettingsService : IUISettingsService, IDisposable
         _disposed = true;
 
         _uiSettings.AdvancedEffectsEnabledChanged -= OnAdvancedEffectsEnabledChanged;
+        _store.Dispose();
         GC.SuppressFinalize(this);
     }
 

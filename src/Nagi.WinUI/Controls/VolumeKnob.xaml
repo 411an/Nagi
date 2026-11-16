@@ -1,0 +1,49 @@
+<UserControl
+    x:Class="Nagi.WinUI.Controls.VolumeKnob"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Width="120"
+    Height="120"
+    IsTabStop="True"
+    PointerPressed="OnPointerPressed"
+    PointerMoved="OnPointerMoved"
+    PointerReleased="OnPointerReleased"
+    PointerCanceled="OnPointerReleased"
+    PointerCaptureLost="OnPointerReleased"
+    PointerWheelChanged="OnPointerWheelChanged">
+
+    <Grid>
+        <Canvas x:Name="TickCanvas" Width="120" Height="120" IsHitTestVisible="False" />
+        <Ellipse
+            Width="88"
+            Height="88"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Fill="#FF102832"
+            Stroke="{StaticResource AppPrimaryColorBrush}"
+            StrokeThickness="2" />
+        <Ellipse
+            Width="70"
+            Height="70"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Fill="#FF0B1C24"
+            Stroke="#331EB8C8"
+            StrokeThickness="1" />
+        <Grid
+            Width="120"
+            Height="120"
+            RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <RotateTransform x:Name="DotRotate" Angle="-135" />
+            </Grid.RenderTransform>
+            <Ellipse
+                Width="12"
+                Height="12"
+                Margin="0,12,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Fill="{StaticResource AppPrimaryColorBrush}" />
+        </Grid>
+    </Grid>
+</UserControl>

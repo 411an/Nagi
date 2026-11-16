@@ -32,17 +32,11 @@ public sealed partial class SettingsPage : Page
     {
         switch (e.PropertyName)
         {
-            case nameof(ViewModel.IsFetchOnlineMetadataEnabled):
-                MetadataSettingsExpander.IsExpanded = ViewModel.IsFetchOnlineMetadataEnabled;
-                break;
             case nameof(ViewModel.IsFetchOnlineLyricsEnabled):
                 LyricsSettingsExpander.IsExpanded = ViewModel.IsFetchOnlineLyricsEnabled;
                 break;
             case nameof(ViewModel.IsLyricsRomanizationEnabled):
                 RomanizedLyricsSettingsExpander.IsExpanded = ViewModel.IsLyricsRomanizationEnabled;
-                break;
-            case nameof(ViewModel.IsLastFmConnected):
-                LastFmSettingsExpander.IsExpanded = ViewModel.IsLastFmConnected;
                 break;
         }
     }
@@ -59,10 +53,8 @@ public sealed partial class SettingsPage : Page
             _logger.LogDebug("Settings loaded successfully.");
 
             // Set initial expander states after settings are loaded (no animation)
-            MetadataSettingsExpander.IsExpanded = ViewModel.IsFetchOnlineMetadataEnabled;
             LyricsSettingsExpander.IsExpanded = ViewModel.IsFetchOnlineLyricsEnabled;
             RomanizedLyricsSettingsExpander.IsExpanded = ViewModel.IsLyricsRomanizationEnabled;
-            LastFmSettingsExpander.IsExpanded = ViewModel.IsLastFmConnected;
             _ = ViewModel.LoadRomanizationPacksAsync();
 
             // Subscribe to property changes for reactive updates (these will animate)

@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Ndodhi një gabim gjatë rivendosjes së të dhënave të aplikacionit: {0}. Ju lutemi provoni të rindizni aplikacionin manualisht.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Gabim</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Nuk mund të lidhej me Last.fm. Ju lutemi provoni përsëri më vonë.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Autentifikimi dështoi</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Nuk mund të merrej një seancë nga Last.fm. Ju lutemi provoni të lidheni përsëri.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Shkëput Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Jeni të sigurt që dëshironi të shkëputni llogarinë tuaj Last.fm? Historia juaj e scrobbling-ut do të ruhet në Last.fm, por Nagi nuk do të jetë më në gjendje të scrobble-ojë.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Shkëput</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Eksportimi i suksesshëm</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Marr ID-të e artistëve (e kërkuar për TheAudioDB dhe Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Imazhe dhe biografi artistësh me cilësi të lartë (kërkon MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Vetëm imazhe artistësh me cilësi të lartë (kërkon MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Vetëm imazhe artistësh</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Biografi dhe imazhe artistësh (rezervë)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Hap me Nagi Luajtës Muzike</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nisja e Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Paraprake</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Rivendos të gjitha të dhënat</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integrime</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Lidhni llogarinë tuaj Last.fm për të regjistruar këngët dhe për të shfaqur këngën tuaj që po luhet aktualisht.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Lidh</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Përfundo</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Anulo</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Shkëput</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Aktivizo scrobbling-un</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Shtoni automatikisht këngët që dëgjoni në Nagi në profilin tuaj Last.fm.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Përditëso 'Tani duke luajtur'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Shfaqni miqve tuaj në Last.fm atë që po dëgjoni aktualisht në kohë reale.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Dorëzo dëgjimet tuaja te ListenBrainz (një alternativë e hapur ndaj Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Shenja e Përdoruesit</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Ngjit shenjën tuaj nga listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Testo lidhjen</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Lidhur si {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Lidhja dështoi: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Dorëzo dëgjimet (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Dorëzo përditësimet "tani duke luajtur"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Të avancuara</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL e Serverit</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Shkëputeni nga ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Kjo do të heqë shenjën tuaj të ruajtur. Mund të rilidheni në çdo kohë.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Shkëputu</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Shfaqni aktivitetin tuaj aktual të dëgjimit si statusin tuaj në Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Listë inteligjente luajtjeje</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Luaj me nëndosjet</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Shto me nëndosjet</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Mbrapa</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Ndalo</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Kërko</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Lista</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Listat e luajtjes</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Radha</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spektri</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>TITULLI</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ARTISTI</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUMI</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>ZHANRI / VITI</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Me radhë</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Përsërit listën</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Përsërit këngën</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Përziej këngët</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Përziej albumet</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Rastësore</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Etiketa / emri i skedarit</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>PA HUMBJE</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>KËNGA</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>GJITHSEJ</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>KALUAR</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>MBETUR</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Titulli</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Kohëzgjatja</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Këngë: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Info e skedarit</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Info e skedarit</value>
   </data>
 </root>

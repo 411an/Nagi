@@ -29,10 +29,7 @@ public class LibraryServiceRandomTests : IDisposable
         _dbHelper = new DbContextFactoryTestHelper();
         _fileSystem = Substitute.For<IFileSystemService>();
         var metadataService = Substitute.For<IMetadataService>();
-        var lastFmService = Substitute.For<ILastFmMetadataService>();
         var musicBrainzService = Substitute.For<IMusicBrainzService>();
-        var fanartTvService = Substitute.For<IFanartTvService>();
-        var driveService = Substitute.For<ITheAudioDbService>();
         var httpClientFactory = Substitute.For<IHttpClientFactory>();
         var serviceScopeFactory = Substitute.For<IServiceScopeFactory>();
 #pragma warning disable NS2002
@@ -40,7 +37,6 @@ public class LibraryServiceRandomTests : IDisposable
 #pragma warning restore NS2002
         var settingsService = Substitute.For<ISettingsService>();
         var replayGainService = Substitute.For<IReplayGainService>();
-        var apiKeyService = Substitute.For<IApiKeyService>();
         var imageProcessor = Substitute.For<IImageProcessor>();
         var logger = Substitute.For<ILogger<LibraryService>>();
         _pipelines = TestProviderPipeline.Build(ServiceProviderIds.ImageDownload);
@@ -49,16 +45,12 @@ public class LibraryServiceRandomTests : IDisposable
             _dbHelper.ContextFactory,
             _fileSystem,
             metadataService,
-            lastFmService,
             musicBrainzService,
-            fanartTvService,
-            driveService,
             httpClientFactory,
             serviceScopeFactory,
             pathConfig,
             settingsService,
             replayGainService,
-            apiKeyService,
             imageProcessor,
             _pipelines,
             logger);

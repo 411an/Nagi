@@ -488,27 +488,6 @@ Kwa matumizi bora, tafadhali anzisha upya Nagi bila ruhusa za msimamizi.</value>
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Hitilafu imetokea wakati wa kuweka upya data ya programu: {0}. Tafadhali jaribu kuanzisha upya programu mwenyewe.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Hitilafu</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Imeshindwa kuunganisha kwenye Last.fm. Tafadhali jaribu tena baadaye.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Uthibitishaji Umeshindwa</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Imeshindwa kupata kipindi kutoka Last.fm. Tafadhali jaribu kuunganisha tena.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Tenganisha Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Una uhakika unataka kukata akaunti yako ya Last.fm? Historia yako ya "scrobbling" itahifadhiwa kwenye Last.fm, lakini Nagi haitaweza tena "scrobble".</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Tenganisha</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Usafirishaji Umefanikiwa</value>
   </data>
@@ -721,17 +700,8 @@ Faili {0} zimeshindwa kuingizwa.</value>
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Inapata vitambulisho vya wasanii (vinahitajika kwa TheAudioDB na Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Picha na wasifu wa wasanii wa hali ya juu (inahitaji MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Picha za wasanii za hali ya juu tu (inahitaji MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Picha za wasanii tu</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Wasifu na picha za wasanii (mbadala)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1055,9 +1025,6 @@ Je, unataka kuendelea?</value>
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Fungua na Kichezaji Muziki cha Nagi</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Mwanzo wa Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Iliyotangulia</value>
@@ -1821,90 +1788,6 @@ Je, unataka kuendelea?</value>
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Weka Upya Data Zote</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Miunganisho</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Unganisha akaunti yako ya Last.fm ili kuweka kumbukumbu za nyimbo na kuonyesha wimbo wako unaocheza sasa.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Unganisha</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Kamilisha</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Ghairi</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Kata Muunganisho</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Washa uwekaji kumbukumbu</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Ongeza nyimbo unazosikiliza kwenye Nagi kiotomatiki kwenye wasifu wako wa Last.fm.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Sasisha 'Inacheza Sasa'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Onyesha marafiki zako kwenye Last.fm unachokisikiliza sasa hivi.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Tuma vipindi vyako vya kusikiliza kwa ListenBrainz (mbadala huru wa Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Tokeni ya Mtumiaji</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Bandika tokeni yako kutoka listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Jaribu muunganisho</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Umeunganishwa kama {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Muunganisho umeshindwa: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Tuma vipindi vya kusikiliza (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Tuma masasisho ya "inayocheza sasa"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Zilizoendelea</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL ya Seva</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Katisha muunganisho na ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Hii itaondoa tokeni yako iliyohifadhiwa. Unaweza kuunganisha tena wakati wowote.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Katisha muunganisho</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Onyesha shughuli yako ya kusikiliza ya sasa kama hali yako kwenye Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Orodha Mahiri ya Nyimbo</value>
   </data>
@@ -2231,5 +2114,104 @@ Je, unataka kuendelea?</value>
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Cheza pamoja na folda ndogo</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Ongeza pamoja na folda ndogo</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Rudi</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Simamisha</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Tafuta</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Orodha</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Orodha za kucheza</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Foleni</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spektra</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>KICHWA</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>MSANII</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBAMU</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>AINA / MWAKA</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Kwa mpangilio</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Rudia orodha ya kucheza</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Rudia wimbo</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Changanya nyimbo</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Changanya albamu</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Nasibu</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Lebo / jina la faili</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>BILA KUPOTEZA</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>WIMBO</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>JUMLA</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>IMEPITA</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>IMEBAKI</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Kichwa</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Muda</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Nyimbo: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Maelezo ya faili</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Maelezo ya faili</value>
   </data>
 </root>

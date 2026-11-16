@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>重設應用程式資料時發生錯誤：{0}。請嘗試手動重新啟動應用程式。</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>錯誤</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>無法連線到 Last.fm。請稍後再試。</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>驗證失敗</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>無法從 Last.fm 取得工作階段。請嘗試重新連線。</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>中斷 Last.fm 連線</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>您確定要中斷 Last.fm 帳戶的連線嗎？您的歌曲記錄將保留在 Last.fm 上，但 Nagi 將無法再記錄歌曲。</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>中斷連線</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>匯出成功</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>擷取演出者 ID (TheAudioDB 和 Fanart.tv 所需)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>高品質演出者圖片和傳記 (需要 MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>僅限高品質演出者圖片 (需要 MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>僅限演出者圖片</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>演出者傳記和圖片 (備用)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>使用 Nagi 音樂播放器開啟</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nagi 啟動</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>上一首</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>重設所有資料</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>整合</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>連接您的 Last.fm 帳戶以記錄曲目並顯示您正在播放的歌曲。</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>連接</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>完成</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>取消</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>中斷連接</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>啟用記錄</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>自動將您在 Nagi 上收聽的曲目新增到您的 Last.fm 個人檔案。</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>更新「正在播放」</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>向 Last.fm 上的朋友即時顯示您正在收聽的內容。</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>聆聽腦</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>將您的收聽記錄提交至 ListenBrainz（Last.fm 的開放替代方案）。</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>使用者憑證</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>從 listenbrainz.org/settings 貼上您的憑證</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>測試連線</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>已連線為 {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>連線失敗：{0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>提交收聽記錄 (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>提交「正在播放」更新</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>進階</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>伺服器網址</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>中斷 ListenBrainz 連線？</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>這將移除您儲存的憑證。您可以隨時重新連線。</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>中斷連線</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>在 Discord 上將您目前的收聽活動顯示為您的狀態。</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>智慧播放清單</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}分鐘 {1}秒</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>包含子資料夾播放</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>包含子資料夾新增</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>返回</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>搜尋</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>清單</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>播放清單</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>等化器</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>佇列</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>頻譜</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>標題</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>藝人</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>專輯</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>類型 / 年份</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>依序播放</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>清單循環</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>單曲循環</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>打亂曲目</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>打亂專輯</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>隨機播放</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>標籤 / 檔案名稱</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>無損</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>曲目</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>總數</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>已播放</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>剩餘</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>標題</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>長度</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>曲目數：{0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>檔案資訊</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>檔案資訊</value>
   </data>
 </root>

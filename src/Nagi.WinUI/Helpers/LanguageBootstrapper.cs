@@ -1,47 +1,86 @@
-﻿using System;
-using System.Globalization;
-using Windows.Globalization;
-using Windows.Storage;
+﻿using System.Globalization;
+using System.Text.Json;
+using Nagi.Core.Helpers;
 
 namespace Nagi.WinUI.Helpers;
 
 /// <summary>
-///     Helper class to bootstrap the application language settings before the main UI initializes.
+///     Applies the saved UI language before WinUI initializes.
 /// </summary>
 public static class LanguageBootstrapper
 {
     public static void Bootstrap()
     {
+        string? language = null;
         try
         {
-            string? language = null;
-
-            if (ApplicationData.Current.LocalSettings.Values.TryGetValue("AppLanguage", out var val) && val is string s)
+            if (AppDataLocator.IsResolved)
             {
-                language = s;
+                var settingsPath = Path.Combine(AppDataLocator.Root, "settings.json");
+                language = TryReadAppLanguage(settingsPath);
             }
+        }
+        catch (Exception)
+        {
+            // Datadir may not exist yet on first run.
+        }
 
-            if (!string.IsNullOrEmpty(language))
+        if (!string.IsNullOrEmpty(language))
+        {
+            try
             {
-                ApplicationLanguages.PrimaryLanguageOverride = language;
-
-                // Set .NET culture
                 var culture = new CultureInfo(language);
                 CultureInfo.CurrentUICulture = culture;
                 CultureInfo.CurrentCulture = culture;
                 CultureInfo.DefaultThreadCurrentUICulture = culture;
                 CultureInfo.DefaultThreadCurrentCulture = culture;
             }
-            else
+            catch (CultureNotFoundException)
             {
-                // If the setting is empty (System Default), clear the override so the app reverts to the system language.
-                ApplicationLanguages.PrimaryLanguageOverride = string.Empty;
+                return;
             }
+
+            TrySetWinRtLanguageOverride(language);
+        }
+        else
+        {
+            TrySetWinRtLanguageOverride(string.Empty);
+        }
+    }
+
+    private static string? TryReadAppLanguage(string settingsPath)
+    {
+        if (!File.Exists(settingsPath)) return null;
+
+        using var stream = File.OpenRead(settingsPath);
+        using var document = JsonDocument.Parse(stream);
+        if (!document.RootElement.TryGetProperty("AppLanguage", out var property))
+            return null;
+
+        return property.ValueKind == JsonValueKind.String ? property.GetString() : null;
+    }
+
+    private static void TrySetWinRtLanguageOverride(string language)
+    {
+        try
+        {
+            // The Windows App SDK setter also works without package identity, so the
+            // portable build gets built-in control texts in the chosen language too.
+            Microsoft.Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+            return;
         }
         catch (Exception)
         {
-            // Silently fail during bootstrap - defaults will be used.
-            // We avoid logging here as the logging infrastructure isn't set up yet.
+            // Fall back to the packaged-only API below.
+        }
+
+        try
+        {
+            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = language;
+        }
+        catch (Exception)
+        {
+            // Unpackaged apps have no package identity for this WinRT setter.
         }
     }
 }

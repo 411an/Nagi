@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Ralat berlaku semasa menetapkan semula data aplikasi: {0}. Sila cuba mulakan semula aplikasi secara manual.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Ralat</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Tidak dapat menyambung ke Last.fm. Sila cuba lagi nanti.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Pengesahan Gagal</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Tidak dapat mendapatkan sesi daripada Last.fm. Sila cuba sambung semula.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Putuskan Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Adakah anda pasti ingin memutuskan akaun Last.fm anda? Sejarah scrobbling anda akan dipelihara di Last.fm, tetapi Nagi tidak lagi dapat scrobble.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Putuskan Sambungan</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Eksport Berjaya</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Mengambil ID artis (diperlukan untuk TheAudioDB dan Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Imej dan biografi artis berkualiti tinggi (memerlukan MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Imej artis berkualiti tinggi sahaja (memerlukan MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Imej artis sahaja</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Biografi dan imej artis (sandaran)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Buka dengan Pemain Muzik Nagi</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Permulaan Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Sebelum</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Tetapkan Semula Semua Data</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integrasi</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Sambungkan akaun Last.fm anda untuk mengesan trek dan menunjukkan lagu yang sedang anda mainkan.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Sambung</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Selesai</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Batal</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Putuskan Sambungan</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Dayakan scrobbling</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Tambah trek yang anda dengar di Nagi secara automatik ke profil Last.fm anda.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Kemaskini 'Sedang Dimainkan'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Tunjukkan kepada rakan anda di Last.fm apa yang anda sedang dengar dalam masa nyata.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Hantar data pendengaran anda ke ListenBrainz (alternatif terbuka kepada Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Token Pengguna</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Tampal token anda daripada listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Uji sambungan</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Disambungkan sebagai {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Sambungan gagal: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Hantar data pendengaran (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Hantar kemas kini "sedang dimainkan"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Lanjutan</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL Pelayan</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Putuskan sambungan dari ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Ini akan memadam token yang disimpan. Anda boleh menyambung semula pada bila-bila masa.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Putuskan sambungan</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Tunjukkan aktiviti pendengaran semasa anda sebagai status anda di Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Senarai Main Pintar</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Main bersama subfolder</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Tambah bersama subfolder</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Kembali</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Henti</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Cari</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Senarai</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Senarai main</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Baris gilir</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spektrum</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>TAJUK</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ARTIS</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>GENRE / TAHUN</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Mengikut urutan</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Ulang senarai main</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Ulang lagu</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Kocok lagu</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Kocok album</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Rawak</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Tag / nama fail</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>LOSSLESS</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>LAGU</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>JUMLAH</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>BERLALU</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>BAKI</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Tajuk</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Tempoh</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Lagu: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Maklumat fail</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Maklumat fail</value>
   </data>
 </root>

@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tb="using:H.NotifyIcon"
-    xmlns:converters="using:Nagi.WinUI.Converters"
     xmlns:resources="using:Nagi.WinUI.Resources"
     mc:Ignorable="d">
 
@@ -14,7 +13,6 @@
 
     <tb:TaskbarIcon
         x:Name="AppTrayIcon"
-        Visibility="{x:Bind ViewModel.IsTrayIconVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
         IconSource="ms-appx:///Assets/AppLogo.ico"
         LeftClickCommand="{x:Bind ViewModel.ShowPopupCommand}"
         LeftClickCommandParameter="{Binding RelativeSource={RelativeSource Self}}"

@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Произошла ошибка при сбросе данных приложения: {0}. Пожалуйста, попробуйте перезапустить приложение вручную.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Ошибка</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Не удалось подключиться к Last.fm. Пожалуйста, попробуйте еще раз позже.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Сбой аутентификации</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Не удалось получить сессию от Last.fm. Пожалуйста, попробуйте подключиться снова.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Отключить Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Вы уверены, что хотите отключить свою учетную запись Last.fm? Ваша история скробблинга сохранится на Last.fm, но Nagi больше не сможет скробблить.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Отключить</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Экспорт успешно завершен</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Получает идентификаторы исполнителей (требуется для TheAudioDB и Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Высококачественные изображения и биографии исполнителей (требуется MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Только высококачественные изображения исполнителей (требуется MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Только изображения исполнителей</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Биографии и изображения исполнителей (резервный вариант)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Открыть с помощью музыкального плеера Nagi</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Запуск Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Предыдущая</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Сбросить все данные</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Интеграции</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Подключите свою учетную запись Last.fm, чтобы скробблить треки и показывать текущую воспроизводимую песню.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Подключить</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Завершить</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Отмена</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Отключить</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Включить скробблинг</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Автоматически добавлять треки, которые вы слушаете в Nagi, в ваш профиль Last.fm.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Обновить 'Сейчас играет'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Показывать своим друзьям на Last.fm, что вы слушаете в реальном времени.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ЛисенБрейнз</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Отправляйте данные о прослушиваниях в ListenBrainz (открытая альтернатива Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Токен пользователя</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Вставьте ваш токен с listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Проверить подключение</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Подключено как {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Не удалось подключиться: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Отправлять прослушивания (скробблинг)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Отправлять обновления «сейчас играет»</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Дополнительно</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL сервера</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Отключиться от ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Это удалит ваш сохранённый токен. Вы можете подключиться снова в любое время.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Отключить</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Показывать текущую активность прослушивания в статусе Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Умный плейлист</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}м {1}с</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Воспроизвести со вложенными папками</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Добавить со вложенными папками</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Стоп</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Список</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Плейлисты</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>ЭКВ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Очередь</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Спектр</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>НАЗВАНИЕ</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ИСПОЛНИТЕЛЬ</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>АЛЬБОМ</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>ЖАНР / ГОД</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>По порядку</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Повтор плейлиста</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Повтор трека</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Перемешать треки</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Перемешать альбомы</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Случайно</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Тег / имя файла</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>БЕЗ ПОТЕРЬ</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>ТРЕК</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>ВСЕГО</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>ПРОШЛО</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>ОСТАЛОСЬ</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>КБИТ/С</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Длительность</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Треков: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Сведения о файле</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Сведения о файле</value>
   </data>
 </root>

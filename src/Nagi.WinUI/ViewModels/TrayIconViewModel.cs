@@ -103,7 +103,11 @@ public partial class TrayIconViewModel : ObservableObject
 
     private void UpdateTrayIconVisibility()
     {
-        IsTrayIconVisible = _isHideToTrayEnabled && !IsWindowVisible;
+        // Keep the notify icon alive whenever hide-to-tray is on. Showing it only after
+        // the window is already hidden never registers with the shell (the host was gone
+        // from the new shell, and Visibility≠IsVisible). Without an icon the process
+        // keeps playing with no way to restore it.
+        IsTrayIconVisible = _isHideToTrayEnabled;
     }
 
     private void OnAppWindowVisibilityChanged(AppWindowChangedEventArgs args)

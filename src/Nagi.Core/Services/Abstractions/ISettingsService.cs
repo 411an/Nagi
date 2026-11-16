@@ -10,22 +10,6 @@ namespace Nagi.Core.Services.Abstractions;
 public interface ISettingsService
 {
     /// <summary>
-    ///     Occurs when Last.fm related settings (scrobbling, now playing) have changed.
-    /// </summary>
-    event Action? LastFmSettingsChanged;
-
-    /// <summary>
-    ///     Occurs when ListenBrainz-related settings have changed.
-    /// </summary>
-    event Action? ListenBrainzSettingsChanged;
-
-    /// <summary>
-    ///     Occurs when the Discord Rich Presence setting is changed.
-    ///     The boolean parameter indicates whether Discord Rich Presence is enabled.
-    /// </summary>
-    event Action<bool>? DiscordRichPresenceSettingChanged;
-
-    /// <summary>
     ///     Occurs when the volume normalization (ReplayGain) setting is changed.
     ///     The boolean parameter indicates whether volume normalization is enabled.
     /// </summary>
@@ -137,18 +121,6 @@ public interface ISettingsService
     Task SetFetchOnlineMetadataEnabledAsync(bool isEnabled);
 
     /// <summary>
-    ///     Gets whether Discord Rich Presence is enabled.
-    /// </summary>
-    /// <returns>True if Discord Rich Presence is enabled; otherwise, false.</returns>
-    Task<bool> GetDiscordRichPresenceEnabledAsync();
-
-    /// <summary>
-    ///     Sets the Discord Rich Presence preference.
-    /// </summary>
-    /// <param name="isEnabled">The Discord Rich Presence preference to save.</param>
-    Task SetDiscordRichPresenceEnabledAsync(bool isEnabled);
-
-    /// <summary>
     ///     Saves the current playback state, including the queue and current track.
     /// </summary>
     /// <param name="state">The playback state to save. If null, the saved state is cleared.</param>
@@ -184,96 +156,6 @@ public interface ISettingsService
     ///     Sets whether romanized lyric display is enabled.
     /// </summary>
     Task SetLyricsRomanizationEnabledAsync(bool isEnabled);
-
-    /// <summary>
-    ///     Gets whether scrobbling to Last.fm is enabled.
-    /// </summary>
-    /// <returns>True if scrobbling is enabled; otherwise, false.</returns>
-    Task<bool> GetLastFmScrobblingEnabledAsync();
-
-    /// <summary>
-    ///     Sets the preference for scrobbling to Last.fm.
-    /// </summary>
-    /// <param name="isEnabled">The preference to save.</param>
-    Task SetLastFmScrobblingEnabledAsync(bool isEnabled);
-
-    /// <summary>
-    ///     Gets whether updating the 'Now Playing' status on Last.fm is enabled.
-    /// </summary>
-    /// <returns>True if 'Now Playing' updates are enabled; otherwise, false.</returns>
-    Task<bool> GetLastFmNowPlayingEnabledAsync();
-
-    /// <summary>
-    ///     Sets the preference for updating the 'Now Playing' status on Last.fm.
-    /// </summary>
-    /// <param name="isEnabled">The preference to save.</param>
-    Task SetLastFmNowPlayingEnabledAsync(bool isEnabled);
-
-    /// <summary>
-    ///     Gets the saved Last.fm credentials from secure storage.
-    /// </summary>
-    /// <returns>A tuple containing the username and session key, or null if not present.</returns>
-    Task<(string? Username, string? SessionKey)?> GetLastFmCredentialsAsync();
-
-    /// <summary>
-    ///     Saves the Last.fm credentials securely.
-    /// </summary>
-    /// <param name="username">The username to save.</param>
-    /// <param name="sessionKey">The session key to save.</param>
-    Task SaveLastFmCredentialsAsync(string username, string sessionKey);
-
-    /// <summary>
-    ///     Removes the saved Last.fm credentials from secure storage.
-    /// </summary>
-    Task ClearLastFmCredentialsAsync();
-
-    /// <summary>
-    ///     Saves the temporary authentication token received from Last.fm.
-    /// </summary>
-    /// <param name="token">The token to save, or null to clear it.</param>
-    Task SaveLastFmAuthTokenAsync(string? token);
-
-    /// <summary>
-    ///     Gets the temporary authentication token for Last.fm.
-    /// </summary>
-    /// <returns>The saved token, or null if not present.</returns>
-    Task<string?> GetLastFmAuthTokenAsync();
-
-    /// <summary>Gets whether scrobbling to ListenBrainz is enabled.</summary>
-    Task<bool> GetListenBrainzScrobblingEnabledAsync();
-
-    /// <summary>Sets the preference for scrobbling to ListenBrainz.</summary>
-    Task SetListenBrainzScrobblingEnabledAsync(bool isEnabled);
-
-    /// <summary>Gets whether "Now Playing" updates to ListenBrainz are enabled.</summary>
-    Task<bool> GetListenBrainzNowPlayingEnabledAsync();
-
-    /// <summary>Sets the preference for "Now Playing" updates to ListenBrainz.</summary>
-    Task SetListenBrainzNowPlayingEnabledAsync(bool isEnabled);
-
-    /// <summary>Gets the saved ListenBrainz user token from secure storage, or null.</summary>
-    Task<string?> GetListenBrainzUserTokenAsync();
-
-    /// <summary>Saves the ListenBrainz user token to secure storage.</summary>
-    Task SaveListenBrainzUserTokenAsync(string token);
-
-    /// <summary>Removes the saved ListenBrainz user token from secure storage.</summary>
-    Task ClearListenBrainzUserTokenAsync();
-
-    /// <summary>Gets the configured ListenBrainz server URL, or null for the default (api.listenbrainz.org).</summary>
-    Task<string?> GetListenBrainzServerUrlAsync();
-
-    /// <summary>Sets the ListenBrainz server URL. Pass null to reset to default.</summary>
-    Task SetListenBrainzServerUrlAsync(string? url);
-
-    /// <summary>
-    ///     Gets the UTC timestamp at which ListenBrainz submission was first enabled. Listens with
-    ///     <c>ListenTimestampUtc</c> before this cutoff are ignored by the offline queue.
-    /// </summary>
-    Task<DateTime?> GetListenBrainzEnabledSinceUtcAsync();
-
-    /// <summary>Sets the ListenBrainz enabled-since cutoff. Pass null to clear.</summary>
-    Task SetListenBrainzEnabledSinceUtcAsync(DateTime? timestamp);
 
     /// <summary>
     ///     Gets the characters used to split multiple artists in a single string.
@@ -416,8 +298,19 @@ public interface ISettingsService
     /// <param name="category">The service category to retrieve.</param>
     /// <returns>A list of enabled service providers, sorted by priority.</returns>
     Task<List<ServiceProviderSetting>> GetEnabledServiceProvidersAsync(ServiceCategory category);
+
     /// <summary>
     ///     Ensures all pending settings changes are written to persistent storage.
     /// </summary>
     Task FlushAsync();
+
+    /// <summary>
+    ///     Stops further writes to settings.json (used after restoring a backup, before restart).
+    /// </summary>
+    void FreezeWrites();
+
+    /// <summary>
+    ///     True after <see cref="FreezeWrites" />. Playback state must not be saved over a restore.
+    /// </summary>
+    bool AreWritesFrozen { get; }
 }

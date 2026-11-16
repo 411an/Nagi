@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Дошло је до грешке при ресетовању података апликације: {0}. Молимо покушајте ручно поново покренути апликацију.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Грешка</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Није могуће повезати се на Last.fm. Молимо покушајте поново касније.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Аутeнтификација није успела</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Није могуће добити сесију са Last.fm-а. Молимо покушајте поново да се повежете.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Искључи Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Да ли сте сигурни да желите да искључите свој Last.fm налог? Ваша историја скробловања ће бити сачувана на Last.fm-у, али Наги више неће моћи да скроблује.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Искључи</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Извоз успешан</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Преузима ID-је извођача (потребно за TheAudioDB и Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Квалитетне слике и биографије извођача (захтева MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Само квалитетне слике извођача (захтева MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Само слике извођача</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Биографије и слике извођача (алтернатива)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Наги</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Отвори помоћу Наги музичког плејера</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Покретање Нагија</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Претходна</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Ресетуј све податке</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Интеграције</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Повежите свој Last.fm налог да бисте скробовали нумере и приказали песму коју тренутно слушате.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Повежи</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Заврши</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Откажи</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Искључи</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Омогући скробовање</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Аутоматски додајте нумере које слушате на Нагију на ваш Last.fm профил.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Ажурирај 'Тренутно се репродукује'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Прикажите својим пријатељима на Last.fm-у шта тренутно слушате у реалном времену.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ЛисенБрејнз</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Пошаљите своја слушања на ListenBrainz (отворена алтернатива Last.fm-у).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Кориснички токен</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Налепите свој токен са listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Тестирај везу</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Повезано као {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Веза није успела: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Пошаљи слушања (скробловање)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Пошаљи ажурирања „тренутно се слуша“</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Напредно</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL сервера</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Желите да се искључите са ListenBrainz-а?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Ово ће уклонити ваш сачувани токен. Можете се поново повезати у било ком тренутку.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Искључи</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Прикажите своју тренутну активност слушања као статус на Discord-у.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Паметна плејлиста</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}м {1}с</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Пусти са подфасциклама</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Додај са подфасциклама</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Заустави</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Претрага</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Листа</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Плејлисте</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>ЕКВ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Ред</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Спектар</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>НАСЛОВ</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ИЗВОЂАЧ</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>АЛБУМ</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>ЖАНР / ГОДИНА</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Редом</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Понављај плејлисту</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Понављај нумеру</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Измешај нумере</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Измешај албуме</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Насумично</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Ознака / име датотеке</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>БЕЗ ГУБИТАКА</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>НУМЕРА</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>УКУПНО</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>ПРОТЕКЛО</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>ПРЕОСТАЛО</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>КБИТ/С</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Наслов</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Трајање</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Нумера: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Информације о датотеци</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Информације о датотеци</value>
   </data>
 </root>

@@ -1,29 +1,24 @@
 ﻿namespace Nagi.Core.Services.Abstractions;
 
 /// <summary>
-///     Defines a contract for image processing tasks, such as saving cover art and extracting theme colors.
+///     Stores cover and artist images on disk. Implementations may resize or extract colors;
+///     the portable fork keeps the original bytes and does not derive theme swatches.
 /// </summary>
 public interface IImageProcessor
 {
     /// <summary>
-    ///     Saves cover art from a byte array to local storage and extracts primary color swatches.
-    ///     Uses content-based hashing to deduplicate identical images across multiple songs.
-    ///     Images larger than 600x600 are resized to reduce disk usage.
+    ///     Saves image bytes to local storage, deduplicating identical content by hash.
     /// </summary>
-    /// <param name="pictureData">The raw byte data of the image file.</param>
     /// <returns>
-    ///     A tuple containing the local file URI of the saved image, and hex color codes for the
-    ///     light and dark theme primary colors. All values can be null if processing fails.
+    ///     The local file path and optional light/dark theme swatches. Swatches are unused
+    ///     in the portable fork and are always null.
     /// </returns>
     Task<(string? uri, string? lightSwatchId, string? darkSwatchId)> SaveCoverArtAndExtractColorsAsync(
         byte[] pictureData);
 
     /// <summary>
-    ///     Processes image bytes: resizes if larger than max dimension, converts to JPEG.
-    ///     Preserves aspect ratio using ResizeMode.Max (fits within bounds without distortion).
+    ///     Optional resize/convert hook for downloaded images. The portable store returns
+    ///     the original bytes unchanged.
     /// </summary>
-    /// <param name="imageData">Raw image bytes to process.</param>
-    /// <param name="maxDimension">Maximum width or height. Default is 600px.</param>
-    /// <returns>Processed image bytes as JPEG, or original bytes if no resizing needed.</returns>
     Task<byte[]> ProcessImageBytesAsync(byte[] imageData, int maxDimension = 600);
 }

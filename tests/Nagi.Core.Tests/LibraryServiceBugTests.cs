@@ -20,7 +20,6 @@ public class LibraryServiceBugTests : IDisposable
     private readonly DbContextFactoryTestHelper _dbHelper;
     private readonly IFileSystemService _fileSystem;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILastFmMetadataService _lastFmService;
     private readonly LibraryService _libraryService;
     private readonly ILogger<LibraryService> _logger;
     private readonly IMetadataService _metadataService;
@@ -29,9 +28,6 @@ public class LibraryServiceBugTests : IDisposable
     private readonly ISettingsService _settingsService;
     private readonly IReplayGainService _replayGainService;
     private readonly IMusicBrainzService _musicBrainzService;
-    private readonly IFanartTvService _fanartTvService;
-    private readonly ITheAudioDbService _theAudioDbService;
-    private readonly IApiKeyService _apiKeyService;
     private readonly IImageProcessor _imageProcessor;
     private readonly ProviderPipelineProvider _pipelines;
 
@@ -39,16 +35,12 @@ public class LibraryServiceBugTests : IDisposable
     {
         _fileSystem = Substitute.For<IFileSystemService>();
         _metadataService = Substitute.For<IMetadataService>();
-        _lastFmService = Substitute.For<ILastFmMetadataService>();
         _httpClientFactory = Substitute.For<IHttpClientFactory>();
         _serviceScopeFactory = Substitute.For<IServiceScopeFactory>();
         _pathConfig = Substitute.For<IPathConfiguration>();
         _settingsService = Substitute.For<ISettingsService>();
         _replayGainService = Substitute.For<IReplayGainService>();
         _musicBrainzService = Substitute.For<IMusicBrainzService>();
-        _fanartTvService = Substitute.For<IFanartTvService>();
-        _theAudioDbService = Substitute.For<ITheAudioDbService>();
-        _apiKeyService = Substitute.For<IApiKeyService>();
         _imageProcessor = Substitute.For<IImageProcessor>();
         _logger = Substitute.For<ILogger<LibraryService>>();
 
@@ -59,16 +51,12 @@ public class LibraryServiceBugTests : IDisposable
             _dbHelper.ContextFactory,
             _fileSystem,
             _metadataService,
-            _lastFmService,
             _musicBrainzService,
-            _fanartTvService,
-            _theAudioDbService,
             _httpClientFactory,
             _serviceScopeFactory,
             _pathConfig,
             _settingsService,
             _replayGainService,
-            _apiKeyService,
             _imageProcessor,
             _pipelines,
             _logger);
@@ -592,7 +580,7 @@ public class LibraryServiceBugTests : IDisposable
         _settingsService.GetEnabledServiceProvidersAsync(ServiceCategory.Metadata)
             .Returns(new List<ServiceProviderSetting>
             {
-                new() { Id = ServiceProviderIds.LastFm, Order = 0, IsEnabled = true }
+                new() { Id = ServiceProviderIds.MusicBrainz, Order = 0, IsEnabled = true }
             });
 
         // Mock IServiceScopeFactory so background loop can resolve IDbContextFactory
@@ -602,9 +590,8 @@ public class LibraryServiceBugTests : IDisposable
         serviceProvider.GetService(typeof(IDbContextFactory<MusicDbContext>)).Returns(_dbHelper.ContextFactory);
         _serviceScopeFactory.CreateScope().Returns(scope);
 
-        // Mock the provider to return empty metadata (simulate the condition where no new data is found)
-        _lastFmService.GetArtistInfoAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(ServiceResult<ArtistInfo>.FromSuccess(new ArtistInfo())));
+        _musicBrainzService.SearchArtistAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<string?>(null));
 
         // Act
         var fetchTask = _libraryService.StartArtistMetadataBackgroundFetchAsync();

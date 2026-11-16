@@ -22,7 +22,8 @@ public class SortOrderHelperTests
     [Fact]
     public void SongSortOrders_MapToEquivalentSmartPlaylistSortOrders()
     {
-        foreach (var songSortOrder in Enum.GetValues<SongSortOrder>().Where(value => value != SongSortOrder.PlaylistOrder))
+        foreach (var songSortOrder in Enum.GetValues<SongSortOrder>().Where(value =>
+                     value != SongSortOrder.PlaylistOrder && value != SongSortOrder.AlbumGroupedAsc))
         {
             var smartPlaylistSortOrder = SortOrderHelper.MapToSmartPlaylistSortOrder(songSortOrder);
 

@@ -1,0 +1,97 @@
+<UserControl
+    x:Class="Nagi.WinUI.Controls.PlayerStatusStrip"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Nagi.WinUI.Controls"
+    xmlns:resources="using:Nagi.WinUI.Resources">
+
+    <UserControl.Resources>
+        <Style TargetType="local:DotMatrixText">
+            <Setter Property="DotSize" Value="3" />
+            <Setter Property="DotSpacing" Value="1" />
+            <Setter Property="OnBrush" Value="{StaticResource AppPrimaryColorBrush}" />
+            <Setter Property="OffBrush" Value="{StaticResource ShellLcdDotOffBrush}" />
+        </Style>
+        <Style x:Key="LcdLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AppPrimaryColorBrush}" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="CharacterSpacing" Value="60" />
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+    </UserControl.Resources>
+
+    <Border
+        x:Name="LcdPanel"
+        Padding="10,6,10,8"
+        Background="{StaticResource ShellLcdBackgroundBrush}"
+        BorderBrush="{StaticResource ShellPaneBorderBrush}"
+        BorderThickness="1"
+        CornerRadius="3">
+        <Grid RowSpacing="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Lamp: lit for lossless files, dimmed otherwise, so the row never collapses. -->
+            <Border
+                x:Name="LosslessLamp"
+                Padding="6,1"
+                HorizontalAlignment="Left"
+                Background="{StaticResource AppPrimaryColorBrush}"
+                CornerRadius="2"
+                Opacity="0.2">
+                <TextBlock
+                    CharacterSpacing="80"
+                    FontSize="10"
+                    FontWeight="Bold"
+                    Foreground="{StaticResource ShellLcdBackgroundBrush}"
+                    Text="{x:Bind resources:Strings.Shell_Lossless, Mode=OneTime}" />
+            </Border>
+
+            <Grid Grid.Row="1" ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Shrinks the digits when the pane is narrow instead of clipping them. -->
+                <Viewbox
+                    HorizontalAlignment="Left"
+                    Stretch="Uniform"
+                    StretchDirection="DownOnly">
+                    <StackPanel Orientation="Horizontal" Spacing="18">
+                        <StackPanel Spacing="4">
+                            <TextBlock Style="{StaticResource LcdLabelStyle}" Text="{x:Bind resources:Strings.Shell_Track, Mode=OneTime}" />
+                            <local:DotMatrixText x:Name="TrackDigits" Text="00" />
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Style="{StaticResource LcdLabelStyle}" Text="{x:Bind resources:Strings.Shell_Total, Mode=OneTime}" />
+                            <local:DotMatrixText x:Name="TotalDigits" Text="00" />
+                        </StackPanel>
+                        <local:DotMatrixText x:Name="StateGlyph" VerticalAlignment="Bottom" />
+                        <StackPanel
+                            Background="Transparent"
+                            Spacing="4"
+                            Tapped="TimeGroup_Tapped">
+                            <TextBlock x:Name="TimeLabel" Style="{StaticResource LcdLabelStyle}" />
+                            <local:DotMatrixText x:Name="TimeDigits" Text="00:00:00" />
+                        </StackPanel>
+                    </StackPanel>
+                </Viewbox>
+
+                <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource LcdLabelStyle}"
+                        Text="{x:Bind resources:Strings.Shell_Kbps, Mode=OneTime}" />
+                    <local:DotMatrixText
+                        x:Name="BitrateDigits"
+                        HorizontalAlignment="Right"
+                        Text="----" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

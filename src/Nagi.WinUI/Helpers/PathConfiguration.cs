@@ -1,32 +1,20 @@
-﻿using System;
-using System.IO;
-using Windows.ApplicationModel;
-using Windows.Storage;
-using Microsoft.Extensions.Configuration;
+﻿using System.IO;
 using Nagi.Core.Helpers;
 
 namespace Nagi.WinUI.Helpers;
 
 /// <summary>
 ///     Provides a centralized source of truth for all application data paths.
+///     The data root is resolved once by <see cref="AppDataLocator" /> before this type is constructed.
 /// </summary>
 public class PathConfiguration : IPathConfiguration
 {
-    public PathConfiguration(IConfiguration configuration)
+    public PathConfiguration()
     {
-        try
-        {
-            // Windows App Runtime local folder is the correct way to handle file storage in packaged apps.
-            AppDataRoot = ApplicationData.Current.LocalFolder.Path;
-        }
-        catch (Exception)
-        {
-            // Fallback for environments where ApplicationData is not initialized (e.g., unit tests)
-            AppDataRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Nagi");
-        }
+        AppDataRoot = AppDataLocator.IsResolved
+            ? AppDataLocator.Root
+            : AppDataLocator.Resolve(AppContext.BaseDirectory, Environment.GetCommandLineArgs()).Root;
 
-        // Define all other paths based on the determined root.
         SettingsFilePath = Path.Combine(AppDataRoot, "settings.json");
         PlaybackStateFilePath = Path.Combine(AppDataRoot, "playback_state.json");
         AlbumArtCachePath = Path.Combine(AppDataRoot, "AlbumArt");
@@ -36,8 +24,8 @@ public class PathConfiguration : IPathConfiguration
         RomanizationPacksPath = Path.Combine(AppDataRoot, "RomanizationPacks");
         DatabasePath = Path.Combine(AppDataRoot, "nagi.db");
         LogsDirectory = Path.Combine(AppDataRoot, "Logs");
+        ImageCachePath = Path.Combine(AppDataRoot, "Cache");
 
-        // Ensure all necessary directories exist on startup.
         Directory.CreateDirectory(AppDataRoot);
         Directory.CreateDirectory(AlbumArtCachePath);
         Directory.CreateDirectory(ArtistImageCachePath);
@@ -45,6 +33,7 @@ public class PathConfiguration : IPathConfiguration
         Directory.CreateDirectory(LrcCachePath);
         Directory.CreateDirectory(RomanizationPacksPath);
         Directory.CreateDirectory(LogsDirectory);
+        Directory.CreateDirectory(ImageCachePath);
     }
 
     /// <inheritdoc />
@@ -76,4 +65,7 @@ public class PathConfiguration : IPathConfiguration
 
     /// <inheritdoc />
     public string LogsDirectory { get; }
+
+    /// <inheritdoc />
+    public string ImageCachePath { get; }
 }

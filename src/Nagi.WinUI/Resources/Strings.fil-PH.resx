@@ -489,27 +489,6 @@ Para sa pinakamahusay na karanasan, mangyaring i-restart ang Nagi nang walang mg
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>May error na naganap habang ni-re-reset ang data ng application: {0}. Mangyaring subukang i-restart nang mano-mano ang app.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Hindi makakonekta sa Last.fm. Pakisubukan muli mamaya.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Nabigo ang Authentication</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Hindi makakuha ng session mula sa Last.fm. Mangyaring subukang kumonekta muli.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Idiskonekta ang Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Sigurado ka bang gusto mong idiskonekta ang iyong Last.fm account? Mananatili ang iyong scrobbling history sa Last.fm, ngunit hindi na makakapag-scrobble ang Nagi.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Idiskonekta</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Matagumpay na Export</value>
   </data>
@@ -725,17 +704,8 @@ Para sa pinakamahusay na karanasan, mangyaring i-restart ang Nagi nang walang mg
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Kumukuha ng mga ID ng artista (kinakailangan para sa TheAudioDB at Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Mataas na kalidad na mga larawan at biography ng artista (nangangailangan ng MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Mga larawan lamang ng artista na mataas ang kalidad (nangangailangan ng MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Mga larawan lamang ng artista</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Mga biography at larawan ng artista (fallback)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1063,9 +1033,6 @@ Error: {1}</value>
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Buksan gamit ang Nagi Music Player</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Pagsisimula ng Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Nakaraan</value>
@@ -1829,90 +1796,6 @@ Error: {1}</value>
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>I-reset ang Lahat ng Data</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Mga Integrasyon</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Ikonekta ang iyong Last.fm account upang i-scrobble ang mga track at ipakita ang iyong kasalukuyang pinapatugtog na kanta.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Kumonekta</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Kumpleto</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Kanselahin</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Idiskonekta</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Paganahin ang scrobbling</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Awtomatikong idagdag ang mga track na pinapakinggan mo sa Nagi sa iyong Last.fm profile.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>I-update ang 'Kasalukuyang Pinapatugtog'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Ipakita sa iyong mga kaibigan sa Last.fm kung ano ang kasalukuyan mong pinapakinggan sa real-time.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Isumite ang iyong mga pinakinggan sa ListenBrainz (isang bukas na alternatibo sa Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Token ng User</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Idikit ang iyong token mula sa listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Subukan ang koneksyon</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Konektado bilang {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Nabigo ang koneksyon: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Isumite ang mga pinakinggan (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Isumite ang mga update sa "ngayon ay tumutugtog"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Mas Detalyado</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL ng Server</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Idiskonekta mula sa ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Aalisin nito ang iyong naka-save na token. Maaari kang kumonekta muli anumang oras.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Idiskonekta</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Ipakita ang iyong kasalukuyang aktibidad sa pakikinig bilang iyong status sa Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Smart Playlist</value>
   </data>
@@ -2239,5 +2122,104 @@ Error: {1}</value>
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>I-play kasama ang mga subfolder</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Idagdag kasama ang mga subfolder</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Bumalik</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Ihinto</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Maghanap</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Listahan</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Mga playlist</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Pila</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spectrum</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>PAMAGAT</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ARTISTA</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>GENRE / TAON</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Sunud-sunod</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Ulitin ang playlist</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Ulitin ang track</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>I-shuffle ang mga track</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>I-shuffle ang mga album</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Random</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Tag / pangalan ng file</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>LOSSLESS</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>TRACK</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>KABUUAN</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>LUMIPAS</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>NATITIRA</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Pamagat</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Tagal</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Mga track: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Impormasyon ng file</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Impormasyon ng file</value>
   </data>
 </root>

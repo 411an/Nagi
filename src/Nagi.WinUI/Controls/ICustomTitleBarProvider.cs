@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Nagi.WinUI.Controls;
 
@@ -12,7 +13,7 @@ public interface ICustomTitleBarProvider
     ///     Gets the TitleBar control that serves as the custom title bar's content and drag region.
     /// </summary>
     /// <returns>The TitleBar control for the current page.</returns>
-    TitleBar GetAppTitleBarElement();
+    UIElement GetAppTitleBarElement();
 
     /// <summary>
     ///     Gets the RowDefinition that contains the title bar element.

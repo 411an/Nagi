@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>A apărut o eroare la resetarea datelor aplicației: {0}. Vă rugăm să încercați să reporniți aplicația manual.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Eroare</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Nu s-a putut conecta la Last.fm. Vă rugăm să încercați din nou mai târziu.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Autentificare eșuată</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Nu s-a putut obține o sesiune de la Last.fm. Vă rugăm să încercați să vă conectați din nou.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Deconectați Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Sigur doriți să vă deconectați contul Last.fm? Istoricul dvs. de scrobbling va fi păstrat pe Last.fm, dar Nagi nu va mai putea scrobbla.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Deconectare</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Export reușit</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Prelucrează ID-urile artiștilor (necesar pentru TheAudioDB și Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Imagini și biografii de înaltă calitate ale artiștilor (necesită MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Doar imagini de înaltă calitate ale artiștilor (necesită MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Doar imagini ale artiștilor</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Biografii și imagini ale artiștilor (alternativă)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Deschide cu Nagi Player de Muzică</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Pornire Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Anterior</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Resetează Toate Datele</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integrări</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Conectează-ți contul Last.fm pentru a scrobbla piese și a afișa melodia curentă.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Conectează</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Finalizează</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Anulează</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Deconectează</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Activează scrobbling-ul</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Adaugă automat piesele pe care le asculți pe Nagi la profilul tău Last.fm.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Actualizează 'Se redă acum'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Arată prietenilor tăi de pe Last.fm ce asculți în timp real.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>Integrare ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Trimiteți ascultările dumneavoastră către ListenBrainz (o alternativă deschisă la Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Token utilizator</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Lipiți token-ul dumneavoastră de pe listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Testează conexiunea</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Conectat ca {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Conexiunea a eșuat: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Trimite ascultările (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Trimite actualizări "redare curentă"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Avansat</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>Adresă URL server</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>Exemplu: https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Deconectați-vă de la ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Acesta va elimina token-ul dumneavoastră salvat. Vă puteți reconecta oricând.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Deconectare</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Afișează activitatea ta de ascultare curentă ca status pe Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Playlist inteligent</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Redă cu subfolderele</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Adaugă cu subfolderele</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Înapoi</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Oprește</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Caută</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Listă</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Playlisturi</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Coadă</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spectru</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>TITLU</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ARTIST</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>GEN / AN</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>În ordine</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Repetă playlistul</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Repetă piesa</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Amestecă piesele</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Amestecă albumele</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Aleatoriu</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Etichetă / nume fișier</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>FĂRĂ PIERDERI</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>PIESA</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>TOTAL</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>TRECUT</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>RĂMAS</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Titlu</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Durată</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Piese: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Informații fișier</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Informații fișier</value>
   </data>
 </root>

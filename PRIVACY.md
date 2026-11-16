@@ -1,44 +1,24 @@
-# Privacy Policy for Nagi
+# Privacy Policy for Nagi Portable
 
-Nagi is a music player designed with speed, simplicity, and user privacy in mind. This document explains how Nagi handles your data and interacts with third-party services.
+Nagi Portable is a fork of [Nagi](https://github.com/Anthonyy232/Nagi), a local music player for Windows. This document explains what data the fork keeps and which online services it can contact.
 
-## Local-First Philosophy
+## Local-First
 
-Nagi is primarily a local music player. Your music library, playlists, and playback history are stored locally on your device. We do not collect, store, or sell your personal data.
+Your music library, playlists, listening history, settings, caches and logs are stored only on your computer, in the `datadir` folder next to `Nagi.exe`. Nagi Portable has no accounts, no analytics and no telemetry, and it does not send your data to the fork's author.
 
-## Third-Party Services (Opt-In)
+## Online Features (Opt-In)
 
-Nagi offers several optional features that connect to online services to enhance your experience. **All online integrations are disabled by default and are completely opt-in.**
+All online features are turned off by default. When you turn one on in Settings, Nagi sends only the track details needed for the request, such as artist name, track title, album title or duration, to the following services:
 
-When you enable these services, Nagi may share specific, non-identifiable metadata (such as artist names, album titles, or track names) with the following providers:
+- **MusicBrainz** (online metadata): looks up artists. Only the artist's MusicBrainz ID is stored.
+- **LRCLIB** and **NetEase Music** (online lyrics): look up synced or plain lyrics for the playing track.
+- **Lyrics romanization packs**: when you browse or install packs in Settings, Nagi downloads the pack list and the pack files from the original Nagi project's releases on GitHub.
 
-### Metadata and Artwork
-Nagi can fetch high-quality artist biographies and album artwork from:
-- **MusicBrainz**: For structured music metadata.
-- **TheAudioDb**: For artist biographies and images.
-- **Fanart.tv**: For high-quality background images and logos.
-- **Spotify**: For artist and album metadata.
-- **Last.fm**: For artist information.
+These requests identify themselves as Nagi in the User-Agent header. Like any internet request, they reveal your IP address to the service you contact.
 
-### Lyrics
-Nagi can fetch lyrics for your tracks from:
-- **LrcLib**: A community-driven lyrics database.
-- **NetEase Music**: For synchronized and plain text lyrics.
+## Removed From This Fork
 
-### Scrobbling and Social
-- **Last.fm Scrobbling**: If you choose to connect your Last.fm account, Nagi will send your playback history (track name, artist, timestamp) to Last.fm so you can track your listening habits.
-- **Discord Rich Presence**: If enabled, Nagi will share your currently playing track details with your Discord client to display as your status.
-
-### Application Updates
-- **Update Checks**: Nagi periodically checks for new versions by contacting GitHub. This sends a standard request to GitHub's servers. This can be disabled in the Settings.
-
-## Data Usage
-
-When Nagi communicates with these services, it only sends the minimum metadata required to fulfill the request (e.g., searching for "Artist - Track"). No personally identifiable information (PII) is sent unless required for account-based services like Last.fm scrobbling, which requires you to authenticate directly with the provider.
-
-## Changes to This Policy
-
-We may update our Privacy Policy from time to time. We will notify you of any significant changes by updating the "Last Updated" date at the bottom of this document.
+The original Nagi can connect to Last.fm (including scrobbling), ListenBrainz, Discord Rich Presence, TheAudioDB, Fanart.tv and Spotify, and it checks GitHub for updates. Nagi Portable contains none of these integrations and does not check for updates.
 
 ---
-*Last Updated: February 3, 2026*
+*Last Updated: November 16, 2026*

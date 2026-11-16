@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>অ্যাপ্লিকেশন ডেটা রিসেট করার সময় একটি ত্রুটি ঘটেছে: {0}। অনুগ্রহ করে ম্যানুয়ালি অ্যাপটি পুনরায় চালু করার চেষ্টা করুন।</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>ত্রুটি</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Last.fm এর সাথে সংযোগ করা যায়নি। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>প্রমাণীকরণ ব্যর্থ হয়েছে</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Last.fm থেকে একটি সেশন পাওয়া যায়নি। অনুগ্রহ করে আবার সংযোগ করার চেষ্টা করুন।</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Last.fm সংযোগ বিচ্ছিন্ন করুন</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>আপনি কি আপনার Last.fm অ্যাকাউন্ট সংযোগ বিচ্ছিন্ন করতে নিশ্চিত? আপনার স্ক্রোবলিং ইতিহাস Last.fm এ সংরক্ষিত থাকবে, তবে Nagi আর স্ক্রোবল করতে সক্ষম হবে না।</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>সংযোগ বিচ্ছিন্ন করুন</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>রপ্তানি সফল হয়েছে</value>
   </data>
@@ -723,17 +702,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>শিল্পীর আইডি নিয়ে আসে (TheAudioDB এবং Fanart.tv এর জন্য প্রয়োজন)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>উচ্চ-মানের শিল্পীর ছবি এবং জীবনী (MusicBrainz প্রয়োজন)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>শুধুমাত্র উচ্চ-মানের শিল্পীর ছবি (MusicBrainz প্রয়োজন)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>শুধুমাত্র শিল্পীর ছবি</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>শিল্পীর জীবনী এবং ছবি (ফলব্যাক)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>নাগি</value>
@@ -1057,9 +1027,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Nagi মিউজিক প্লেয়ার দিয়ে খুলুন</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nagi স্টার্টআপ</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>পূর্ববর্তী</value>
@@ -1823,90 +1790,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>সমস্ত ডেটা রিসেট করুন</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>ইন্টিগ্রেশন</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>ট্র্যাক স্ক্রোবল করতে এবং আপনার বর্তমানে বাজানো গান দেখাতে আপনার Last.fm অ্যাকাউন্ট সংযুক্ত করুন।</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>সংযুক্ত করুন</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>সম্পূর্ণ</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>বাতিল করুন</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>সংযোগ বিচ্ছিন্ন করুন</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>স্ক্রোবলিং সক্ষম করুন</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Nagi-তে আপনি যে ট্র্যাকগুলি শোনেন তা স্বয়ংক্রিয়ভাবে আপনার Last.fm প্রোফাইলে যোগ করুন।</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>'এখন বাজছে' আপডেট করুন</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Last.fm-এ আপনার বন্ধুদের দেখান যে আপনি বর্তমানে রিয়েল-টাইমে কী শুনছেন।</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>লিসেনব্রেইঞ্জ</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>আপনার শোনাগুলো লিসেনব্রেইঞ্জে জমা দিন (Last.fm এর একটি উন্মুক্ত বিকল্প)।</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>ব্যবহারকারী টোকেন</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>আপনার টোকেন listenbrainz.org/settings থেকে পেস্ট করুন</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>সংযোগ পরীক্ষা করুন</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>{0} হিসাবে সংযুক্ত</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>সংযোগ ব্যর্থ হয়েছে: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>শোনা জমা দিন (স্ক্রবলিং)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>"এখন চলছে" আপডেট জমা দিন</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>উন্নত</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>সার্ভার ইউআরএল</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>লিসেনব্রেইঞ্জ থেকে সংযোগ বিচ্ছিন্ন করবেন?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>এটি আপনার সংরক্ষিত টোকেন মুছে ফেলবে। আপনি যেকোনো সময় পুনরায় সংযোগ করতে পারবেন।</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>সংযোগ বিচ্ছিন্ন করুন</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>ডিসকর্ড</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>ডিসকর্ড-এ আপনার বর্তমান শোনার কার্যকলাপ আপনার স্ট্যাটাস হিসাবে দেখান।</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>স্মার্ট প্লেলিস্ট</value>
   </data>
@@ -2233,5 +2116,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}মি {1}সে</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>সাবফোল্ডারসহ চালান</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>সাবফোল্ডারসহ যোগ করুন</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>পেছনে</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>থামান</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>খুঁজুন</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>তালিকা</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>প্লেলিস্ট</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>সারি</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>স্পেকট্রাম</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>শিরোনাম</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>শিল্পী</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>অ্যালবাম</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>ধরন / বছর</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>ক্রমানুসারে</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>প্লেলিস্ট পুনরাবৃত্তি</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>ট্র্যাক পুনরাবৃত্তি</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>ট্র্যাক এলোমেলো করুন</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>অ্যালবাম এলোমেলো করুন</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>এলোমেলো</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>ট্যাগ / ফাইলের নাম</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>লসলেস</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>ট্র্যাক</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>মোট</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>অতিবাহিত</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>অবশিষ্ট</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>শিরোনাম</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>সময়কাল</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>ট্র্যাক: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>ফাইলের তথ্য</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>ফাইলের তথ্য</value>
   </data>
 </root>

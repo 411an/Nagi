@@ -370,4 +370,14 @@ public interface IUISettingsService : ISettingsService
     ///     Sets the number of songs to display per page in song lists.
     /// </summary>
     Task SetSongsPerPageAsync(int songsPerPage);
+
+    /// <summary>
+    ///     Gets the last selected shell browse (centre list) target, if any.
+    /// </summary>
+    Task<Models.ShellBrowseState?> GetShellBrowseStateAsync();
+
+    /// <summary>
+    ///     Saves the last selected shell browse target for restore on next launch.
+    /// </summary>
+    Task SetShellBrowseStateAsync(Models.ShellBrowseState? state);
 }

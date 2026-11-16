@@ -1,0 +1,9 @@
+<UserControl
+    x:Class="Nagi.WinUI.Controls.SpectrumVisualizer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    MinHeight="56"
+    IsHitTestVisible="False">
+
+    <Grid x:Name="BarsHost" Height="56" />
+</UserControl>

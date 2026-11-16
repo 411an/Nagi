@@ -489,27 +489,6 @@ Vir die beste ervaring, herbegin asseblief Nagi sonder administrateurvoorregte.<
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>'n Fout het voorgekom tydens die herstel van toepassingsdata: {0}. Probeer asseblief om die toepassing handmatig te herbegin.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Fout</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Kon nie aan Last.fm koppel nie. Probeer asseblief later weer.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Verifikasie Misluk</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Kon nie 'n sessie van Last.fm kry nie. Probeer asseblief weer koppel.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Ontkoppel Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Is jy seker jy wil jou Last.fm-rekening ontkoppel? Jou scrobbel-geskiedenis sal op Last.fm bewaar word, maar Nagi sal nie meer kan scrobbel nie.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Ontkoppel</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Uitvoer Suksesvol</value>
   </data>
@@ -725,17 +704,8 @@ Vir die beste ervaring, herbegin asseblief Nagi sonder administrateurvoorregte.<
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Verkry kunstenaar-ID's (vereis vir TheAudioDB en Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Hoëgehalte kunstenaarprente en biografieë (vereis MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Slegs hoëgehalte kunstenaarprente (vereis MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Slegs kunstenaarprente</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Kunstenaarbiografieë en -prente (terugval)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1063,9 +1033,6 @@ Fout: {1}</value>
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Maak oop met Nagi Musiekspeler</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nagi Opstart</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Vorige</value>
@@ -1829,90 +1796,6 @@ Fout: {1}</value>
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Herstel Alle Data</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integrasies</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value> en jou huidige speelende liedjie te wys.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Koppel</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Voltooi</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Kanselleer</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Ontkoppel</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Aktiveer scrobbling</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Voeg die snitte waarna jy op Nagi luister, outomaties by jou Last.fm-profiel.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Werk 'Speel Nou' op</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Wys jou vriende op Last.fm waarna jy tans luister in real-time.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Stuur jou luisterdata na ListenBrainz ('n oop alternatief vir Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Gebruikertoken</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Plak jou token vanaf listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Toets verbinding</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Gekoppel as {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Verbinding het misluk: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Stuur luisterdata in (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Stuur "speel tans"-opdaterings in</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Gevorderd</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>Bediener-URL</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Ontkoppel van ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Dit sal jou gestoorde token verwyder. Jy kan enige tyd weer koppel.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Ontkoppel</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Wys jou huidige luisteraktiwiteit as jou status op Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Slim Snitlys</value>
   </data>
@@ -2239,5 +2122,104 @@ Fout: {1}</value>
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Speel met subvouers</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Voeg by met subvouers</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Terug</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Soek</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Lys</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Snitlyste</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Tou</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spektrum</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>TITEL</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>KUNSTENAAR</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>GENRE / JAAR</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>In volgorde</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Herhaal snitlys</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Herhaal snit</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Skommel snitte</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Skommel albums</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Lukraak</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Etiket / lêernaam</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>VERLIESLOOS</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>SNIT</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>TOTAAL</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>VERLOPE</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>OORBLYWEND</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Duur</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Snitte: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Lêerinligting</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Lêerinligting</value>
   </data>
 </root>

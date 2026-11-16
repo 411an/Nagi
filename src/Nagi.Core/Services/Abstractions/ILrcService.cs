@@ -22,6 +22,14 @@ public interface ILrcService
     /// <returns>A ParsedLrc object containing the timed lyrics, or null if parsing fails or the file doesn't exist.</returns>
     Task<ParsedLrc?> GetLyricsAsync(string lrcFilePath);
 
+    /// <summary>
+    ///     The song's own lyrics file: the one recorded when the library was scanned, if it is still
+    ///     there, or else a .lrc or .txt with the audio file's name beside it. The scan does not look
+    ///     again at unchanged audio files, so this also finds lyrics files added later.
+    /// </summary>
+    /// <returns>The path, or null when the song has no lyrics file.</returns>
+    string? FindLocalLyricsPath(Song song);
+
     /// <summary>Saves a lyrics override in Nagi's cache.</summary>
     Task SaveLyricsAsync(Song song, string lrcContent);
 

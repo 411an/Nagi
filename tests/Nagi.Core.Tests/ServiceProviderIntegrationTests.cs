@@ -27,14 +27,10 @@ public class ServiceProviderIntegrationTests : IDisposable
     private readonly ILibraryWriter _libraryWriter;
     private readonly IOnlineLyricsService _lrcLibService;
     private readonly INetEaseLyricsService _netEaseLyricsService;
-    private readonly ILastFmMetadataService _lastFmService;
     private readonly IMusicBrainzService _musicBrainzService;
-    private readonly IFanartTvService _fanartTvService;
-    private readonly ITheAudioDbService _theAudioDbService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IReplayGainService _replayGainService;
-    private readonly IApiKeyService _apiKeyService;
     private readonly IMetadataService _metadataService;
     private readonly IImageProcessor _imageProcessor;
     private readonly DbContextFactoryTestHelper _dbHelper;
@@ -50,14 +46,10 @@ public class ServiceProviderIntegrationTests : IDisposable
         _libraryWriter = Substitute.For<ILibraryWriter>();
         _lrcLibService = Substitute.For<IOnlineLyricsService>();
         _netEaseLyricsService = Substitute.For<INetEaseLyricsService>();
-        _lastFmService = Substitute.For<ILastFmMetadataService>();
         _musicBrainzService = Substitute.For<IMusicBrainzService>();
-        _fanartTvService = Substitute.For<IFanartTvService>();
-        _theAudioDbService = Substitute.For<ITheAudioDbService>();
         _httpClientFactory = Substitute.For<IHttpClientFactory>();
         _serviceScopeFactory = Substitute.For<IServiceScopeFactory>();
         _replayGainService = Substitute.For<IReplayGainService>();
-        _apiKeyService = Substitute.For<IApiKeyService>();
         _metadataService = Substitute.For<IMetadataService>();
         _imageProcessor = Substitute.For<IImageProcessor>();
         _dbHelper = new DbContextFactoryTestHelper();
@@ -79,16 +71,12 @@ public class ServiceProviderIntegrationTests : IDisposable
             _dbHelper.ContextFactory,
             _fileSystem,
             _metadataService,
-            _lastFmService,
             _musicBrainzService,
-            _fanartTvService,
-            _theAudioDbService,
             _httpClientFactory,
             _serviceScopeFactory,
             _pathConfig,
             _settingsService,
             _replayGainService,
-            _apiKeyService,
             _imageProcessor,
             _pipelines,
             Substitute.For<ILogger<LibraryService>>());
@@ -181,7 +169,7 @@ public class ServiceProviderIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task LibraryService_OnlyCallsMbidDependentProvidersIfMbidIsAvailable()
+    public async Task LibraryService_WhenMusicBrainzDisabled_DoesNotSearch()
     {
         // Arrange
         var artist = new Artist { Id = Guid.NewGuid(), Name = "Artist Without MBID", MusicBrainzId = null };
@@ -191,17 +179,12 @@ public class ServiceProviderIntegrationTests : IDisposable
             context.SaveChanges();
         }
 
-        // MusicBrainz is DISABLED, but TheAudioDB is ENABLED
         _settingsService.GetEnabledServiceProvidersAsync(ServiceCategory.Metadata)
-            .Returns(new List<ServiceProviderSetting>
-            {
-                new() { Id = ServiceProviderIds.TheAudioDb, Order = 0, IsEnabled = true }
-            });
+            .Returns(new List<ServiceProviderSetting>());
 
         // Act
         await _libraryService.GetArtistDetailsAsync(artist.Id, true);
 
-        // Assert - TheAudioDB should NOT be called because MBID is missing and MB lookup is disabled
-        await _theAudioDbService.DidNotReceive().GetArtistMetadataAsync(Arg.Any<string>(), Arg.Any<string?>(), Arg.Any<CancellationToken>());
+        await _musicBrainzService.DidNotReceive().SearchArtistAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 }

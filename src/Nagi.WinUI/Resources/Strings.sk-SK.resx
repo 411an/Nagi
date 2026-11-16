@@ -489,27 +489,6 @@ Pre najlepší zážitok reštartujte Nagi bez oprávnení administrátora.</val
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Počas resetovania aplikačných dát došlo k chybe: {0}. Skúste reštartovať aplikáciu manuálne.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Chyba</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Nepodarilo sa pripojiť k Last.fm. Skúste to prosím neskôr.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Autentifikácia zlyhala</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Nepodarilo sa získať reláciu z Last.fm. Skúste sa prosím pripojiť znova.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Odpojiť Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Naozaj chcete odpojiť váš účet Last.fm? Vaša história scrobbleovania sa zachová na Last.fm, ale Nagi už nebude môcť scrobbleovať.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Odpojiť</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Export úspešný</value>
   </data>
@@ -725,17 +704,8 @@ Pre najlepší zážitok reštartujte Nagi bez oprávnení administrátora.</val
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Načíta ID interpretov (vyžaduje sa pre TheAudioDB a Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Vysokokvalitné obrázky a biografie interpretov (vyžaduje MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Iba vysokokvalitné obrázky interpretov (vyžaduje MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Iba obrázky interpretov</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Biografie a obrázky interpretov (záložné)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1063,9 +1033,6 @@ Chyba: {1}</value>
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Otvoriť s hudobným prehrávačom Nagi</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Spustenie Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Predchádzajúce</value>
@@ -1829,90 +1796,6 @@ Chyba: {1}</value>
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Resetovať všetky dáta</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integrácie</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Pripojte svoj Last.fm účet pre scrobbling skladieb a zobrazenie aktuálne prehrávanej piesne.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Pripojiť</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Dokončiť</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Zrušiť</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Odpojiť</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Povoliť scrobbling</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Automaticky pridávať skladby, ktoré počúvate na Nagi, do vášho Last.fm profilu.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Aktualizovať 'Teraz sa prehráva'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Ukážte svojim priateľom na Last.fm, čo práve počúvate v reálnom čase.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Odosielať vaše počúvania do ListenBrainz (otvorená alternatíva k Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Používateľský token</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Vložte váš token z listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Otestovať pripojenie</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Pripojené ako {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Pripojenie zlyhalo: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Odosielať počúvania (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Odosielať aktualizácie "práve hrá"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Pokročilé</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL adresa servera</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Odpojiť sa od ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Týmto odstránite váš uložený token. Môžete sa znova pripojiť kedykoľvek.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Odpojiť</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Zobraziť vašu aktuálnu aktivitu počúvania ako stav na Discorde.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Inteligentný playlist</value>
   </data>
@@ -2239,5 +2122,104 @@ Chyba: {1}</value>
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Prehrať vrátane podpriečinkov</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Pridať vrátane podpriečinkov</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Späť</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Zastaviť</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Hľadať</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Zoznam</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Playlisty</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Front</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spektrum</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>NÁZOV</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>INTERPRET</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>ŽÁNER / ROK</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Po poradí</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Opakovať playlist</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Opakovať skladbu</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Zamiešať skladby</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Zamiešať albumy</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Náhodne</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Tag / názov súboru</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>BEZSTRATOVÉ</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>SKLADBA</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>SPOLU</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>UPLYNULO</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>ZOSTÁVA</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBIT/S</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Názov</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Dĺžka</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Skladieb: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Informácie o súbore</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Informácie o súbore</value>
   </data>
 </root>

@@ -55,7 +55,7 @@ public class MusicDbContext : DbContext
             entity.HasIndex(s => s.ArtistName);
             entity.HasIndex(s => s.PrimaryArtistName);
             entity.HasIndex(s => s.PrimaryArtistSortName);
-            entity.HasIndex(s => s.FilePath).IsUnique();
+            entity.HasIndex(s => new { s.FilePath, s.CueTrackNumber }).IsUnique();
             entity.HasIndex(s => s.DirectoryPath);
             entity.HasIndex(s => s.AlbumId);
             entity.HasIndex(s => s.FolderId);

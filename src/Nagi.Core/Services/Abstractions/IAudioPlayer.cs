@@ -57,6 +57,17 @@ public interface IAudioPlayer : IDisposable
     /// </summary>
     event Action? SmtcPreviousButtonPressed;
 
+    /// <summary>
+    ///     Occurs when the SMTC 'Play' button or a Play media key is pressed. The playback service
+    ///     handles it, so a stopped queue starts again and ReplayGain is applied.
+    /// </summary>
+    event Action? SmtcPlayButtonPressed;
+
+    /// <summary>
+    ///     Occurs when the SMTC 'Pause' button or a Pause media key is pressed.
+    /// </summary>
+    event Action? SmtcPauseButtonPressed;
+
     #endregion
 
     #region Properties

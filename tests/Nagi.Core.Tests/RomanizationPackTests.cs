@@ -538,6 +538,7 @@ public sealed class RomanizationPackTests : IDisposable
             RomanizationPacksPath = Path.Combine(root, "RomanizationPacks");
             DatabasePath = Path.Combine(root, "nagi.db");
             LogsDirectory = Path.Combine(root, "Logs");
+            ImageCachePath = Path.Combine(root, "Cache");
         }
 
         public string AppDataRoot { get; }
@@ -550,5 +551,6 @@ public sealed class RomanizationPackTests : IDisposable
         public string RomanizationPacksPath { get; }
         public string DatabasePath { get; }
         public string LogsDirectory { get; }
+        public string ImageCachePath { get; }
     }
 }

@@ -738,6 +738,18 @@ public class AtlMetadataServiceTests : IDisposable
         var result2 = await _metadataService.ExtractMetadataAsync(filePath2);
         result2.ReplayGainTrackGain.Should().Be(2.5);
         result2.ReplayGainTrackPeak.Should().Be(1.1);
+
+        // Earlier builds of this fork wrote a decimal comma on Russian Windows.
+        var filePath3 = CreateTestAudioFile("replaygain3.mp3", track =>
+        {
+            track.Title = "ReplayGain Comma";
+            track.AdditionalFields.Add("REPLAYGAIN_TRACK_GAIN", "-3,21 dB");
+            track.AdditionalFields.Add("REPLAYGAIN_TRACK_PEAK", "0,987654");
+        });
+
+        var result3 = await _metadataService.ExtractMetadataAsync(filePath3);
+        result3.ReplayGainTrackGain.Should().Be(-3.21);
+        result3.ReplayGainTrackPeak.Should().Be(0.987654);
     }
 
     /// <summary>

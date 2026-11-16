@@ -1,148 +1,164 @@
 <div align="center">
   <img src="https://github.com/user-attachments/assets/58f7a205-113d-463e-a2f3-d9979b935da1" alt="Nagi Logo">
 
-# Nagi
+# Nagi Portable
 
-  **Rediscover your local music collection. A fast, private, and modern music player for Windows.**
+  **A portable fork of [Nagi](https://github.com/Anthonyy232/Nagi): no installer, no Store identity, everything in one folder.**
 
 <div align="center">
-    <a href="https://github.com/Anthonyy232/Nagi/stargazers"><img src="https://img.shields.io/github/stars/Anthonyy232/Nagi?style=flat-square" alt="GitHub Stars"></a>
-    <a href="https://github.com/Anthonyy232/Nagi/releases"><img src="https://img.shields.io/github/downloads/Anthonyy232/Nagi/total?style=flat-square&color=52c65f" alt="Total Downloads"></a>
-    <a href="https://github.com/Anthonyy232/Nagi/releases/latest"><img src="https://img.shields.io/github/v/release/Anthonyy232/Nagi?style=flat-square" alt="Latest Release"></a>
-    <a href="https://github.com/Anthonyy232/Nagi/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Anthonyy232/Nagi?style=flat-square" alt="License"></a>
-    <a href="https://github.com/Anthonyy232/Nagi/actions/workflows/build.yml"><img src="https://github.com/Anthonyy232/Nagi/actions/workflows/build.yml/badge.svg" alt="Nagi CI/CD with Velopack"></a>
     <img src="https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows" alt="Platform">
     <img src="https://img.shields.io/badge/WinUI_3-59278F?style=flat-square&logo=windows&logoColor=white" alt="WinUI 3">
+    <img src="https://img.shields.io/badge/License-GPL--3.0-blue?style=flat-square" alt="License">
 </div>
 
 </div>
 
-<div>
-    <br>
-    <p>
-    Nagi is a music player focused on speed, simplicity, and privacy. Featuring a resizable mini-player, interactive lyrics, and wide format support, Nagi is built with C# and WinUI 3 to offer a clean, native Fluent experience. It's beautiful, efficient, and respects your privacy.
-    </p>
-</div>
+<br>
 
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/a79450a7-d84e-4fe9-92b5-724b890e3e1d" alt="Nagi Library View" width="800" style="border-radius: 8px;">
-</div>
+Nagi Portable is an unofficial fork of [Nagi](https://github.com/Anthonyy232/Nagi) by Anthonyy232, a local music player for Windows built with C# and WinUI 3. The fork keeps Nagi's scanner, database, playback engine and lyrics, but runs as a portable app and replaces the main window with a classic three-column player layout.
+
+This fork is not affiliated with the original project. Please report problems with this build here, not upstream.
+
+> [!IMPORTANT]
+> **How the portable build differs from regular Nagi**
+>
+> | | Nagi (Store / installer) | Nagi Portable |
+> |---|---|---|
+> | Install | Microsoft Store or setup program | Unzip anywhere writable and run `Nagi.exe` |
+> | Your data | Hidden Windows app-data folder | `datadir` folder next to `Nagi.exe` |
+> | Updates | Automatic | Unzip the new version over the old one; `datadir` and `portable.json` are kept |
+> | Remove | Uninstall in Windows | Delete the folder |
+>
+> **Reset to a clean state**
+>
+> 1. Quit Nagi completely. By default, closing the window only hides Nagi to the tray, so use **Exit** in the tray icon menu.
+> 2. Delete the whole `datadir` folder. Do not delete single files from it: `nagi.db-wal` holds the latest database changes and belongs with `nagi.db`.
+> 3. Start `Nagi.exe`. A fresh `datadir` is created and Nagi opens with the first-run screen.
+>
+> `datadir` holds everything Nagi writes: library database, playlists, history, settings, caches and logs. Delete it before you share your copy of Nagi with someone else. The only thing kept outside it is the **Launch at startup** option, a value under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. Turn that option off in Settings before you reset or remove Nagi if you have enabled it.
+
+## 🔀 What changed in this fork
+
+### Portable instead of installed
+
+- Runs unpackaged: no MSIX package, no Microsoft Store identity, no installer. The published folder is self-contained and includes the .NET and Windows App SDK runtimes.
+- Everything Nagi writes goes to `datadir` beside the executable: `nagi.db`, `settings.json` (replaces Windows `LocalSettings`), `playback_state.json`, album art, lyrics cache and logs. Nothing goes to `%LocalAppData%`.
+- The data folder can be moved with `--datadir <path>` or a `portable.json` file (see [Download](#-download)). The override survives restarts and is written into the autostart command.
+- If the data folder cannot be created or written (for example under `Program Files`), Nagi shows an error and exits instead of silently writing somewhere else.
+- **Launch at startup** uses the current-user `Run` registry key instead of a packaged startup task.
+
+### New main window
+
+- One window with three columns replaces the side navigation and the floating bottom player:
+  - **left:** buttons for settings, equalizer, lyrics, queue and visualizer; the visualizer; Previous / Play / Pause / Next / Stop and volume; 10-band equalizer with preamp; seek bar; cover art and track info (title, artist, album, genre, year); queue status (lossless or lossy, track N of M, elapsed or remaining time, bitrate); the lyrics of the playing track;
+  - **middle:** playback order and the tracks of the selected tree node. Folders and artists are grouped under album headers; playlists keep their own order;
+  - **right:** search and a tree with three tabs: **Library** (folders), **Playlists** (including smart playlists) and **Artists**.
+- Double-click a tree node to play it. The context menu has Play, Play recursively, Add to queue and Add recursively.
+- Shuffle and repeat are replaced by one **playback order** with six modes: Default, Repeat playlist, Repeat track, Shuffle tracks, Shuffle albums, Random.
+- The track list can show the tag title or the file name.
+- The last selected tree node is restored on startup.
+- One dark cyan theme with fixed colors. The Library, Albums, Genres and Insights pages are no longer reachable from the window.
+- Settings and lyrics open as overlays. The mini-player, tray popup and Windows media controls are kept.
+- **Lyrics panel:** the lyrics of the playing track are shown as plain text below the status display and fill the rest of the left column. They come from a `.lrc` or `.txt` file with the track's name next to it or, without one, from the lyrics tag; the panel never goes online. Click the text to open the full lyrics view. A lyrics file put next to a track after the library was scanned is found without a rescan, in the panel and in the full view.
+- A dark title strip replaces the Windows title bar. It shows the app name, the version and the loaded track (artist and title), and holds the minimize, maximize and close buttons. The window can also be moved by dragging any empty spot, and double-clicking an empty spot maximizes or restores it.
+
+### Playback
+
+- **Real spectrum visualizer.** The 28 bars in the top-left panel show the spectrum of the playing track, from 40 Hz to 11 kHz, in step with the playback position. When a track starts, FFmpeg decodes it in the background at low priority: the first bars are ready at once, and a four-minute song is done in about a second on a laptop i3. Nothing is written to disk. The spectrum of the current track is kept in memory (about 150 KB) and dropped when the next track starts or the visualizer is hidden. The bars show the file itself, so volume, ReplayGain and the equalizer do not change them. Without [FFmpeg](https://ffmpeg.org/download.html) on the `PATH`, or for a file FFmpeg cannot read, the bars play a decorative animation instead.
+- **Unplayable files are skipped.** When a file cannot be played, Nagi moves on to the next track the way the Next button does, also in Repeat track mode. If nothing in the queue plays, it stops after one pass (at most ten files in a row) instead of retrying the same file.
+
+### Library and tags
+
+- **CUE albums:** a single audio file with a single-file `.cue` sheet next to it appears as separate tracks, with their own titles, durations, seeking and queue navigation. Rescan an existing library to pick up CUE sheets. UTF-8 and legacy Cyrillic encodings are supported; embedded CUE sheets and multi-file CUE albums are not yet supported.
+- **Russian tags:** ID3 text written in Windows-1251 but stored as Latin-1 is detected and decoded correctly. A Cyrillic file name counts as an extra hint.
+- **Missing tags:** when artist or title is missing, they are taken from the file name: the track number is dropped and `Artist - Title` is split at a spaced dash. If the name has no such dash, it becomes the title and the artist is taken from the top folder under the library root.
+- Album and artist images are stored as the original bytes. ImageSharp is removed, so images are no longer resized and no colors are extracted from them.
+
+### Removed
+
+- Last.fm (sign-in, scrobbling, artist info), ListenBrainz and Discord Rich Presence.
+- Artist images and biographies from Last.fm, TheAudioDB and Fanart.tv, and the API key service they needed.
+- Microsoft Store APIs.
+- Settings that no longer affect the window: theme, accent color, window material, player styling, navigation pane state and items, player buttons, collapsible player, and online artist metadata from MusicBrainz.
+
+Still online when you enable it: lyrics from LRCLIB and NetEase.
 
 ## ✨ Features
 
-- **Fluent & Modern UI**: A beautiful, responsive interface built with WinUI 3, featuring customizable backdrops (Mica, Mica Alt, Acrylic) and smooth animations.
-- **Dynamic Theming**: The app's color scheme adapts in real-time to the artwork of the currently playing song for a truly immersive experience.
-- **Synced Lyrics**: Display synced lyrics from embedded tags or external `.lrc` files. Tap any line to jump directly to that moment in the song.
-- **Resizable Mini-Player**: A sleek, always-on-top mini-player with playback controls, album art, and an efficiency mode for low resource usage.
+- **Lyrics**: Read the lyrics of the playing track in the main window, from the lyrics tag or a `.lrc` file. Click them to open the full view, where synced lyrics follow the song and tapping a line jumps to that moment.
+- **Resizable Mini-Player**: An always-on-top mini-player with playback controls and album art.
 - **Folder-Based Library**: Add your music folders and Nagi automatically scans, organizes, and keeps your collection up to date.
-- **Playlists & Smart Playlists**: Create custom playlists or powerful rule-based smart playlists that automatically update as your library grows.
-- **Queue Management**: Drop files or folders onto the bottom player to add them to the queue, without importing them into your library. Use Up Next to view the queue, with full shuffle and repeat controls.
-- **10-Band Equalizer**: Fine-tune your sound with a fully customizable 10-band equalizer and pregain control.
-- **Volume Normalization**: ReplayGain support ensures consistent volume levels across your entire library.
-- **Last.fm & Discord Integration**: Scrobble your tracks to Last.fm, fetch artist metadata, and show off your listening activity with Discord Rich Presence.
-- **System Tray & Media Controls**: Control playback from the system tray popup or use Windows media keys and transport controls.
-- **Wide Format Support**: Play virtually any audio format including MP3, FLAC, AAC, OGG, WAV, AIFF, APE, DSD, M4A, WMA, WavPack, and more.
-
-## 🖼️ Screenshots
-
-<div align="center">
-  <table border="0" cellspacing="10">
-    <tr>
-      <td><img src="https://github.com/user-attachments/assets/1387ccc4-d436-403b-8396-8888fbe1be26" width="100%" alt="album" /></td>
-      <td><img src="https://github.com/user-attachments/assets/c99ac0a0-7484-4b6c-8113-e6abc731f879" width="100%" alt="artist" /></td>
-      <td><img src="https://github.com/user-attachments/assets/ea46c4c4-8e22-4c45-9cd7-d275ea770e88" width="100%" alt="tray" /></td>
-    </tr>
-  </table>
-</div>
+- **Playlists & Smart Playlists**: Create custom playlists or rule-based smart playlists that update as your library grows.
+- **Queue Management**: Drop files or folders onto the queue panel to add them to the queue without importing them into your library.
+- **10-Band Equalizer**: Shown in the main window (it can be hidden), with pregain control.
+- **Spectrum Visualizer**: Bars computed from the playing track with FFmpeg; see [What changed](#-what-changed-in-this-fork).
+- **Volume Normalization**: ReplayGain support keeps volume consistent across your library. Analysis needs [FFmpeg](https://ffmpeg.org/download.html) on the `PATH`; it is not included in the zip, and Nagi explains how to install it when you turn normalization on.
+- **System Tray & Media Controls**: Control playback from the tray popup or with Windows media keys and transport controls.
+- **Wide Format Support**: MP3, FLAC, AAC, OGG, WAV, AIFF, APE, DSD, M4A, WMA, WavPack, and more.
+- **CUE Albums** and **Cyrillic tag recovery**: see [What changed](#-what-changed-in-this-fork).
 
 ## 📥 Download
 
-<div>
-  <a href="https://apps.microsoft.com/detail/9P1V1PPML3QT?referrer=appbadge&launch=true&mode=full">
-    <img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Download from Microsoft Store" width="300">
-  </a>
-      
-  <a href="https://github.com/Anthonyy232/Nagi/releases">
-    <img src="https://github.com/user-attachments/assets/f81e6835-068d-4513-894b-659b5ac7f0ea" alt="Download from GitHub" width="220">
-  </a>
-</div>
+Nagi Portable ships as a self-contained `win-x64` zip. Extract it to any folder you can write to and run `Nagi.exe`. Your data is stored in `datadir` beside the executable.
+
+Optional overrides:
+
+- `--datadir <path>`: use a custom data folder.
+- `portable.json` next to the exe: `{ "DataDirectory": "D:\\NagiData" }` (the key `datadir` is also accepted). Zip updates do not overwrite this file.
 
 ## 🌍 Localization
 
-[![Crowdin](https://badges.crowdin.net/nagi/localized.svg)](https://crowdin.com/project/nagi)
-
-Localization support for Nagi is powered by Crowdin. Contributions to add new languages are always welcome!
-
-[Help Translate Nagi](https://crowdin.com/project/nagi)
+Translations come from the original Nagi project on [Crowdin](https://crowdin.com/project/nagi). The text this fork adds to the main window is machine-translated and not yet checked by native speakers; Afar and Acholi show it in English.
 
 ## 🛠️ Technologies
 
-- **[C#](https://docs.microsoft.com/en-us/dotnet/csharp/)** & **[.NET 10](https://dotnet.microsoft.com/)**: The core programming language and framework for building robust Windows applications.
-- **[WinUI 3](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/)** in **[Windows App SDK](https://github.com/microsoft/WindowsAppSDK)**: The native UI platform for crafting modern, fluent interfaces on Windows.
-- **[LibVLCSharp](https://github.com/videolan/libvlcsharp)**: A cross-platform .NET binding for LibVLC, enabling robust and wide-ranging audio format support.
-- **[Community Toolkit for WinUI](https://github.com/CommunityToolkit/WindowsCommunityToolkit)**: A collection of controls, helpers, and services to simplify app development (e.g., ColorPicker, SettingsControls).
-- **[Community Toolkit MVVM](https://docs.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)**: A modern, fast, and platform-agnostic MVVM library.
-- **[Entity Framework Core (SQLite)](https://docs.microsoft.com/en-us/ef/core/)**: A modern object-relational mapper for .NET, used for local database storage.
-- **[ATL (Audio Tools Library)](https://github.com/Zeugma440/atldotnet)**: A versatile library for reading and writing metadata in audio files.
-- **[LrcParser](https://github.com/OpportunityLiu/LrcParser)**: For parsing LRC lyrics files.
-- **[SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp)**: A cross-platform library for image processing.
-- **[MaterialColorUtilities](https://github.com/material-foundation/material-color-utilities)**: For generating dynamic color schemes from artwork.
-- **[H.NotifyIcon.WinUI](https://github.com/HavenDV/H.NotifyIcon)**: For creating and managing the Windows tray icon.
-- **[Serilog](https://serilog.net/)**: A structured logging library for diagnostics and debugging.
-- **[XAML Behaviors](https://github.com/Microsoft/XamlBehaviors)**: For implementing UI behaviors declaratively in XAML.
-- **[MSIX App Installer](https://learn.microsoft.com/windows/msix/app-installer/app-installer-file-overview)**: For automatic updates from GitHub releases.
-- **[Microsoft Dependency Injection](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection)**: For implementing a loosely coupled and testable architecture.
+- **[C#](https://docs.microsoft.com/en-us/dotnet/csharp/)** & **[.NET 10](https://dotnet.microsoft.com/)**
+- **[WinUI 3](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/)** in **[Windows App SDK](https://github.com/microsoft/WindowsAppSDK)**
+- **[LibVLCSharp](https://github.com/videolan/libvlcsharp)**: audio playback and format support.
+- **[Community Toolkit for WinUI](https://github.com/CommunityToolkit/WindowsCommunityToolkit)** and **[Community Toolkit MVVM](https://docs.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)**
+- **[Entity Framework Core (SQLite)](https://docs.microsoft.com/en-us/ef/core/)**: local database.
+- **[ATL (Audio Tools Library)](https://github.com/Zeugma440/atldotnet)**: reading audio metadata and CUE sheets.
+- **[LrcParser](https://github.com/OpportunityLiu/LrcParser)**: parsing LRC lyrics files.
+- **[MaterialColorUtilities](https://github.com/material-foundation/material-color-utilities)**: color schemes.
+- **[H.NotifyIcon.WinUI](https://github.com/HavenDV/H.NotifyIcon)**: tray icon.
+- **[Serilog](https://serilog.net/)**: logging.
+- **[XAML Behaviors](https://github.com/Microsoft/XamlBehaviors)**: declarative UI behaviors.
+- **[Microsoft Dependency Injection](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection)**
 
-*Thanks to the creators and maintainers of all the open-source libraries that make Nagi possible.*
+*Thanks to Anthonyy232 for Nagi, and to the creators and maintainers of all the open-source libraries it is built on.*
 
 ## 🚀 Build from Source
 
-This project is built using C# and the Windows App SDK.
-
 ### Prerequisites
 
-- Visual Studio 2022 or later
-- The **".NET Desktop Development"** and **"Universal Windows Platform development"** workloads installed (includes Windows App SDK).
+- Visual Studio 2022 or later with the **".NET Desktop Development"** workload
 - .NET 10 SDK
 
 ### Steps
 
-1. Clone the repository:
+1. Clone this repository and open `Nagi.sln` in Visual Studio.
+2. Set the Solution Platform to `x64`.
+3. Press `F5` or click **▶ Nagi (Unpackaged)** to build and run.
 
-   ```bash
-   git clone https://github.com/Anthonyy232/Nagi.git
-   ```
-2. Navigate to the cloned directory and open `Nagi.sln` with Visual Studio.
-3. In Visual Studio, set the Solution Platform to `x64` (or your target architecture).
-4. Press `F5` or click the `▶ Nagi (Package)` button to build and run the application.
+To publish the portable folder:
 
-   To build an unsigned MSIX bundle, run these commands from `src/Nagi.WinUI`:
+```bash
+dotnet publish src/Nagi.WinUI/Nagi.WinUI.csproj -c Release -r win-x64 --self-contained -p:Platform=x64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -o out/win-x64
+```
 
-   ```bash
-   # 1. Pre-build binaries for both platforms (triggers PGO/R2R optimization)
-   dotnet publish Nagi.WinUI.csproj -c Release -r win-x64 -p:Platform=x64 -p:PublishReadyToRun=true -p:GenerateAppxPackageOnBuild=false
-   dotnet publish Nagi.WinUI.csproj -c Release -r win-arm64 -p:Platform=ARM64 -p:PublishReadyToRun=true -p:GenerateAppxPackageOnBuild=false
-   # 2. Finalize the packaged MSIX bundle
-   dotnet msbuild Nagi.WinUI.csproj -p:Configuration=Release -p:Platform=x64 -p:GenerateAppxPackageOnBuild=true -p:AppxBundle=Always "-p:AppxBundlePlatforms=x64|ARM64" -p:AppxPackageSigningEnabled=False
-   ```
-
-   GitHub releases use the production SignPath signing workflow. Microsoft Store uploads use the Store publisher identity and remain unsigned locally.
+Data is written to `<publish-dir>/datadir`, so the folder next to `Nagi.exe` must be writable. Delete `datadir` from the published folder before you zip it for others.
 
 ### Development
 
-  To perform a database migration:
+To add a database migration:
 
 ```bash
-  dotnet ef migrations add <name> --project src\Nagi.Core --startup-project src\Nagi.Core --context MusicDbContext --no-build
+dotnet ef migrations add <name> --project src\Nagi.Core --startup-project src\Nagi.Core --context MusicDbContext --no-build
 ```
 
-## 🤝 Contributions
+## ❤️ Support the original author
 
-All contributions are welcome! Feel free to report issues, suggest features, or create pull requests for bug fixes and new features.
-
-## ❤️ Support
-
-If you enjoy using Nagi and want to support its development, you can do so via GitHub Sponsors. Your support is greatly appreciated!
+Nagi is created by Anthonyy232. If you like it, consider supporting the original project:
 
 <div align="center">
   <a href="https://github.com/sponsors/Anthonyy232"><img src="https://img.shields.io/badge/Sponsor_on_GitHub-d75594?style=for-the-badge&logo=github&logoColor=white" alt="Sponsor on GitHub"></a>
@@ -150,4 +166,4 @@ If you enjoy using Nagi and want to support its development, you can do so via G
 
 ## 📄 License
 
-This project is licensed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for details.
+Like the original Nagi, this fork is licensed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for details. The changes made in this fork are listed in [What changed in this fork](#-what-changed-in-this-fork).

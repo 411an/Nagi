@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Įvyko klaida atkuriant programos duomenis: {0}. Bandykite paleisti programą iš naujo rankiniu būdu.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Klaida</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Nepavyko prisijungti prie Last.fm. Bandykite dar kartą vėliau.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Autentifikacija nepavyko</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Nepavyko gauti sesijos iš Last.fm. Bandykite prisijungti dar kartą.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Atsijungti nuo Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Ar tikrai norite atsijungti nuo Last.fm paskyros? Jūsų klausymosi istorija bus išsaugota Last.fm, tačiau "Nagi" nebegalės siųsti klausymosi duomenų.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Atsijungti</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Eksportavimas sėkmingas</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Nuskaito atlikėjų ID (būtina TheAudioDB ir Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Aukštos kokybės atlikėjų nuotraukos ir biografijos (reikalingas MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Tik aukštos kokybės atlikėjų nuotraukos (reikalingas MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Tik atlikėjų nuotraukos</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Atlikėjų biografijos ir nuotraukos (atsarginis variantas)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Atidaryti su Nagi muzikos grotuvu</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nagi paleistis</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Ankstesnis</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Atstatyti visus duomenis</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integracijos</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Prijunkite savo Last.fm paskyrą, kad įrašytumėte kūrinius ir rodytumėte šiuo metu grojančią dainą.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Prisijungti</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Baigti</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Atšaukti</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Atsijungti</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Įjungti scrobbling</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Automatiškai pridėti kūrinius, kurių klausotės Nagi, į savo Last.fm profilį.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Atnaujinti „Dabar grojama“</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Rodykite savo draugams Last.fm, ko šiuo metu klausotės realiuoju laiku.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Siųsti klausymus į "ListenBrainz" (atvirą "Last.fm" alternatyvą).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Vartotojo prieigos raktas</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Įklijuokite savo prieigos raktą iš listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Patikrinti ryšį</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Prisijungta kaip {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Ryšys nepavyko: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Siųsti klausymus (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Siųsti "dabar groja" atnaujinimus</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Išplėstiniai</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>Serverio URL</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Atsijungti nuo "ListenBrainz"?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Tai pašalins jūsų išsaugotą prieigos raktą. Galite prisijungti iš naujo bet kuriuo metu.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Atsijungti</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Rodyti savo dabartinę klausymosi veiklą kaip būseną „Discord“.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Išmanusis grojaraštis</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0} min. {1} s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Groti su poaplankiais</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Pridėti su poaplankiais</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Atgal</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Stabdyti</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Ieškoti</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Sąrašas</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Grojaraščiai</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Eilė</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spektras</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>PAVADINIMAS</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ATLIKĖJAS</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUMAS</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>ŽANRAS / METAI</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Iš eilės</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Kartoti grojaraštį</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Kartoti kūrinį</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Maišyti kūrinius</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Maišyti albumus</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Atsitiktinai</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Žyma / failo pavadinimas</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>BE NUOSTOLIŲ</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>KŪRINYS</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>IŠ VISO</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>PRAĖJO</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>LIKO</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Pavadinimas</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Trukmė</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Kūrinių: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Failo informacija</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Failo informacija</value>
   </data>
 </root>

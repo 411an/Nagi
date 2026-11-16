@@ -13,12 +13,17 @@ namespace Nagi.Core.Services.Implementations;
 /// </summary>
 public class ReplayGainService : IReplayGainService
 {
-    private const double ReplayGainReference = -14.0; // -14 LUFS: matches streaming platforms (YouTube, Apple) and RG1
+    // -18 LUFS is the ReplayGain 2.0 reference. The gain is written into the audio files, so other players
+    // read it too; -14 made every file 4 dB louder than the standard. Based on upstream Nagi 867eb9ab.
+    private const double ReplayGainReference = -18.0;
     private readonly IDbContextFactory<MusicDbContext> _contextFactory;
     private readonly ILogger<ReplayGainService> _logger;
     private readonly LoudnessMeter _loudnessMeter;
     private readonly IPcmExtractor _pcmExtractor;
     private readonly SemaphoreSlim _dbLock = new(1, 1);
+    private readonly object _passLock = new();
+    private bool _isPassRunning;
+    private bool _isAnotherRoundRequested;
     private bool _disposed;
 
     public ReplayGainService(
@@ -99,29 +104,20 @@ public class ReplayGainService : IReplayGainService
             return false;
         }
 
+        if (song.IsCueTrack)
+        {
+            _logger.LogDebug("Skipping ReplayGain calculation for CUE track {SongId}.", songId);
+            return false;
+        }
+
         var result = await CalculateAsync(song.FilePath, cancellationToken).ConfigureAwait(false);
         if (result == null) return false;
 
         var (gainDb, peak) = result.Value;
 
-        // Write tags to file using ATL.NET
-        try
-        {
-            var track = new Track(song.FilePath);
-            track.AdditionalFields["REPLAYGAIN_TRACK_GAIN"] = $"{gainDb:F2} dB";
-            track.AdditionalFields["REPLAYGAIN_TRACK_PEAK"] = $"{peak:F6}";
-
-            if (!track.Save())
-            {
-                _logger.LogError("Failed to save ReplayGain tags to file: {FilePath}", song.FilePath);
-                return false;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error writing ReplayGain tags to file: {FilePath}", song.FilePath);
-            return false;
-        }
+        // The player normalizes from the database, so a file whose tags can't be written (read-only, say)
+        // still gets its gain and isn't analyzed again. Based on upstream Nagi.
+        TagFileSafely(song.FilePath, gainDb, peak);
 
         // Update database - handle concurrency and SQLite filing safely with a semaphore
         await _dbLock.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -152,10 +148,56 @@ public class ReplayGainService : IReplayGainService
     /// <inheritdoc />
     public async Task ScanLibraryAsync(IProgress<ScanProgress>? progress = null, CancellationToken cancellationToken = default)
     {
+        // Passes write tags into the audio files, so two must never run at once. Settings and the library
+        // scanner both start passes. A caller arriving during a pass returns at once and has that pass run
+        // one more round, which only picks up songs still missing gain. Based on upstream Nagi 6f25f396.
+        lock (_passLock)
+        {
+            if (_isPassRunning)
+            {
+                _logger.LogDebug("ReplayGain scan already running. Queuing one more round.");
+                _isAnotherRoundRequested = true;
+                return;
+            }
+
+            _isPassRunning = true;
+        }
+
+        try
+        {
+            do await ScanSongsWithoutReplayGainAsync(progress, cancellationToken).ConfigureAwait(false);
+            while (TakeAnotherRoundRequest());
+        }
+        catch
+        {
+            // A cancelled or failed pass drops queued rounds; the next library scan picks those songs up.
+            lock (_passLock) _isPassRunning = _isAnotherRoundRequested = false;
+            throw;
+        }
+    }
+
+    // Ends the pass in the same lock that callers check, so a request cannot slip in between.
+    private bool TakeAnotherRoundRequest()
+    {
+        lock (_passLock)
+        {
+            if (_isAnotherRoundRequested)
+            {
+                _isAnotherRoundRequested = false;
+                return true;
+            }
+
+            _isPassRunning = false;
+            return false;
+        }
+    }
+
+    private async Task ScanSongsWithoutReplayGainAsync(IProgress<ScanProgress>? progress, CancellationToken cancellationToken)
+    {
         await using var context = await _contextFactory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
 
         var songsWithoutReplayGain = await context.Songs
-            .Where(s => s.ReplayGainTrackGain == null)
+            .Where(s => s.ReplayGainTrackGain == null && s.CueTrackNumber == 0)
             .Select(s => s.Id)
             .ToListAsync(cancellationToken).ConfigureAwait(false);
 
@@ -197,6 +239,13 @@ public class ReplayGainService : IReplayGainService
                     var song = await workerContext.Songs.FindAsync(new object[] { songId }, ct).ConfigureAwait(false);
                     if (song == null) continue;
 
+                    // The song may have become a CUE track since the scan query was built.
+                    if (song.IsCueTrack)
+                    {
+                        Interlocked.Increment(ref processed);
+                        continue;
+                    }
+
                     try
                     {
                         // Calculate - ensure we capture the session whether success or failure
@@ -208,13 +257,13 @@ public class ReplayGainService : IReplayGainService
                             var gainDb = calcResult.GainDb.Value;
                             var peak = calcResult.Peak.Value;
 
-                            // Tag file
-                            if (TagFileSafely(song.FilePath, gainDb, peak))
-                            {
-                                // Stage for DB (No SaveChanges yet)
-                                song.ReplayGainTrackGain = gainDb;
-                                song.ReplayGainTrackPeak = peak;
-                            }
+                            // Keep the gain even when the tags can't be written (read-only file), so the
+                            // song is normalized and not analyzed again on every scan.
+                            TagFileSafely(song.FilePath, gainDb, peak);
+
+                            // Stage for DB (No SaveChanges yet)
+                            song.ReplayGainTrackGain = gainDb;
+                            song.ReplayGainTrackPeak = peak;
                         }
                     }
                     catch (Exception ex)
@@ -309,20 +358,31 @@ public class ReplayGainService : IReplayGainService
         }
     }
 
-    private bool TagFileSafely(string filePath, double gainDb, double peak)
+    private void TagFileSafely(string filePath, double gainDb, double peak)
     {
         try
         {
             var track = new Track(filePath);
-            track.AdditionalFields["REPLAYGAIN_TRACK_GAIN"] = $"{gainDb:F2} dB";
-            track.AdditionalFields["REPLAYGAIN_TRACK_PEAK"] = $"{peak:F6}";
-            return track.Save();
+            // ReplayGain values always use a dot. The current culture wrote "-3,21 dB" on Russian Windows,
+            // which other players misread and Nagi itself truncated.
+            track.AdditionalFields["REPLAYGAIN_TRACK_GAIN"] = FormatGain(gainDb);
+            track.AdditionalFields["REPLAYGAIN_TRACK_PEAK"] = FormatPeak(peak);
+            if (!track.Save()) _logger.LogError("Failed to save ReplayGain tags to file: {FilePath}", filePath);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error writing ReplayGain tags to file: {FilePath}", filePath);
-            return false;
         }
+    }
+
+    internal static string FormatGain(double gainDb)
+    {
+        return FormattableString.Invariant($"{gainDb:F2} dB");
+    }
+
+    internal static string FormatPeak(double peak)
+    {
+        return FormattableString.Invariant($"{peak:F6}");
     }
 
     /// <inheritdoc />

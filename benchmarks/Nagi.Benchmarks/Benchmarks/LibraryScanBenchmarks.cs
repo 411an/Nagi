@@ -34,8 +34,9 @@ public class LibraryScanBenchmarks
         var services = new ServiceCollection();
 
         var dbPath = Path.Combine(_testPath, "test.db");
+        var connectionString = new SqliteConnectionStringBuilder { DataSource = dbPath }.ConnectionString;
         services.AddDbContextFactory<MusicDbContext>(options =>
-            options.UseSqlite($"Data Source={dbPath}"));
+            options.UseSqlite(connectionString));
 
         services.AddSingleton<IFileSystemService, TestFileSystemService>();
         services.AddSingleton<IPathConfiguration>(sp => {
@@ -47,7 +48,6 @@ public class LibraryScanBenchmarks
         });
 
         services.AddSingleton<IImageProcessor>(Substitute.For<IImageProcessor>());
-        services.AddSingleton<ILastFmMetadataService>(Substitute.For<ILastFmMetadataService>());
 
         var settingsService = Substitute.For<ISettingsService>();
         settingsService.GetVolumeNormalizationEnabledAsync().Returns(false);
@@ -55,9 +55,6 @@ public class LibraryScanBenchmarks
 
         services.AddSingleton<IReplayGainService>(Substitute.For<IReplayGainService>());
         services.AddSingleton<IMusicBrainzService>(Substitute.For<IMusicBrainzService>());
-        services.AddSingleton<IFanartTvService>(Substitute.For<IFanartTvService>());
-        services.AddSingleton<ITheAudioDbService>(Substitute.For<ITheAudioDbService>());
-        services.AddSingleton<IApiKeyService>(Substitute.For<IApiKeyService>());
         services.AddSingleton<IProviderPipelineProvider>(Substitute.For<IProviderPipelineProvider>());
         services.AddSingleton<IMetadataService, AtlMetadataService>();
         services.AddHttpClient();

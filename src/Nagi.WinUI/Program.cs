@@ -3,11 +3,11 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Activation;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Settings;
+using Nagi.Core.Helpers;
 using Nagi.WinUI.Helpers;
 using WinRT;
 
@@ -25,21 +25,27 @@ public static class Program
     {
         ComWrappersSupport.InitializeComWrappers();
 
-        // Ensure COM initialization in release builds
 #if !DEBUG
-                Thread.Sleep(100);
+        Thread.Sleep(100);
 #endif
 
-        // Check for single instance
+        try
+        {
+            AppDataLocator.Resolve(AppContext.BaseDirectory, args);
+        }
+        catch (AppDataLocatorException ex)
+        {
+            NativeMessageBox(ex.Message);
+            return 1;
+        }
+
         var logger = CreateBootstrapLogger();
         _singleInstanceManager = new SingleInstanceManager(logger);
 
-
         if (!_singleInstanceManager.TryAcquire())
         {
-            // Another instance is running, send activation message and exit
             logger?.LogInformation("Secondary instance detected, sending activation to primary");
-            var filePath = TryGetFilePathFromArgs(args);
+            var filePath = CommandLineArgs.TryGetFilePath(args);
 
             using var activationTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             var activationSent = _singleInstanceManager
@@ -60,7 +66,6 @@ public static class Program
             return 0;
         }
 
-        // Primary instance - subscribe to activation events
         _singleInstanceManager.ActivationReceived += OnActivationReceived;
 
         logger?.LogInformation("Primary instance starting");
@@ -74,67 +79,31 @@ public static class Program
 
         Application.Start(p =>
         {
-            // Configure UI thread synchronization context
             var context = new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread());
             SynchronizationContext.SetSynchronizationContext(context);
             _ = new App();
         });
 
-        // Cleanup on exit
         _singleInstanceManager.ActivationReceived -= OnActivationReceived;
         _singleInstanceManager.Dispose();
 
         return 0;
     }
 
-    /// <summary>
-    ///     Creates a minimal logger for bootstrapping before the full DI container is available.
-    /// </summary>
-    private static ILogger<SingleInstanceManager>? CreateBootstrapLogger()
-    {
-        try
-        {
-            // We can't use the full logging infrastructure yet, so return null
-            // The SingleInstanceManager will work without logging
-            return null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
+    private static ILogger<SingleInstanceManager>? CreateBootstrapLogger() => null;
 
-    /// <summary>
-    ///     Handles activation messages from secondary instances.
-    /// </summary>
     private static void OnActivationReceived(string? filePath)
     {
         App.CurrentApp?.HandleExternalActivation(filePath);
     }
 
-    /// <summary>
-    ///     Extracts file path from command line arguments.
-    /// </summary>
-    private static string? TryGetFilePathFromArgs(string[] args)
+    public static string? TryGetFilePathFromArgs(string[] args) => CommandLineArgs.TryGetFilePath(args);
+
+    private static void NativeMessageBox(string message)
     {
-        if (args == null || args.Length == 0) return null;
-
-        // The last argument is typically the file path
-        var potentialPath = args[^1];
-
-        if (!string.IsNullOrEmpty(potentialPath) &&
-            (File.Exists(potentialPath) || Directory.Exists(potentialPath)))
-        {
-            return potentialPath;
-        }
-
-        return null;
+        MessageBox(IntPtr.Zero, message, "Nagi", 0x00000010);
     }
 
-    #region P/Invoke Declarations
-
-    [DllImport("shell32.dll", SetLastError = true)]
-    private static extern int SetCurrentProcessExplicitAppUserModelID([MarshalAs(UnmanagedType.LPWStr)] string AppID);
-
-    #endregion
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern int MessageBox(IntPtr hWnd, string lpText, string lpCaption, uint uType);
 }

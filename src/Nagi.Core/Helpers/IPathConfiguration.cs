@@ -56,4 +56,9 @@ public interface IPathConfiguration
     ///     Gets the path to the directory where log files are stored.
     /// </summary>
     string LogsDirectory { get; }
+
+    /// <summary>
+    ///     Gets the path to the directory used for short-lived image caches (e.g. ImageEx).
+    /// </summary>
+    string ImageCachePath { get; }
 }

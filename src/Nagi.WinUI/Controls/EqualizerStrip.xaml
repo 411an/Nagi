@@ -1,0 +1,72 @@
+<UserControl
+    x:Class="Nagi.WinUI.Controls.EqualizerStrip"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:resources="using:Nagi.WinUI.Resources"
+    xmlns:viewmodels="using:Nagi.WinUI.ViewModels">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock
+            HorizontalAlignment="Center"
+            Style="{StaticResource ShellMetaLabelStyle}"
+            Text="{x:Bind resources:Strings.SettingsPage_Equalizer_Preamp, Mode=OneTime}" />
+        <Grid Grid.Row="1" ColumnSpacing="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ItemsRepeater x:Name="BandRepeater" HorizontalAlignment="Stretch">
+                <ItemsRepeater.Layout>
+                    <StackLayout Orientation="Horizontal" Spacing="2" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:EqualizerBandViewModel">
+                        <StackPanel MinWidth="28" Spacing="2">
+                            <Slider
+                                Background="{StaticResource ShellSliderTrackBrush}"
+                                Height="88"
+                                HorizontalAlignment="Center"
+                                Maximum="20"
+                                Minimum="-20"
+                                Orientation="Vertical"
+                                StepFrequency="0.1"
+                                Style="{StaticResource EqualizerSliderStyle}"
+                                Value="{x:Bind Gain, Mode=TwoWay}" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Foreground="{StaticResource ShellMutedTextBrush}"
+                                FontSize="10"
+                                Text="{x:Bind FrequencyLabel}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+            <StackPanel
+                x:Name="PreampHost"
+                Grid.Column="1"
+                MinWidth="36"
+                Spacing="2">
+                <Slider
+                    x:Name="PreampSlider"
+                    Background="{StaticResource ShellSliderTrackBrush}"
+                    Height="88"
+                    HorizontalAlignment="Center"
+                    Maximum="20"
+                    Minimum="-20"
+                    Orientation="Vertical"
+                    StepFrequency="0.1"
+                    Style="{StaticResource EqualizerSliderStyle}"
+                    ValueChanged="PreampSlider_ValueChanged" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Foreground="{StaticResource ShellMutedTextBrush}"
+                    FontSize="10"
+                    Text="{x:Bind resources:Strings.SettingsPage_Equalizer_Preamp, Mode=OneTime}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

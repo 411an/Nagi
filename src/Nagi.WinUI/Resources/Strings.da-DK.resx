@@ -489,27 +489,6 @@ For den bedste oplevelse bedes du genstarte Nagi uden administratorrettigheder.<
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Der opstod en fejl under nulstilling af programdata: {0}. Prøv venligst at genstarte appen manuelt.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Fejl</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Kunne ikke oprette forbindelse til Last.fm. Prøv venligst igen senere.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Godkendelse mislykkedes</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Kunne ikke hente en session fra Last.fm. Prøv venligst at oprette forbindelse igen.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Frakobl Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Er du sikker på, at du vil frakoble din Last.fm-konto? Din scrobbling-historik vil blive bevaret på Last.fm, men Nagi vil ikke længere kunne scrobble.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Frakobl</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Eksport lykkedes</value>
   </data>
@@ -725,17 +704,8 @@ For den bedste oplevelse bedes du genstarte Nagi uden administratorrettigheder.<
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Henter kunstner-ID'er (kræves til TheAudioDB og Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Kunstnerbilleder og biografier i høj kvalitet (kræver MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Kun kunstnerbilleder i høj kvalitet (kræver MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Kun kunstnerbilleder</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Kunstnerbiografier og -billeder (fallback)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1063,9 +1033,6 @@ Fejl: {1}</value>
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Åbn med Nagi Musikafspiller</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nagi Opstart</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Forrige</value>
@@ -1829,90 +1796,6 @@ Fejl: {1}</value>
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Nulstil alle data</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integrationer</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Forbind din Last.fm-konto for at scrobble numre og vise din nuværende afspillende sang.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Forbind</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Fuldfør</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Annuller</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Frakobl</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Aktiver scrobbling</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Føj automatisk de numre, du lytter til på Nagi, til din Last.fm-profil.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Opdater 'Afspiller nu'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Vis dine venner på Last.fm, hvad du lytter til i realtid.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Send dine afspilninger til ListenBrainz (et åbent alternativ til Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Brugertoken</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Indsæt dit token fra listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Test forbindelse</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Forbundet som {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Forbindelse mislykkedes: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Send afspilninger (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Send "spiller nu"-opdateringer</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Avanceret</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>Server-URL</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Frakobl fra ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Dette vil fjerne dit gemte token. Du kan genoprette forbindelse når som helst.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Frakobl</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Vis din nuværende lytteaktivitet som din status på Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Smart afspilningsliste</value>
   </data>
@@ -2239,5 +2122,104 @@ Fejl: {1}</value>
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Afspil med undermapper</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Tilføj med undermapper</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Tilbage</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Søg</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Playlister</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Kø</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spektrum</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>TITEL</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>KUNSTNER</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>GENRE / ÅR</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>I rækkefølge</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Gentag playliste</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Gentag nummer</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Bland numre</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Bland album</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Tilfældig</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Tag / filnavn</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>TABSFRI</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>NUMMER</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>I ALT</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>FORLØBET</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>TILBAGE</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBIT/S</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Varighed</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Numre: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Filoplysninger</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Filoplysninger</value>
   </data>
 </root>

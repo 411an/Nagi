@@ -218,6 +218,8 @@ public class M3uPlaylistExportService : IPlaylistExportService
             {
                 var durationSeconds = (int)song.Duration.TotalSeconds;
                 sb.AppendLine($"#EXTINF:{durationSeconds},{song.ArtistName} - {song.Title}");
+                foreach (var option in CuePlayback.GetMediaOptions(song))
+                    sb.AppendLine($"#EXTVLCOPT{option}");
                 sb.AppendLine(song.FilePath);
             }
 

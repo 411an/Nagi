@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Tharla earráid agus sonraí feidhmchláir á n-athshocrú: {0}. Bain triail as an aip a atosú de láimh le do thoil.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Earráid</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Níorbh fhéidir ceangal le Last.fm. Bain triail eile as níos déanaí le do thoil.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Theip ar Fhíordheimhniú</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Níorbh fhéidir seisiún a fháil ó Last.fm. Bain triail as ceangal arís le do thoil.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Dínasc Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>An bhfuil tú cinnte gur mhaith leat do chuntas Last.fm a dhínascadh? Caomhnófar do stair scrobbling ar Last.fm, ach ní bheidh Nagi in ann scrobble a dhéanamh a thuilleadh.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Dínasc</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Easpórtáil Rathúil</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Faigheann sé Aitheantais ealaíontóra (riachtanach do TheAudioDB agus Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Íomhánna agus beathaisnéisí ardcháilíochta ealaíontóirí (éilíonn MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Íomhánna ardcháilíochta ealaíontóirí amháin (éilíonn MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Íomhánna ealaíontóirí amháin</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Beathaisnéisí agus íomhánna ealaíontóirí (cúlú)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Oscail le Seinnteoir Ceoil Nagi</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Tús Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Roimhe Seo</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Athshocraigh Gach Sonraí</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Comhtháthaithe</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Ceangail do chuntas Last.fm chun rianta a scroblaigh agus chun an t-amhrán atá á sheinm agat faoi láthair a thaispeáint.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Ceangail</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Comhlánaigh</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Cealaigh</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Dícheangail</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Cumasaigh scroblaíocht</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Cuir na rianta a éisteann tú le Nagi go huathoibríoch le do phróifíl Last.fm.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Nuashonraigh 'Ag Seinm Anois'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Taispeáin do chairde ar Last.fm cad atá á éisteacht agat faoi láthair i bhfíor-am.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Cuir isteach do chuid éisteachtaí chuig ListenBrainz (rogha oscailte eile seachas Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Comhartha Úsáideora</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Greamaigh do chomhartha ó listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Tástáil an nasc</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Ceangailte mar {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Theip ar an nasc: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Cuir isteach éisteachtaí (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Cuir isteach nuashonruithe "ag seinm anois"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Ardghnéithe</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL Freastalaí</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Dínasc ó ListenBrainz?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Bainfidh sé seo do chomhartha sábháilte. Is féidir leat athcheangal ag am ar bith.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Dínasc</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Taispeáin do ghníomhaíocht éisteachta reatha mar do stádas ar Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Seinmliosta Cliste</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Seinn le fofhillteáin</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Cuir leis le fofhillteáin</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Siar</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Stad</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Cuardaigh</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Liosta</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Seinmliostaí</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Scuaine</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Speictream</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>TEIDEAL</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>EALAÍONTÓIR</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBAM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>SEÁNRA / BLIAIN</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>In ord</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Athsheinn an seinmliosta</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Athsheinn an rian</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Suaith na rianta</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Suaith na halbaim</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Randamach</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Clib / ainm comhaid</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>GAN CHAILLTEANAS</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>RIAN</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>IOMLÁN</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>CAITE</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>FÁGTHA</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Teideal</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Fad</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Rianta: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Faisnéis comhaid</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Faisnéis comhaid</value>
   </data>
 </root>

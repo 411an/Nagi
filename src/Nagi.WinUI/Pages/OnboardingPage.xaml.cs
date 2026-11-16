@@ -32,7 +32,7 @@ public sealed partial class OnboardingPage : Page, ICustomTitleBarProvider
     /// </summary>
     public OnboardingViewModel ViewModel { get; }
 
-    public TitleBar GetAppTitleBarElement()
+    public UIElement GetAppTitleBarElement()
     {
         return AppTitleBar;
     }

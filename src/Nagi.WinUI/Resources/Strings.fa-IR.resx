@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>هنگام بازنشانی داده‌های برنامه خطایی رخ داد: {0}. لطفاً برنامه را به صورت دستی مجدداً راه‌اندازی کنید.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>خطا</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>امکان اتصال به Last.fm وجود نداشت. لطفاً بعداً دوباره تلاش کنید.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>احراز هویت ناموفق بود</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>امکان دریافت جلسه از Last.fm وجود نداشت. لطفاً دوباره تلاش کنید.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>قطع اتصال Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>آیا مطمئن هستید که می‌خواهید حساب Last.fm خود را قطع کنید؟ تاریخچه scrobbling شما در Last.fm حفظ خواهد شد، اما Nagi دیگر قادر به scrobble نخواهد بود.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>قطع اتصال</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>برون‌بری موفق</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>شناسه‌های هنرمندان را واکشی می‌کند (برای TheAudioDB و Fanart.tv الزامی است)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>تصاویر و بیوگرافی‌های هنرمندان با کیفیت بالا (نیاز به MusicBrainz دارد)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>فقط تصاویر هنرمندان با کیفیت بالا (نیاز به MusicBrainz دارد)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>فقط تصاویر هنرمندان</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>بیوگرافی و تصاویر هنرمندان (جایگزین)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>ناگی</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>باز کردن با پخش‌کننده موسیقی Nagi</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>راه‌اندازی Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>قبلی</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>بازنشانی همه داده‌ها</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>ادغام‌ها</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>حساب Last.fm خود را متصل کنید تا آهنگ‌ها را اسکرابل کرده و آهنگ در حال پخش شما را نمایش دهد.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>اتصال</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>تکمیل</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>لغو</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>قطع اتصال</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>فعال کردن اسکرابلینگ</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>آهنگ‌هایی را که در Nagi گوش می‌دهید، به طور خودکار به پروفایل Last.fm خود اضافه کنید.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>به‌روزرسانی 'در حال پخش'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>به دوستان خود در Last.fm نشان دهید که در حال حاضر به صورت زنده چه چیزی گوش می‌دهید.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>شنیده‌های خود را به ListenBrainz ارسال کنید (یک جایگزین باز برای Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>توکن کاربر</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>توکن خود را از listenbrainz.org/settings اینجا بچسبانید</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>آزمایش اتصال</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>به عنوان {0} متصل شد</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>اتصال ناموفق بود: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>ارسال شنیده‌ها (اسکرابلینگ)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>ارسال به‌روزرسانی‌های "در حال پخش"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>پیشرفته</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>نشانی اینترنتی سرور</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>قطع ارتباط از ListenBrainz؟</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>این کار توکن ذخیره‌شده شما را حذف خواهد کرد. می‌توانید هر زمان دوباره متصل شوید.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>قطع ارتباط</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>فعالیت گوش دادن فعلی خود را به عنوان وضعیت شما در Discord نمایش دهید.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>لیست پخش هوشمند</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0} دقیقه {1} ثانیه</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>پخش همراه با زیرپوشه‌ها</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>افزودن همراه با زیرپوشه‌ها</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>بازگشت</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>توقف</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>جستجو</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>فهرست</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>لیست‌های پخش</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>اکولایزر</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>صف</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>طیف</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>عنوان</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>هنرمند</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>آلبوم</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>ژانر / سال</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>به ترتیب</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>تکرار لیست پخش</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>تکرار قطعه</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>درهم‌سازی قطعه‌ها</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>درهم‌سازی آلبوم‌ها</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>تصادفی</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>برچسب / نام فایل</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>بدون افت</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>قطعه</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>مجموع</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>سپری‌شده</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>باقی‌مانده</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>عنوان</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>مدت</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>قطعه‌ها: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>اطلاعات فایل</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>اطلاعات فایل</value>
   </data>
 </root>

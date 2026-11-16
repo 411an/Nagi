@@ -13,22 +13,16 @@
     xmlns:resources="using:Nagi.WinUI.Resources"
     xmlns:viewmodels="using:Nagi.WinUI.ViewModels"
     mc:Ignorable="d"
-    Background="Transparent"
+    Background="{StaticResource ShellWindowBackgroundBrush}"
     NavigationCacheMode="Required">
 
 
     <Page.Resources>
-        <localConverters:ElementThemeToFriendlyStringConverter x:Key="ThemeToStringConverter" />
-        <localConverters:BackdropMaterialToStringConverter x:Key="BackdropMaterialToStringConverter" />
-        <localConverters:StringToFontFamilyConverter x:Key="StringToFontFamilyConverter" />
         <localConverters:FloatToDecimalStringConverter x:Key="FloatToDecimalStringConverter" />
-        <localConverters:BooleanToOpacityConverter x:Key="BooleanToOpacityConverter" />
         <localConverters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <localConverters:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" Invert="True" />
         <localConverters:BooleanToInverseBooleanConverter x:Key="BooleanToInverseBooleanConverter" />
         <localConverters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-        <localConverters:PlayerBackgroundMaterialToStringConverter x:Key="PlayerBackgroundMaterialToStringConverter" />
-        <localConverters:DoubleToPercentageConverter x:Key="DoubleToPercentageConverter" />
 
         <!-- Shared template for service provider items in Lyrics and Metadata source lists -->
         <DataTemplate x:Key="ServiceProviderItemTemplate" x:DataType="viewmodels:ServiceProviderSettingViewModel">
@@ -187,142 +181,6 @@
 
                 <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{x:Bind resources:Strings.SettingsPage_Section_Appearance, Mode=OneTime}" />
 
-                <controls:SettingsExpander
-                    x:Name="ThemeSettingsExpander"
-                    Header="{x:Bind resources:Strings.SettingsPage_Theme_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_Theme_Description, Mode=OneTime}"
-                    IsExpanded="False">
-                    <controls:SettingsExpander.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
-                    </controls:SettingsExpander.HeaderIcon>
-                    <ComboBox
-                        MinWidth="300"
-                        HorizontalAlignment="Right"
-                        ItemsSource="{x:Bind ViewModel.AvailableThemes}"
-                        SelectedItem="{x:Bind ViewModel.SelectedTheme, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="mux:ElementTheme">
-                                <TextBlock Text="{x:Bind Converter={StaticResource ThemeToStringConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-
-                    <controls:SettingsExpander.Items>
-                        <controls:SettingsCard>
-                            <controls:SettingsCard.Header>
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Text="{x:Bind resources:Strings.SettingsPage_AccentColor, Mode=OneTime}" VerticalAlignment="Center" />
-                                    <HyperlinkButton
-                                        VerticalAlignment="Center"
-                                        Command="{x:Bind ViewModel.ResetAccentColorCommand}"
-                                        Style="{StaticResource AnimatedHyperlinkButtonStyle}"
-                                        Content="{x:Bind resources:Strings.SettingsPage_ResetAccentColor_Content, Mode=OneTime}"
-                                        FontSize="12"
-                                        Padding="4,2" />
-                                </StackPanel>
-                            </controls:SettingsCard.Header>
-                            <ColorPicker
-                                HorizontalAlignment="Right"
-                                Color="{x:Bind ViewModel.AccentColor, Mode=TwoWay}"
-                                IsAlphaEnabled="False"
-                                IsColorChannelTextInputVisible="False"
-                                IsColorSliderVisible="True"
-                                IsColorSpectrumVisible="True"
-                                IsHexInputVisible="True" />
-                        </controls:SettingsCard>
-                    </controls:SettingsExpander.Items>
-                </controls:SettingsExpander>
-
-                <controls:SettingsCard
-                    Header="{x:Bind resources:Strings.SettingsPage_WindowMaterial_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_WindowMaterial_Description, Mode=OneTime}">
-                    <controls:SettingsCard.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE7C4;" />
-                    </controls:SettingsCard.HeaderIcon>
-                    <ComboBox
-                        MinWidth="300"
-                        HorizontalAlignment="Right"
-                        ItemsSource="{x:Bind ViewModel.AvailableBackdropMaterials}"
-                        SelectedItem="{x:Bind ViewModel.SelectedBackdropMaterial, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="models:BackdropMaterial">
-                                <TextBlock
-                                    Text="{x:Bind Converter={StaticResource BackdropMaterialToStringConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </controls:SettingsCard>
-
-                <controls:SettingsCard
-                    Header="{x:Bind resources:Strings.SettingsPage_DynamicTheming_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_DynamicTheming_Description, Mode=OneTime}">
-                    <controls:SettingsCard.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
-                    </controls:SettingsCard.HeaderIcon>
-                    <ToggleSwitch
-                        HorizontalAlignment="Right"
-                        IsOn="{x:Bind ViewModel.IsDynamicThemingEnabled, Mode=TwoWay}" />
-                </controls:SettingsCard>
-
-                <!-- Player Styling Settings -->
-                <controls:SettingsExpander
-                    Description="{x:Bind resources:Strings.SettingsPage_PlayerStyling_Description, Mode=OneTime}">
-                    <controls:SettingsExpander.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="{x:Bind resources:Strings.SettingsPage_PlayerStyling_Header, Mode=OneTime}" VerticalAlignment="Center" />
-                            <HyperlinkButton
-                                VerticalAlignment="Center"
-                                Command="{x:Bind ViewModel.ResetPlayerDesignSettingsCommand}"
-                                Style="{StaticResource AnimatedHyperlinkButtonStyle}"
-                                Content="{x:Bind resources:Strings.SettingsPage_ResetAccentColor_Content, Mode=OneTime}"
-                                FontSize="12"
-                                Padding="4,2" />
-                        </StackPanel>
-                    </controls:SettingsExpander.Header>
-                    <controls:SettingsExpander.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE793;" />
-                    </controls:SettingsExpander.HeaderIcon>
-
-                    <ComboBox
-                        MinWidth="300"
-                        HorizontalAlignment="Right"
-                        ItemsSource="{x:Bind ViewModel.AvailablePlayerBackgroundMaterials}"
-                        SelectedItem="{x:Bind ViewModel.SelectedPlayerBackgroundMaterial, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="models:PlayerBackgroundMaterial">
-                                <TextBlock Text="{x:Bind Converter={StaticResource PlayerBackgroundMaterialToStringConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-
-                    <controls:SettingsExpander.Items>
-                        <controls:SettingsCard>
-                            <controls:SettingsCard.Header>
-                                <StackPanel Orientation="Vertical" Spacing="4">
-                                    <TextBlock Text="{x:Bind resources:Strings.SettingsPage_TintIntensity_Header, Mode=OneTime}" />
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                        Text="{x:Bind resources:Strings.SettingsPage_TintIntensity_Description, Mode=OneTime}" />
-                                </StackPanel>
-                            </controls:SettingsCard.Header>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
-                                <Slider
-                                    Width="300"
-                                    VerticalAlignment="Center"
-                                    Maximum="1.0"
-                                    Minimum="0.0"
-                                    StepFrequency="0.01"
-                                    Style="{StaticResource EqualizerSliderStyle}"
-                                    ThumbToolTipValueConverter="{StaticResource DoubleToPercentageConverter}"
-                                    Value="{x:Bind ViewModel.PlayerTintIntensity, Mode=TwoWay}" />
-                                <TextBlock
-                                    Width="40"
-                                    VerticalAlignment="Center"
-                                    Style="{ThemeResource CaptionTextBlockStyle}"
-                                    Text="{x:Bind ViewModel.PlayerTintIntensity, Mode=OneWay, Converter={StaticResource DoubleToPercentageConverter}}" />
-                            </StackPanel>
-                        </controls:SettingsCard>
-                    </controls:SettingsExpander.Items>
-                </controls:SettingsExpander>
-
                 <controls:SettingsCard
                     Header="{x:Bind resources:Strings.SettingsPage_Language_Header, Mode=OneTime}"
                     controls:SettingsCard.Description="{x:Bind resources:Strings.SettingsPage_Language_Description, Mode=OneTime}">
@@ -360,81 +218,6 @@
                     <ToggleSwitch
                         HorizontalAlignment="Right"
                         IsOn="{x:Bind ViewModel.IsRememberWindowPositionEnabled, Mode=TwoWay}" />
-                </controls:SettingsCard>
-
-                <controls:SettingsCard
-                    Header="{x:Bind resources:Strings.SettingsPage_RememberNavState_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_RememberNavState_Description, Mode=OneTime}">
-                    <controls:SettingsCard.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE700;" />
-                    </controls:SettingsCard.HeaderIcon>
-                    <ToggleSwitch
-                        HorizontalAlignment="Right"
-                        IsOn="{x:Bind ViewModel.IsRememberPaneStateEnabled, Mode=TwoWay}" />
-                </controls:SettingsCard>
-
-                <controls:SettingsCard
-                    Header="{x:Bind resources:Strings.SettingsPage_CustomizeNav_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_CustomizeNav_Description, Mode=OneTime}">
-                    <controls:SettingsCard.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE700;" />
-                    </controls:SettingsCard.HeaderIcon>
-
-                    <ListView
-                        Width="350"
-                        HorizontalAlignment="Right"
-                        AllowDrop="True"
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CanDragItems="True"
-                        CanReorderItems="True"
-                        CornerRadius="{StaticResource ControlCornerRadius}"
-                        ItemContainerStyle="{StaticResource NavigationListViewItemStyle}"
-                        ItemsSource="{x:Bind ViewModel.NavigationItems}"
-                        SelectionMode="Single">
-
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="navigation:NavigationItemSetting">
-                                <Grid x:Name="NavItemRoot" Padding="12,8" VerticalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="28" />
-                                        <ColumnDefinition Width="32" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <!-- Drag Handle -->
-                                    <FontIcon
-                                        Grid.Column="0"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                        FontSize="12"
-                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                        Glyph="&#xE76F;" />
-
-                                    <FontIcon
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontFamily="{x:Bind IconFontFamily, Converter={StaticResource StringToFontFamilyConverter}}"
-                                        Foreground="{ThemeResource AppPrimaryColorBrush}"
-                                        Glyph="{x:Bind IconGlyph}" />
-
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        Margin="8,0,12,0"
-                                        VerticalAlignment="Center"
-                                        FontWeight="SemiBold"
-                                        Text="{x:Bind DisplayName}" />
-
-                                    <ToggleSwitch
-                                        Grid.Column="3"
-                                        VerticalAlignment="Center"
-                                        IsOn="{x:Bind IsEnabled, Mode=TwoWay}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
                 </controls:SettingsCard>
 
                 <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{x:Bind resources:Strings.SettingsPage_Section_Player, Mode=OneTime}" />
@@ -599,177 +382,6 @@
                     </StackPanel>
                 </controls:SettingsCard>
 
-                <controls:SettingsCard>
-                    <controls:SettingsCard.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="{x:Bind resources:Strings.SettingsPage_CustomizePlayer, Mode=OneTime}" VerticalAlignment="Center" />
-                            <HyperlinkButton
-                                VerticalAlignment="Center"
-                                Command="{x:Bind ViewModel.ResetPlayerButtonsCommand}"
-                                Style="{StaticResource AnimatedHyperlinkButtonStyle}"
-                                Content="{x:Bind resources:Strings.SettingsPage_ResetPlayerButtons_Content, Mode=OneTime}"
-                                FontSize="12"
-                                Padding="4,2" />
-                        </StackPanel>
-                    </controls:SettingsCard.Header>
-                    <controls:SettingsCard.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE768;" />
-                    </controls:SettingsCard.HeaderIcon>
-
-                    <StackPanel Spacing="12" HorizontalAlignment="Right">
-                        <Border
-                            MinWidth="520"
-                            Padding="16"
-                            HorizontalAlignment="Right"
-                            Background="{ThemeResource LayerFillColorDefaultBrush}"
-                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            BorderThickness="1"
-                            CornerRadius="{StaticResource OverlayCornerRadius}">
-
-                            <ListView
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                AllowDrop="True"
-                                CanDragItems="True"
-                                CanReorderItems="True"
-                                ItemsSource="{x:Bind ViewModel.PlayerButtons, Mode=OneWay}"
-                                SelectionMode="None"
-                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                ScrollViewer.HorizontalScrollMode="Disabled"
-                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                ScrollViewer.VerticalScrollMode="Disabled">
-
-                                <ListView.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <ItemsStackPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ListView.ItemsPanel>
-
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="Padding" Value="0" />
-                                        <Setter Property="Margin" Value="2,0" />
-                                        <Setter Property="MinHeight" Value="0" />
-                                        <Setter Property="MinWidth" Value="0" />
-                                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="ListViewItem">
-                                                    <ListViewItemPresenter
-                                                        ContentMargin="{TemplateBinding Padding}"
-                                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                        DragBackground="Transparent"
-                                                        DragForeground="{ThemeResource TextFillColorPrimaryBrush}"
-                                                        PointerOverBackground="Transparent"
-                                                        SelectedBackground="Transparent"
-                                                        SelectionCheckMarkVisualEnabled="False" />
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:PlayerButtonSetting">
-                                        <Grid
-                                            x:Name="ButtonContainer"
-                                            Width="Auto"
-                                            MinWidth="28"
-                                            Padding="4,8"
-                                            Background="Transparent"
-                                            CornerRadius="6"
-                                            ToolTipService.ToolTip="{x:Bind DisplayName}">
-
-                                            <Border
-                                                x:Name="HoverHighlight"
-                                                Width="57"
-                                                Background="{ThemeResource SubtleFillColorSecondaryBrush}"
-                                                CornerRadius="6"
-                                                Visibility="{x:Bind IsNotSeparator, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                            <!-- Separator visual -->
-                                            <Border
-                                                x:Name="SeparatorVisual"
-                                                Width="2"
-                                                Height="100"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Background="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Opacity="0.7"
-                                                CornerRadius="1"
-                                                Visibility="{x:Bind IsSeparator, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                                            <!-- Button content -->
-                                            <StackPanel
-                                                Width="57"
-                                                Padding="0,8"
-                                                Spacing="6"
-                                                VerticalAlignment="Center"
-                                                Visibility="{x:Bind IsNotSeparator, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-
-                                                <!-- Drag indicator (shown on hover) -->
-                                                <FontIcon
-                                                    x:Name="DragIndicator"
-                                                    HorizontalAlignment="Center"
-                                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                    FontSize="10"
-                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                                    Glyph="&#xE76F;" />
-
-                                                <!-- Button preview -->
-                                                <Button
-                                                    Width="36"
-                                                    Height="36"
-                                                    HorizontalAlignment="Center"
-                                                    IsHitTestVisible="False"
-                                                    Opacity="{x:Bind IsEnabled, Converter={StaticResource BooleanToOpacityConverter}, Mode=OneWay}"
-                                                    Style="{StaticResource MediaControlButtonStyle}">
-                                                    <FontIcon
-                                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                        FontSize="14"
-                                                        Glyph="{x:Bind IconGlyph}" />
-                                                </Button>
-
-                                                <!-- Enable/Disable toggle (shown on hover) -->
-                                                <ToggleSwitch
-                                                    x:Name="EnableDisableToggle"
-                                                    Width="40"
-                                                    Margin="0"
-                                                    HorizontalAlignment="Center"
-                                                    MinWidth="0"
-                                                    MinHeight="0"
-                                                    IsOn="{x:Bind IsEnabled, Mode=TwoWay}"
-                                                    OffContent=""
-                                                    OnContent="" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Border>
-
-                        <TextBlock
-                            MaxWidth="450"
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource CaptionTextBlockStyle}"
-                            Text="{x:Bind resources:Strings.SettingsPage_CustomizePlayer_Instructions, Mode=OneTime}"
-                            TextAlignment="Center"
-                            TextWrapping="Wrap"
-                            Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
-                    </StackPanel>
-                </controls:SettingsCard>
-
-                <controls:SettingsCard
-                    Header="{x:Bind resources:Strings.SettingsPage_CollapsablePlayer_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_CollapsablePlayer_Description, Mode=OneTime}">
-                    <controls:SettingsCard.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE745;" />
-                    </controls:SettingsCard.HeaderIcon>
-                    <ToggleSwitch
-                        HorizontalAlignment="Right"
-                        IsOn="{x:Bind ViewModel.IsPlayerAnimationEnabled, Mode=TwoWay}" />
-                </controls:SettingsCard>
-
                 <controls:SettingsCard
                     Header="{x:Bind resources:Strings.SettingsPage_RestorePlayback_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_RestorePlayback_Description, Mode=OneTime}">
                     <controls:SettingsCard.HeaderIcon>
@@ -873,41 +485,6 @@
                             Content="{x:Bind resources:Strings.SettingsPage_RescanLibrary_Content, Mode=OneTime}" ToolTipService.ToolTip="{x:Bind resources:Strings.SettingsPage_RescanLibrary_ToolTip, Mode=OneTime}" />
                     </StackPanel>
                 </controls:SettingsCard>
-
-                <controls:SettingsExpander
-                    x:Name="MetadataSettingsExpander"
-                    Header="{x:Bind resources:Strings.SettingsPage_OnlineMetadata_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_OnlineMetadata_Description, Mode=OneTime}">
-                    <controls:SettingsExpander.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8EC;" />
-                    </controls:SettingsExpander.HeaderIcon>
-                    <ToggleSwitch
-                        HorizontalAlignment="Right"
-                        IsOn="{x:Bind ViewModel.IsFetchOnlineMetadataEnabled, Mode=TwoWay}" />
-
-                    <controls:SettingsExpander.Items>
-                        <controls:SettingsCard Header="{x:Bind resources:Strings.SettingsPage_MetadataSources_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_MetadataSources_Description, Mode=OneTime}">
-                            <controls:SettingsCard.HeaderIcon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE179;" />
-                            </controls:SettingsCard.HeaderIcon>
-                            <ListView
-                                x:Name="MetadataProvidersListView"
-                                    Width="350"
-                                    HorizontalAlignment="Right"
-                                    AllowDrop="True"
-                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CanDragItems="True"
-                                    CanReorderItems="True"
-                                    CornerRadius="{StaticResource ControlCornerRadius}"
-                                    ItemsSource="{x:Bind ViewModel.MetadataProviders}"
-                                    DragItemsStarting="ProvidersListView_DragItemsStarting"
-                                    ItemContainerStyle="{StaticResource NavigationListViewItemStyle}"
-                                    ItemTemplate="{StaticResource ServiceProviderItemTemplate}"
-                                    SelectionMode="Single" />
-                        </controls:SettingsCard>
-                    </controls:SettingsExpander.Items>
-                </controls:SettingsExpander>
 
                 <controls:SettingsExpander
                     x:Name="LyricsSettingsExpander"
@@ -1044,148 +621,6 @@
                         Style="{StaticResource SettingsPageResetButtonStyle}" />
                 </controls:SettingsCard>
 
-                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{x:Bind resources:Strings.SettingsPage_Section_Integrations, Mode=OneTime}" />
-
-                <controls:SettingsExpander
-                    x:Name="LastFmSettingsExpander"
-                    Header="{x:Bind resources:Strings.SettingsPage_LastFm_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_LastFm_Description, Mode=OneTime}">
-                    <controls:SettingsExpander.HeaderIcon>
-                        <PathIcon
-                            Data="M10.584 17.209l-.88-2.392s-1.43 1.595-3.573 1.595c-1.897 0-3.244-1.65-3.244-4.289 0-3.381 1.704-4.591 3.382-4.591 2.419 0 3.188 1.567 3.849 3.574l.88 2.75c.879 2.667 2.528 4.811 7.284 4.811 3.409 0 5.719-1.044 5.719-3.793 0-2.227-1.265-3.381-3.629-3.932l-1.76-.385c-1.209-.275-1.566-.77-1.566-1.594 0-.935.742-1.485 1.952-1.485 1.319 0 2.034.495 2.144 1.677l2.749-.33c-.22-2.474-1.924-3.491-4.729-3.491-2.474 0-4.893.935-4.893 3.931 0 1.87.907 3.052 3.188 3.602l1.869.439c1.402.33 1.869.907 1.869 1.705 0 1.017-.989 1.43-2.858 1.43-2.776 0-3.932-1.457-4.591-3.464l-.907-2.749c-1.155-3.574-2.997-4.894-6.653-4.894-4.041-.001-6.186 2.556-6.186 6.899 0 4.179 2.145 6.433 5.993 6.433 3.107.001 4.591-1.457 4.591-1.457z"
-                            Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                    </controls:SettingsExpander.HeaderIcon>
-
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <!-- Initial Connect Button -->
-                        <Button
-                            Command="{x:Bind ViewModel.LastFmInitialAuthCommand}"
-                            Content="{x:Bind resources:Strings.SettingsPage_LastFm_Connect_Content, Mode=OneTime}"
-                            Visibility="{x:Bind ViewModel.IsLastFmNotConnected, Mode=OneWay}"
-                            IsEnabled="{x:Bind ViewModel.IsLastFmInitialAuthEnabled, Mode=OneWay}" />
-
-                        <!-- Flow during connection -->
-                        <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{x:Bind ViewModel.IsConnectingToLastFm, Mode=OneWay}">
-                            <Button
-                                Command="{x:Bind ViewModel.LastFmFinalizeAuthCommand}"
-                                Content="{x:Bind resources:Strings.SettingsPage_LastFm_Complete_Content, Mode=OneTime}"
-                                Style="{StaticResource AccentButtonStyle}" />
-                            <Button
-                                Command="{x:Bind ViewModel.CancelLastFmAuthCommand}"
-                                Content="{x:Bind resources:Strings.SettingsPage_LastFm_Cancel_Content, Mode=OneTime}" />
-                        </StackPanel>
-
-                        <!-- Disconnect Button -->
-                        <Button
-                            Command="{x:Bind ViewModel.LastFmDisconnectCommand}"
-                            Content="{x:Bind resources:Strings.SettingsPage_LastFm_Disconnect_Content, Mode=OneTime}"
-                            Visibility="{x:Bind ViewModel.IsLastFmConnected, Mode=OneWay}" />
-                    </StackPanel>
-
-                    <controls:SettingsExpander.Items>
-                        <controls:SettingsCard
-                            Header="{x:Bind resources:Strings.SettingsPage_LastFm_Scrobbling_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_LastFm_Scrobbling_Description, Mode=OneTime}">
-                            <controls:SettingsCard.HeaderIcon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE121;" />
-                            </controls:SettingsCard.HeaderIcon>
-                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsLastFmScrobblingEnabled, Mode=TwoWay}" />
-                        </controls:SettingsCard>
-
-                        <controls:SettingsCard
-                            Header="{x:Bind resources:Strings.SettingsPage_LastFm_NowPlaying_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_LastFm_NowPlaying_Description, Mode=OneTime}">
-                            <controls:SettingsCard.HeaderIcon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE9A8;" />
-                            </controls:SettingsCard.HeaderIcon>
-                            <ToggleSwitch IsOn="{x:Bind ViewModel.IsLastFmNowPlayingEnabled, Mode=TwoWay}" />
-                        </controls:SettingsCard>
-                    </controls:SettingsExpander.Items>
-                </controls:SettingsExpander>
-
-                <controls:SettingsExpander
-                    x:Name="ListenBrainzSettingsExpander"
-                    Header="{x:Bind resources:Strings.SettingsPage_ListenBrainz_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_ListenBrainz_Description, Mode=OneTime}">
-                    <controls:SettingsExpander.HeaderIcon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE9A1;" />
-                    </controls:SettingsExpander.HeaderIcon>
-
-                    <Button
-                        Command="{x:Bind ViewModel.DisconnectListenBrainzCommand}"
-                        Content="{x:Bind resources:Strings.SettingsPage_ListenBrainz_Disconnect_Button, Mode=OneTime}"
-                        Visibility="{x:Bind ViewModel.ListenBrainzIsConnected, Mode=OneWay}" />
-
-                    <controls:SettingsExpander.Items>
-                        <controls:SettingsCard
-                            Header="{x:Bind resources:Strings.SettingsPage_ListenBrainz_TokenLabel, Mode=OneTime}">
-                            <controls:SettingsCard.HeaderIcon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE192;" />
-                            </controls:SettingsCard.HeaderIcon>
-                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                                <PasswordBox
-                                    Width="260"
-                                    PlaceholderText="{x:Bind resources:Strings.SettingsPage_ListenBrainz_TokenPlaceholder, Mode=OneTime}"
-                                    Password="{x:Bind ViewModel.ListenBrainzUserToken, Mode=TwoWay}" />
-                                <Button
-                                    Command="{x:Bind ViewModel.TestListenBrainzConnectionCommand}"
-                                    Content="{x:Bind resources:Strings.SettingsPage_ListenBrainz_TestConnection, Mode=OneTime}" />
-                            </StackPanel>
-                        </controls:SettingsCard>
-
-                        <controls:SettingsCard
-                            Visibility="{x:Bind ViewModel.ListenBrainzConnectionStatus, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}">
-                            <TextBlock
-                                Text="{x:Bind ViewModel.ListenBrainzConnectionStatus, Mode=OneWay}"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                TextWrapping="Wrap" />
-                        </controls:SettingsCard>
-
-                        <controls:SettingsCard
-                            Header="{x:Bind resources:Strings.SettingsPage_ListenBrainz_ScrobblingToggle, Mode=OneTime}">
-                            <controls:SettingsCard.HeaderIcon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE121;" />
-                            </controls:SettingsCard.HeaderIcon>
-                            <ToggleSwitch IsOn="{x:Bind ViewModel.ListenBrainzScrobblingEnabled, Mode=TwoWay}" />
-                        </controls:SettingsCard>
-
-                        <controls:SettingsCard
-                            Header="{x:Bind resources:Strings.SettingsPage_ListenBrainz_NowPlayingToggle, Mode=OneTime}">
-                            <controls:SettingsCard.HeaderIcon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE9A8;" />
-                            </controls:SettingsCard.HeaderIcon>
-                            <ToggleSwitch IsOn="{x:Bind ViewModel.ListenBrainzNowPlayingEnabled, Mode=TwoWay}" />
-                        </controls:SettingsCard>
-
-                        <controls:SettingsExpander
-                            Style="{x:Null}"
-                            Header="{x:Bind resources:Strings.SettingsPage_ListenBrainz_AdvancedHeader, Mode=OneTime}"
-                            IsExpanded="False">
-                            <controls:SettingsExpander.HeaderIcon>
-                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE713;" />
-                            </controls:SettingsExpander.HeaderIcon>
-                            <controls:SettingsExpander.Items>
-                                <controls:SettingsCard
-                                    Header="{x:Bind resources:Strings.SettingsPage_ListenBrainz_ServerUrlLabel, Mode=OneTime}">
-                                    <TextBox
-                                        Width="300"
-                                        HorizontalAlignment="Right"
-                                        PlaceholderText="{x:Bind resources:Strings.SettingsPage_ListenBrainz_ServerUrlPlaceholder, Mode=OneTime}"
-                                        Text="{x:Bind ViewModel.ListenBrainzServerUrl, Mode=TwoWay}" />
-                                </controls:SettingsCard>
-                            </controls:SettingsExpander.Items>
-                        </controls:SettingsExpander>
-                    </controls:SettingsExpander.Items>
-                </controls:SettingsExpander>
-
-                <controls:SettingsCard
-                    Header="{x:Bind resources:Strings.SettingsPage_Discord_Header, Mode=OneTime}" Description="{x:Bind resources:Strings.SettingsPage_Discord_Description, Mode=OneTime}">
-                    <controls:SettingsCard.HeaderIcon>
-                        <PathIcon
-                            Data="M20.317 4.37C18.787 3.66 17.13 3.15 15.4 2.88C15.4 2.88 15.27 3.04 15.12 3.26C13.24 2.99 11.37 2.99 9.52 3.26C9.37 3.04 9.24 2.88 9.24 2.88C7.51 3.15 5.85 3.66 4.32 4.37C0.93 9.21 0.05 13.93 0.51 18.58C2.6 20.01 4.65 20.89 6.66 21.43C7.15 20.77 7.6 20.07 8 19.33C7.32 19.08 6.67 18.78 6.05 18.43C6.2 18.32 6.34 18.21 6.48 18.09C10.36 19.87 14.64 19.87 18.52 18.09C18.66 18.21 18.8 18.32 18.95 18.43C18.33 18.78 17.68 19.08 17 19.33C17.4 20.07 17.85 20.77 18.34 21.43C20.35 20.89 22.4 20.01 24.49 18.58C25.02 13.21 23.6 8.54 20.317 4.37ZM8.62 15.31C7.27 15.31 6.18 14.08 6.18 12.58C6.18 11.08 7.24 9.84 8.62 9.84C9.99 9.84 11.08 11.07 11.06 12.58C11.06 14.08 9.99 15.31 8.62 15.31ZM16.38 15.31C15.03 15.31 13.94 14.08 13.94 12.58C13.94 11.08 15 9.84 16.38 9.84C17.75 9.84 18.84 11.07 18.82 12.58C18.82 14.08 17.75 15.31 16.38 15.31Z"
-                            Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                    </controls:SettingsCard.HeaderIcon>
-                    <ToggleSwitch
-                        HorizontalAlignment="Right"
-                        IsOn="{x:Bind ViewModel.IsDiscordRichPresenceEnabled, Mode=TwoWay}" />
-                </controls:SettingsCard>
-
                 <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{x:Bind resources:Strings.SettingsPage_Section_About, Mode=OneTime}" />
 
                 <controls:SettingsExpander
@@ -1197,6 +632,8 @@
                     <TextBlock
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         IsTextSelectionEnabled="True">
+                        <Run Text="Nagi Portable Edition" />
+                        <Run Text="·" />
                         <Run Text="{x:Bind resources:Strings.SettingsPage_About_VersionPrefix, Mode=OneTime}" />
                         <Run Text="{x:Bind ViewModel.ApplicationVersion, Mode=OneWay}" />
                     </TextBlock>
@@ -1207,10 +644,23 @@
                                     Content="{x:Bind resources:Strings.SettingsPage_About_Licenses_Content, Mode=OneTime}"
                                     Style="{StaticResource AnimatedHyperlinkButtonStyle}"
                                     NavigateUri="https://github.com/Anthonyy232/Nagi/blob/master/LICENSE" />
+                                <!-- The portable fork and the original project it comes from. -->
                                 <HyperlinkButton
-                                    Content="{x:Bind resources:Strings.SettingsPage_About_SourceCode_Content, Mode=OneTime}"
                                     Style="{StaticResource AnimatedHyperlinkButtonStyle}"
-                                    NavigateUri="https://github.com/Anthonyy232/Nagi" />
+                                    NavigateUri="https://github.com/411an/Nagi">
+                                    <TextBlock>
+                                        <Run Text="{x:Bind resources:Strings.SettingsPage_About_SourceCode_Content, Mode=OneTime}" />
+                                        <Run Text="— Nagi Portable Edition" />
+                                    </TextBlock>
+                                </HyperlinkButton>
+                                <HyperlinkButton
+                                    Style="{StaticResource AnimatedHyperlinkButtonStyle}"
+                                    NavigateUri="https://github.com/Anthonyy232/Nagi">
+                                    <TextBlock>
+                                        <Run Text="{x:Bind resources:Strings.SettingsPage_About_SourceCode_Content, Mode=OneTime}" />
+                                        <Run Text="— Nagi" />
+                                    </TextBlock>
+                                </HyperlinkButton>
                             </StackPanel>
                         </controls:SettingsCard>
                     </controls:SettingsExpander.Items>
@@ -1220,10 +670,6 @@
                     Margin="0,8,0,0"
                     Orientation="Horizontal"
                     Spacing="12">
-                    <HyperlinkButton
-                        Content="{x:Bind resources:Strings.SettingsPage_About_Feedback_Content, Mode=OneTime}"
-                        Style="{StaticResource AnimatedHyperlinkButtonStyle}"
-                        NavigateUri="mailto:anthonyyla.dev@gmail.com" />
                     <HyperlinkButton
                         Content="{x:Bind resources:Strings.SettingsPage_About_PrivacyPolicy_Content, Mode=OneTime}"
                         Style="{StaticResource AnimatedHyperlinkButtonStyle}"

@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Security.Principal;
 
+using Nagi.Core.Helpers;
+
 namespace Nagi.WinUI.Helpers;
 
 /// <summary>
@@ -32,10 +34,11 @@ public static class ElevationHelper
 
         // Use explorer.exe to launch the app without elevation.
         // When explorer.exe starts a process, it inherits explorer's medium integrity level.
+        var extra = AppDataLocator.BuildRestartArguments();
         var startInfo = new ProcessStartInfo
         {
             FileName = "explorer.exe",
-            Arguments = $"\"{exePath}\"",
+            Arguments = string.IsNullOrWhiteSpace(extra) ? $"\"{exePath}\"" : $"\"{exePath}\" {extra}",
             UseShellExecute = false
         };
 

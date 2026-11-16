@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Hiba történt az alkalmazásadatok visszaállítása során: {0}. Kérjük, próbálja meg manuálisan újraindítani az alkalmazást.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Hiba</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Nem sikerült csatlakozni a Last.fm-hez. Kérjük, próbálja meg később.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Hitelesítés sikertelen</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Nem sikerült munkamenetet szerezni a Last.fm-től. Kérjük, próbálja meg újra csatlakoztatni.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Last.fm leválasztása</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Biztosan le szeretné választani Last.fm fiókját? A scrobble előzményei megmaradnak a Last.fm-en, de a Nagi többé nem fog tudni scrobble-t végezni.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Leválasztás</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Exportálás sikeres</value>
   </data>
@@ -718,17 +697,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Előadóazonosítókat tölt be (szükséges a TheAudioDB és Fanart.tv számára)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Kiváló minőségű előadóképek és életrajzok (MusicBrainz szükséges)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Csak kiváló minőségű előadóképek (MusicBrainz szükséges)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Csak előadóképek</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Előadó életrajzok és képek (tartalék)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1050,9 +1020,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Megnyitás Nagi Zenelejátszóval</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nagi indítás</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Előző</value>
@@ -1816,90 +1783,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Összes adat visszaállítása</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integrációk</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Csatlakoztassa Last.fm fiókját a számok scrobblálásához és az éppen játszott dal megjelenítéséhez.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Csatlakozás</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Befejezés</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Mégse</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Leválasztás</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Scrobblálás engedélyezése</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Automatikusan hozzáadja a Nagi-n hallgatott számokat a Last.fm profiljához.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>„Most játszott” frissítése</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Mutassa meg barátainak a Last.fm-en, mit hallgat éppen valós időben.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Küldje el hallgatásait a ListenBrainz-nek (egy nyílt alternatíva a Last.fm-hez).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Felhasználói token</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Illessze be tokenjét a listenbrainz.org/settings oldalról</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Kapcsolat tesztelése</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Csatlakozva, mint {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Kapcsolat sikertelen: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Hallgatások küldése (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>„Most játszott” frissítések küldése</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Haladó</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>Szerver URL</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Lecsatlakozás a ListenBrainz-ről?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Ez eltávolítja a mentett tokenjét. Bármikor újracsatlakozhat.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Lecsatlakozás</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Jelenítse meg aktuális hallgatási tevékenységét Discord állapotként.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Okos lejátszási lista</value>
   </data>
@@ -2226,5 +2109,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}p {1}mp</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Lejátszás almappákkal</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Hozzáadás almappákkal</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Vissza</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Leállítás</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Keresés</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Lista</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Lejátszási listák</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Sor</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spektrum</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>CÍM</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ELŐADÓ</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>MŰFAJ / ÉV</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Sorrendben</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Lista ismétlése</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Szám ismétlése</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Számok keverése</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Albumok keverése</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Véletlenszerű</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Címke / fájlnév</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>VESZTESÉGMENTES</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>SZÁM</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>ÖSSZESEN</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>ELTELT</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>HÁTRALÉVŐ</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBIT/S</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Cím</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Időtartam</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Számok: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Fájladatok</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Fájladatok</value>
   </data>
 </root>

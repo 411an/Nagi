@@ -85,6 +85,26 @@ public class NavigationService : INavigationService, IDisposable
         _frame.Navigate(pageType, parameter);
     }
 
+    public bool CanGoBack => _frame?.CanGoBack == true;
+
+    public void GoBack()
+    {
+        if (_frame?.CanGoBack == true) _frame.GoBack();
+    }
+
+    public void Reset()
+    {
+        if (_frame != null)
+        {
+            _frame.Content = null;
+            _frame.BackStack.Clear();
+            _frame.ForwardStack.Clear();
+        }
+
+        _lastPageType = null;
+        _lastParameter = null;
+    }
+
     /// <summary>
     ///     Updates the service's state after a navigation has completed.
     /// </summary>

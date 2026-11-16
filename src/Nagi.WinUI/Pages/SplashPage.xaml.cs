@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Nagi.WinUI.Controls;
 
 namespace Nagi.WinUI.Pages;
@@ -16,7 +17,7 @@ public sealed partial class SplashPage : Page, ICustomTitleBarProvider
         };
     }
 
-    public TitleBar GetAppTitleBarElement()
+    public UIElement GetAppTitleBarElement()
     {
         return AppTitleBar;
     }

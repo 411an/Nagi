@@ -22,12 +22,29 @@ public interface ILibraryReader
     Task<IEnumerable<Song>> GetSongsInDirectoryRecursiveAsync(Guid folderId, string directoryPath, CancellationToken token = default);
     Task<int> GetSongCountInDirectoryAsync(Guid folderId, string directoryPath);
     Task<int> GetSubFolderCountAsync(Guid parentFolderId, CancellationToken token = default);
+
+    /// <summary>The subfolders of <paramref name="parentFolderId" /> that have subfolders of their own.</summary>
+    Task<IReadOnlySet<Guid>> GetSubFolderIdsWithChildrenAsync(Guid parentFolderId, CancellationToken token = default);
+
     Task<IEnumerable<Folder>> GetSubFoldersPagedAsync(Guid parentFolderId, int skip, int take, CancellationToken token = default);
     Task<int> GetSubFolderCountBySearchAsync(Guid parentFolderId, string searchTerm, CancellationToken token = default);
     Task<IEnumerable<Folder>> SearchSubFoldersPagedAsync(Guid parentFolderId, string searchTerm, int skip, int take, CancellationToken token = default);
 
+    /// <summary>
+    ///     Searches all folder rows by name (not limited to direct children of one parent).
+    /// </summary>
+    Task<IEnumerable<Folder>> SearchFoldersByNamePagedAsync(string searchTerm, int skip, int take, CancellationToken token = default);
+
+    /// <summary>
+    ///     Songs whose title, artist, album title, or file path contain <paramref name="searchTerm"/>.
+    ///     Returns nothing when the term is shorter than three characters.
+    /// </summary>
+    Task<IReadOnlyList<SongTextHit>> SearchSongTextHitsAsync(
+        string searchTerm, int take, SongTextSearchScope scope, CancellationToken token = default);
+
     Task<Song?> GetSongByIdAsync(Guid songId);
     Task<Song?> GetSongByFilePathAsync(string filePath);
+    Task<IReadOnlyList<Song>> GetSongsByFilePathAsync(string filePath);
     Task<IReadOnlyDictionary<Guid, Song>> GetSongsByIdsAsync(IEnumerable<Guid> songIds);
     Task<IEnumerable<Song>> GetAllSongsAsync(SongSortOrder sortOrder = SongSortOrder.TitleAsc, CancellationToken token = default);
     Task<IEnumerable<Song>> GetSongsByAlbumIdAsync(Guid albumId, CancellationToken token = default);
@@ -38,6 +55,18 @@ public interface ILibraryReader
     Task<Artist?> GetArtistByNameAsync(string name);
     Task<IEnumerable<Artist>> GetAllArtistsAsync(CancellationToken token = default);
     Task<IEnumerable<Artist>> SearchArtistsAsync(string searchTerm, CancellationToken token = default);
+
+    /// <summary>
+    ///     Album artists only (appear on at least one album), with song counts for expander decisions.
+    /// </summary>
+    Task<IReadOnlyList<(Artist Artist, int SongCount)>> GetAlbumArtistsWithSongCountsAsync(
+        CancellationToken token = default);
+
+    /// <summary>
+    ///     Search among album artists by name (not song titles).
+    /// </summary>
+    Task<IReadOnlyList<(Artist Artist, int SongCount)>> SearchAlbumArtistsWithSongCountsAsync(
+        string searchTerm, CancellationToken token = default);
     Task<IEnumerable<Album>> GetTopAlbumsForArtistAsync(Guid artistId, int limit);
     Task<Album?> GetAlbumByIdAsync(Guid albumId);
     Task<IEnumerable<Album>> GetAllAlbumsAsync(CancellationToken token = default);
@@ -99,6 +128,12 @@ public interface ILibraryReader
     ///     Note: <see cref="PagedResult{T}.PageNumber"/> is always 0 — this is an offset-based query, not page-based.
     /// </summary>
     Task<PagedResult<Song>> GetSongsInDirectoryOffsetAsync(Guid folderId, string directoryPath,
+        int skip, int take, SongSortOrder sortOrder, CancellationToken token = default);
+
+    /// <summary>
+    ///     Paged recursive slice: songs whose DirectoryPath equals or is nested under the given path.
+    /// </summary>
+    Task<PagedResult<Song>> GetSongsInDirectoryRecursiveOffsetAsync(Guid folderId, string directoryPath,
         int skip, int take, SongSortOrder sortOrder, CancellationToken token = default);
 
     /// <summary>

@@ -1,0 +1,46 @@
+<!--
+    Lightweight styling for the player shell. Merged into MainPage's ShellRoot so hover,
+    pressed and selected states use the shell palette instead of the stock Fluent greys and
+    the Windows accent colour. Pages shown in the overlay frame inherit these values too.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Button -->
+    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#FF174452" />
+    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#FF0C2630" />
+    <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="AppPrimaryColorBrush" />
+    <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="AppPrimaryColorBrush" />
+    <StaticResource x:Key="ButtonBorderBrushPointerOver" ResourceKey="AppPrimaryColorBrush" />
+    <StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="AppPrimaryColorBrush" />
+
+    <!-- TextBox -->
+    <SolidColorBrush x:Key="TextControlBackground" Color="#FF0A1A21" />
+    <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#FF0F2530" />
+    <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#FF06141A" />
+    <StaticResource x:Key="TextControlBorderBrush" ResourceKey="ShellPaneBorderBrush" />
+    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="#AA1EB8C8" />
+    <StaticResource x:Key="TextControlBorderBrushFocused" ResourceKey="AppPrimaryColorBrush" />
+
+    <!-- TreeView -->
+    <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="#FF123038" />
+    <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="#FF0C2630" />
+    <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="#331EB8C8" />
+    <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="#4D1EB8C8" />
+    <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPressed" Color="#261EB8C8" />
+    <StaticResource x:Key="TreeViewItemForegroundSelected" ResourceKey="AppPrimaryColorBrush" />
+    <StaticResource x:Key="TreeViewItemForegroundSelectedPointerOver" ResourceKey="AppPrimaryColorBrush" />
+    <StaticResource x:Key="TreeViewItemForegroundSelectedPressed" ResourceKey="AppPrimaryColorBrush" />
+    <StaticResource x:Key="TreeViewItemSelectionIndicatorForeground" ResourceKey="AppPrimaryColorBrush" />
+
+    <!-- ListView -->
+    <SolidColorBrush x:Key="ListViewItemBackgroundPointerOver" Color="#FF123038" />
+    <SolidColorBrush x:Key="ListViewItemBackgroundPressed" Color="#FF0C2630" />
+    <SolidColorBrush x:Key="ListViewItemBackgroundSelected" Color="#331EB8C8" />
+    <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPointerOver" Color="#4D1EB8C8" />
+    <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPressed" Color="#261EB8C8" />
+    <StaticResource x:Key="ListViewItemSelectionIndicatorBrush" ResourceKey="AppPrimaryColorBrush" />
+    <StaticResource x:Key="ListViewItemSelectionIndicatorPointerOverBrush" ResourceKey="AppPrimaryColorBrush" />
+    <StaticResource x:Key="ListViewItemSelectionIndicatorPressedBrush" ResourceKey="AppPrimaryColorBrush" />
+</ResourceDictionary>

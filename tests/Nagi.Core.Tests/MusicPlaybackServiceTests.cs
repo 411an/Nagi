@@ -172,6 +172,134 @@ public class MusicPlaybackServiceTests
             externalIds[0], Arg.Any<PlaybackContext>());
     }
 
+    [Fact]
+    public async Task AddTransientFilesToQueueAsync_ExpandsCueTracksAndDeduplicatesPath()
+    {
+        const string filePath = "C:\\temp\\cue.flac";
+        var metadata = new SongFileMetadata
+        {
+            Title = "Whole file",
+            CueTracks =
+            [
+                new SongFileMetadata { Title = "Track 1", Duration = TimeSpan.FromSeconds(10), CueTrackNumber = 1 },
+                new SongFileMetadata
+                {
+                    Title = "Track 2", Duration = TimeSpan.FromSeconds(20), CueTrackNumber = 2,
+                    StartOffsetTicks = TimeSpan.FromSeconds(10).Ticks
+                }
+            ]
+        };
+        _metadataService.ExtractMetadataAsync(filePath).Returns(metadata);
+        await _service.InitializeAsync();
+
+        await _service.AddTransientFilesToQueueAsync([filePath]);
+        var firstQueue = _service.PlaybackQueue.ToList();
+        var tracks = await _service.GetQueueTracksAsync(firstQueue);
+
+        firstQueue.Should().HaveCount(2);
+        tracks[firstQueue[0]].CueTrackNumber.Should().Be(1);
+        tracks[firstQueue[0]].StartOffsetTicks.Should().Be(0);
+        tracks[firstQueue[1]].CueTrackNumber.Should().Be(2);
+        tracks[firstQueue[1]].StartOffsetTicks.Should().Be(TimeSpan.FromSeconds(10).Ticks);
+        tracks[firstQueue[0]].Duration.Should().Be(TimeSpan.FromSeconds(10));
+        tracks[firstQueue[1]].Duration.Should().Be(TimeSpan.FromSeconds(20));
+
+        await _service.AddTransientFilesToQueueAsync([filePath]);
+        _service.PlaybackQueue.Should().Equal(firstQueue);
+
+        await _service.NextAsync();
+        _service.CurrentTrack.Should().NotBeNull();
+        _service.CurrentTrack!.CueTrackNumber.Should().Be(2);
+        _service.CurrentTrack.StartOffsetTicks.Should().Be(TimeSpan.FromSeconds(10).Ticks);
+    }
+
+    [Fact]
+    public async Task AddTransientFilesToQueueAsync_RetainsRemovedCueSiblingForReAdd()
+    {
+        const string filePath = "C:\\temp\\cue-readd.flac";
+        _metadataService.ExtractMetadataAsync(filePath).Returns(new SongFileMetadata
+        {
+            CueTracks =
+            [
+                new SongFileMetadata { Title = "Track 1", Duration = TimeSpan.FromSeconds(10), CueTrackNumber = 1 },
+                new SongFileMetadata
+                {
+                    Title = "Track 2", Duration = TimeSpan.FromSeconds(20), CueTrackNumber = 2,
+                    StartOffsetTicks = TimeSpan.FromSeconds(10).Ticks
+                }
+            ]
+        });
+        await _service.InitializeAsync();
+        await _service.AddTransientFilesToQueueAsync([filePath]);
+        var originalIds = _service.PlaybackQueue.ToList();
+        var removedId = originalIds[1];
+
+        await _service.RemoveFromQueueAsync(removedId);
+        _service.PlaybackQueue.Should().ContainSingle().Which.Should().Be(originalIds[0]);
+
+        await _service.AddTransientFilesToQueueAsync([filePath]);
+        _service.PlaybackQueue.Should().Equal(originalIds);
+        _service.PlaybackQueue.Should().Contain(removedId);
+
+        await _service.AddTransientFilesToQueueAsync([filePath]);
+        _service.PlaybackQueue.Should().Equal(originalIds);
+    }
+
+    [Fact]
+    public async Task PlayTransientFileAsync_WithCueMetadataStartsFirstTrackAndQueuesAllTracks()
+    {
+        const string filePath = "C:\\temp\\transient-cue.flac";
+        _metadataService.ExtractMetadataAsync(filePath).Returns(new SongFileMetadata
+        {
+            CueTracks =
+            [
+                new SongFileMetadata { Title = "First", Duration = TimeSpan.FromSeconds(10), CueTrackNumber = 1 },
+                new SongFileMetadata
+                {
+                    Title = "Second", Duration = TimeSpan.FromSeconds(20), CueTrackNumber = 2,
+                    StartOffsetTicks = TimeSpan.FromSeconds(10).Ticks
+                }
+            ]
+        });
+        await _service.InitializeAsync();
+
+        await _service.PlayTransientFileAsync(filePath);
+
+        _service.PlaybackQueue.Should().HaveCount(2);
+        _service.CurrentTrack.Should().NotBeNull();
+        _service.CurrentTrack!.CueTrackNumber.Should().Be(1);
+        _service.CurrentTrack.StartOffsetTicks.Should().Be(0);
+        await _audioPlayer.Received(1).PlayAsync();
+    }
+
+    [Fact]
+    public async Task AddTransientFilesToQueueAsync_WithPersistedCueFileQueuesLibraryTracksInOrder()
+    {
+        const string filePath = "C:\\music\\persisted-cue.flac";
+        var first = new Song
+        {
+            Id = Guid.NewGuid(), FilePath = filePath, CueTrackNumber = 1,
+            StartOffsetTicks = 0, Duration = TimeSpan.FromSeconds(10), Title = "First"
+        };
+        var second = new Song
+        {
+            Id = Guid.NewGuid(), FilePath = filePath, CueTrackNumber = 2,
+            StartOffsetTicks = TimeSpan.FromSeconds(10).Ticks, Duration = TimeSpan.FromSeconds(20), Title = "Second"
+        };
+        _libraryService.GetSongByFilePathAsync(filePath).Returns(first);
+        _libraryService.GetSongsByFilePathAsync(filePath).Returns([first, second]);
+        _libraryService.GetSongByIdAsync(first.Id).Returns(first);
+        _libraryService.GetSongByIdAsync(second.Id).Returns(second);
+        await _service.InitializeAsync();
+
+        await _service.AddTransientFilesToQueueAsync([filePath]);
+
+        _service.PlaybackQueue.Should().Equal(first.Id, second.Id);
+        _service.CurrentTrack.Should().Be(first);
+        _service.CurrentTrack!.StartOffsetTicks.Should().Be(0);
+        await _audioPlayer.Received(1).LoadAsync(first);
+    }
+
     #endregion
 
     /// <summary>
@@ -312,6 +440,8 @@ public class MusicPlaybackServiceTests
         };
         _settingsService.GetRestorePlaybackStateEnabledAsync().Returns(true);
         _settingsService.GetPlaybackStateAsync().Returns(savedState);
+        _libraryService.GetSongsByIdsAsync(Arg.Any<IEnumerable<Guid>>())
+            .Returns(_testSongs.ToDictionary(s => s.Id));
 
         // Current track is missing in DB!
         _libraryService.GetSongByIdAsync(_testSongs[1].Id).Returns((Song?)null);
@@ -324,6 +454,33 @@ public class MusicPlaybackServiceTests
         _service.CurrentTrack.Should().BeNull();
         _service.CurrentQueueIndex.Should().Be(0);
         await _audioPlayer.DidNotReceive().LoadAsync(Arg.Any<Song>());
+    }
+
+    /// <summary>
+    ///     Verifies that songs removed from the library while the app was closed (for example by a
+    ///     rescan) are dropped from the restored queue instead of failing playback.
+    /// </summary>
+    [Fact]
+    public async Task InitializeAsync_WithSessionRestore_DropsSongsNoLongerInLibrary()
+    {
+        // Arrange
+        var staleId = Guid.NewGuid();
+        var savedState = new PlaybackState
+        {
+            PlaybackQueueTrackIds = [_testSongs[0].Id, staleId, _testSongs[2].Id],
+            CurrentPlaybackQueueIndex = 2
+        };
+        _settingsService.GetRestorePlaybackStateEnabledAsync().Returns(true);
+        _settingsService.GetPlaybackStateAsync().Returns(savedState);
+        _libraryService.GetSongsByIdsAsync(Arg.Any<IEnumerable<Guid>>())
+            .Returns(new Dictionary<Guid, Song> { [_testSongs[0].Id] = _testSongs[0], [_testSongs[2].Id] = _testSongs[2] });
+
+        // Act
+        await _service.InitializeAsync();
+
+        // Assert
+        _service.PlaybackQueue.Should().Equal(_testSongs[0].Id, _testSongs[2].Id);
+        _service.CurrentQueueIndex.Should().Be(0);
     }
 
     #endregion
@@ -1752,6 +1909,97 @@ public class MusicPlaybackServiceTests
     }
 
     /// <summary>
+    ///     LibVLC reports an unreadable file and stops on its own. The player used to raise
+    ///     PlaybackEnded right after the error; by then the stop had already forgotten the
+    ///     current track, so "next" restarted the same broken file over and over. Now the
+    ///     error alone moves on to the next track.
+    /// </summary>
+    [Fact]
+    public async Task OnAudioPlayerErrorOccurred_InTheMiddleOfTheQueue_SkipsToTheNextTrack()
+    {
+        await _service.InitializeAsync();
+        await _service.PlayAsync(_testSongs);
+        _audioPlayer.ClearReceivedCalls();
+
+        _audioPlayer.ErrorOccurred += Raise.Event<Action<string>>("Your media can't be opened");
+
+        await Task.Delay(50);
+        _service.CurrentTrack.Should().Be(_testSongs[1]);
+        await _audioPlayer.Received(1).LoadAsync(_testSongs[1]);
+        await _audioPlayer.DidNotReceive().LoadAsync(_testSongs[0]);
+    }
+
+    /// <summary>
+    ///     Repeat-one must not replay a file that cannot be played.
+    /// </summary>
+    [Fact]
+    public async Task OnAudioPlayerErrorOccurred_WithRepeatOne_MovesOnInsteadOfReplaying()
+    {
+        await _service.InitializeAsync();
+        await _service.PlayAsync(_testSongs);
+        await _service.SetRepeatModeAsync(RepeatMode.RepeatOne);
+        _audioPlayer.ClearReceivedCalls();
+
+        _audioPlayer.ErrorOccurred += Raise.Event<Action<string>>("Your media can't be opened");
+
+        await Task.Delay(50);
+        _service.CurrentTrack.Should().Be(_testSongs[1]);
+        await _audioPlayer.DidNotReceive().LoadAsync(_testSongs[0]);
+    }
+
+    /// <summary>
+    ///     With repeat-all and nothing playable, the service gives up after one pass over the
+    ///     queue instead of cycling through broken files forever.
+    /// </summary>
+    [Fact]
+    public async Task OnAudioPlayerErrorOccurred_WhenEveryTrackFails_StopsAfterOnePass()
+    {
+        await _service.InitializeAsync();
+        var songs = _testSongs.Take(3).ToList();
+        await _service.PlayAsync(songs);
+        await _service.SetRepeatModeAsync(RepeatMode.RepeatAll);
+        _audioPlayer.ClearReceivedCalls();
+
+        for (var i = 0; i < 6; i++)
+        {
+            _audioPlayer.ErrorOccurred += Raise.Event<Action<string>>("Your media can't be opened");
+            await Task.Delay(20);
+        }
+
+        _service.CurrentTrack.Should().BeNull();
+        await _audioPlayer.Received(2).LoadAsync(Arg.Any<Song>());
+        await _audioPlayer.Received().StopAsync();
+    }
+
+    /// <summary>
+    ///     A track that really starts playing resets the failure count, so a later broken file
+    ///     is skipped again rather than ending playback.
+    /// </summary>
+    [Fact]
+    public async Task OnAudioPlayerErrorOccurred_AfterATrackPlayed_SkipsAgain()
+    {
+        await _service.InitializeAsync();
+        var songs = _testSongs.Take(3).ToList();
+        await _service.PlayAsync(songs);
+        await _service.SetRepeatModeAsync(RepeatMode.RepeatAll);
+
+        for (var i = 0; i < 2; i++)
+        {
+            _audioPlayer.ErrorOccurred += Raise.Event<Action<string>>("Your media can't be opened");
+            await Task.Delay(20);
+        }
+
+        _audioPlayer.IsPlaying.Returns(true);
+        _audioPlayer.StateChanged += Raise.Event<Action>();
+        _audioPlayer.IsPlaying.Returns(false);
+
+        _audioPlayer.ErrorOccurred += Raise.Event<Action<string>>("Your media can't be opened");
+        await Task.Delay(20);
+
+        _service.CurrentTrack.Should().Be(songs[0]);
+    }
+
+    /// <summary>
     ///     Verifies that the service handles the System Media Transport Controls (SMTC) 'Next'
     ///     button press by calling the `NextAsync` method.
     /// </summary>
@@ -1788,6 +2036,56 @@ public class MusicPlaybackServiceTests
         // Assert
         await Task.Delay(50);
         _service.CurrentTrack.Should().Be(_testSongs[0]);
+    }
+
+    /// <summary>
+    ///     Verifies that a Play media key after Stop restarts the queue through the playback
+    ///     service instead of asking the audio player to play with nothing loaded.
+    /// </summary>
+    [Fact]
+    public async Task OnAudioPlayerSmtcPlayButtonPressed_AfterStop_RestartsQueue()
+    {
+        // Arrange
+        await _service.InitializeAsync();
+        await _service.PlayAsync(_testSongs);
+        await _service.StopAsync();
+        _service.CurrentTrack.Should().BeNull();
+
+        // Act
+        _audioPlayer.SmtcPlayButtonPressed += Raise.Event<Action>();
+
+        // Assert
+        await Task.Delay(50);
+        _service.CurrentTrack.Should().Be(_testSongs[0]);
+    }
+
+    /// <summary>
+    ///     Verifies that a Pause media key pauses while playing and is ignored when already paused.
+    /// </summary>
+    [Fact]
+    public async Task OnAudioPlayerSmtcPauseButtonPressed_PausesOnlyWhilePlaying()
+    {
+        // Arrange
+        await _service.InitializeAsync();
+        await _service.PlayAsync(_testSongs);
+        _audioPlayer.ClearReceivedCalls();
+
+        // Act: already paused
+        _audioPlayer.IsPlaying.Returns(false);
+        _audioPlayer.SmtcPauseButtonPressed += Raise.Event<Action>();
+        await Task.Delay(50);
+
+        // Assert
+        await _audioPlayer.DidNotReceive().PauseAsync();
+        await _audioPlayer.DidNotReceive().PlayAsync();
+
+        // Act: playing
+        _audioPlayer.IsPlaying.Returns(true);
+        _audioPlayer.SmtcPauseButtonPressed += Raise.Event<Action>();
+        await Task.Delay(50);
+
+        // Assert
+        await _audioPlayer.Received(1).PauseAsync();
     }
 
     #endregion

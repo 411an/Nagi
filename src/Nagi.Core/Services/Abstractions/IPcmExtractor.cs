@@ -13,8 +13,24 @@ public readonly record struct AudioChunk(float[] Samples, int Length, int Sample
 }
 
 /// <summary>
+///     How to decode a file: the output format, an optional part of the file, and whether the
+///     decoder should give way to everything else running on the computer.
+/// </summary>
+/// <param name="SampleRate">Output sample rate in Hz.</param>
+/// <param name="Channels">Output channel count; 1 mixes the file down to mono.</param>
+/// <param name="Start">Where to start decoding, for a track inside a CUE image.</param>
+/// <param name="Duration">How much to decode from <paramref name="Start" />.</param>
+/// <param name="LowPriority">Run the decoder below normal priority.</param>
+public sealed record PcmExtractionOptions(
+    int SampleRate,
+    int Channels,
+    TimeSpan? Start = null,
+    TimeSpan? Duration = null,
+    bool LowPriority = false);
+
+/// <summary>
 ///     Defines a service for extracting raw PCM audio samples from audio files.
-///     Used for ReplayGain calculation.
+///     Used for ReplayGain calculation and the spectrum visualizer.
 /// </summary>
 public interface IPcmExtractor
 {
@@ -40,5 +56,16 @@ public interface IPcmExtractor
     /// <returns>An async enumerable of audio chunks.</returns>
     IAsyncEnumerable<AudioChunk> ExtractStreamingAsync(
         string filePath,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Streams PCM samples in the requested format, optionally for one part of the file.
+    /// </summary>
+    /// <param name="filePath">Path to the audio file.</param>
+    /// <param name="options">Output format, range and priority.</param>
+    /// <param name="cancellationToken">Cancellation token; cancelling stops the decoder.</param>
+    IAsyncEnumerable<AudioChunk> ExtractStreamingAsync(
+        string filePath,
+        PcmExtractionOptions options,
         CancellationToken cancellationToken = default);
 }

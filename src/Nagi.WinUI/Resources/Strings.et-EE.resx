@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Rakenduse andmete lähtestamisel ilmnes viga: {0}. Palun proovige rakendus käsitsi taaskäivitada.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Viga</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Last.fm-iga ei saa ühendust. Palun proovige hiljem uuesti.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Autentimine ebaõnnestus</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Last.fm-ist seanssi ei saadud. Palun proovige uuesti ühendust luua.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Ühenda Last.fm lahti</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Kas olete kindel, et soovite Last.fm-i konto lahti ühendada? Teie scrobbling ajalugu säilib Last.fm-is, kuid Nagi ei saa enam scrobble'ida.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Ühenda lahti</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Eksportimine õnnestus</value>
   </data>
@@ -723,17 +702,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Hangib artisti ID-d (vajalik TheAudioDB ja Fanart.tv jaoks)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Kvaliteetsed artisti pildid ja biograafiad (vajab MusicBrainzi)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Ainult kvaliteetsed artisti pildid (vajab MusicBrainzi)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Ainult artisti pildid</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Artisti biograafiad ja pildid (varuvariant)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1061,9 +1031,6 @@ Viga: {1}</value>
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Ava Nagi muusikapleieriga</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Nagi käivitamine</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Eelmine</value>
@@ -1827,90 +1794,6 @@ Viga: {1}</value>
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Lähtesta kõik andmed</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Integratsioonid</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Ühenda oma Last.fm konto lugude skroblimiseks ja hetkel mängitava loo näitamiseks.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Ühenda</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Lõpeta</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Tühista</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Katkesta ühendus</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Luba skroblimine</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Lisage automaatselt Nagi's kuulatud lood oma Last.fm profiilile.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Uuenda 'Hetkel mängib'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Näita oma sõpradele Last.fm-is, mida sa hetkel kuulad, reaalajas.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Edasta oma kuulamised ListenBrainzile (avatud alternatiiv Last.fm-ile).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Kasutajatunnus</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Kleebi oma tunnus lehelt listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Testi ühendust</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Ühendatud kui {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Ühendus ebaõnnestus: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Edasta kuulamised (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Edasta "praegu mängib" uuendused</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Täpsemad seaded</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>Serveri URL</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Ühendus ListenBrainziga katkestada?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>See eemaldab teie salvestatud tunnuse. Saate igal ajal uuesti ühenduda.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Katkesta ühendus</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Näita oma praegust kuulamistegevust Discordi staatusena.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Nutikas esitusloend</value>
   </data>
@@ -2237,5 +2120,104 @@ Viga: {1}</value>
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Esita koos alamappidega</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Lisa koos alamappidega</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Tagasi</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Peata</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Otsi</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Loend</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Esitusloendid</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>Järjekord</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spekter</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>PEALKIRI</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ESITAJA</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>ŽANR / AASTA</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Järjest</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Korda esitusloendit</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Korda lugu</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Sega lood</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Sega albumid</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Juhuslik</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Silt / failinimi</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>KADUDETA</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>LUGU</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>KOKKU</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>MÖÖDUNUD</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>JÄÄNUD</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBIT/S</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Pealkiri</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Kestus</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Lugusid: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Faili teave</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Faili teave</value>
   </data>
 </root>

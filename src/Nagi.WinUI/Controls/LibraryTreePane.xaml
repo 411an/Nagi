@@ -1,0 +1,88 @@
+<UserControl
+    x:Class="Nagi.WinUI.Controls.LibraryTreePane"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:Nagi.WinUI.Models"
+    xmlns:resources="using:Nagi.WinUI.Resources">
+
+    <UserControl.Resources>
+        <x:Double x:Key="TreeViewItemMinHeight">20</x:Double>
+        <Thickness x:Key="TreeViewItemPresenterPadding">4,0,8,0</Thickness>
+        <Style TargetType="TreeViewItem">
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="0,1" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="FontSize" Value="12" />
+            <!-- Segoe MDL2 plus / minus (same glyphs as WinUI TreeView docs). -->
+            <Setter Property="CollapsedGlyph" Value="&#xE948;" />
+            <Setter Property="ExpandedGlyph" Value="&#xE949;" />
+        </Style>
+    </UserControl.Resources>
+
+    <TreeView
+        x:Name="FolderTree"
+        AllowDrop="False"
+        CanDragItems="True"
+        CanReorderItems="False"
+        DragItemsStarting="FolderTree_DragItemsStarting"
+        Expanding="FolderTree_Expanding"
+        ItemInvoked="FolderTree_ItemInvoked">
+        <TreeView.ItemTemplate>
+            <DataTemplate x:DataType="models:LibraryTreeNode">
+                <TreeViewItem
+                    MinHeight="0"
+                    Padding="0,1"
+                    FontSize="12"
+                    CollapsedGlyph="&#xE948;"
+                    ExpandedGlyph="&#xE949;"
+                    ItemsSource="{x:Bind Children, Mode=OneWay}"
+                    HasUnrealizedChildren="{x:Bind HasUnrealizedChildren, Mode=OneWay}"
+                    IsExpanded="False"
+                    DataContextChanged="FolderItem_DataContextChanged">
+                    <TreeViewItem.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem
+                                Text="{x:Bind resources:Strings.FolderPage_Menu_Play, Mode=OneTime}"
+                                Click="Play_Click" />
+                            <MenuFlyoutItem
+                                Text="{x:Bind resources:Strings.Shell_PlayRecursively, Mode=OneTime}"
+                                Click="PlayRecursive_Click" />
+                            <MenuFlyoutItem
+                                Text="{x:Bind resources:Strings.FolderSongViewPage_SongMenu_AddToQueue, Mode=OneTime}"
+                                Click="AddToQueue_Click" />
+                            <MenuFlyoutItem
+                                Text="{x:Bind resources:Strings.Shell_AddRecursively, Mode=OneTime}"
+                                Click="AddRecursive_Click" />
+                            <MenuFlyoutSeparator />
+                            <MenuFlyoutItem
+                                Text="{x:Bind resources:Strings.Shell_FileInfo, Mode=OneTime}"
+                                Click="FileInfo_Click" />
+                            <MenuFlyoutSeparator />
+                            <MenuFlyoutItem
+                                Text="{x:Bind resources:Strings.FolderPage_Menu_Rescan, Mode=OneTime}"
+                                Click="Rescan_Click" />
+                            <MenuFlyoutItem
+                                Text="{x:Bind resources:Strings.FolderPage_Menu_Delete, Mode=OneTime}"
+                                Click="Delete_Click" />
+                        </MenuFlyout>
+                    </TreeViewItem.ContextFlyout>
+                    <StackPanel Spacing="0">
+                        <TextBlock
+                            FontSize="12"
+                            LineHeight="16"
+                            Text="{x:Bind Name}"
+                            TextTrimming="CharacterEllipsis"
+                            DoubleTapped="NodeTitle_DoubleTapped" />
+                        <TextBlock
+                            FontSize="10"
+                            LineHeight="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind Subtitle}"
+                            TextTrimming="CharacterEllipsis"
+                            Visibility="{x:Bind HasSubtitle, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    </StackPanel>
+                </TreeViewItem>
+            </DataTemplate>
+        </TreeView.ItemTemplate>
+    </TreeView>
+</UserControl>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -24,6 +25,11 @@ namespace Nagi.WinUI.ViewModels;
 /// </summary>
 public partial class PlayerViewModel : ObservableObject
 {
+    private static readonly HashSet<string> LosslessExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".flac", ".wav", ".aiff", ".dsf", ".ape", ".wv"
+    };
+
     private const string PlayIconGlyph = "\uE768";
     private const string PauseIconGlyph = "\uE769";
     private const string RepeatOffIconGlyph = "\uE8EE";
@@ -81,6 +87,8 @@ public partial class PlayerViewModel : ObservableObject
         // Initialize properties with default values
         SongTitle = Strings.Status_NoTrackPlaying;
         ArtistName = string.Empty;
+        AlbumName = string.Empty;
+        GenreYearText = string.Empty;
         VolumeIconGlyph = VolumeMediumIconGlyph;
         CurrentQueue = new ObservableRangeCollection<Song>();
         CurrentTimeText = "0:00";
@@ -115,11 +123,13 @@ public partial class PlayerViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShuffleIconGlyph))]
     [NotifyPropertyChangedFor(nameof(ShuffleButtonToolTip))]
+    [NotifyPropertyChangedFor(nameof(CurrentPlaybackOrder))]
     public partial bool IsShuffleEnabled { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(RepeatIconGlyph))]
     [NotifyPropertyChangedFor(nameof(RepeatButtonToolTip))]
+    [NotifyPropertyChangedFor(nameof(CurrentPlaybackOrder))]
     public partial RepeatMode CurrentRepeatMode { get; set; }
 
     [ObservableProperty]
@@ -146,6 +156,43 @@ public partial class PlayerViewModel : ObservableObject
     [ObservableProperty] public partial bool IsLyricsPageActive { get; set; }
 
     [ObservableProperty] public partial bool IsVolumeControlVisible { get; set; }
+
+    [ObservableProperty] public partial string AlbumName { get; set; } = string.Empty;
+
+    [ObservableProperty] public partial string GenreYearText { get; set; } = string.Empty;
+
+    [ObservableProperty] public partial int QueuePosition { get; set; }
+
+    [ObservableProperty] public partial int QueueTotal { get; set; }
+
+    [ObservableProperty] public partial bool IsLossless { get; set; }
+
+    [ObservableProperty] public partial int BitrateKbps { get; set; }
+
+    [ObservableProperty] public partial bool ShowRemaining { get; set; }
+
+    [ObservableProperty] public partial string StatusTimeText { get; set; } = "00:00";
+
+    [ObservableProperty] public partial bool IsEqualizerVisible { get; set; } = true;
+
+    [ObservableProperty] public partial bool IsVisualizerVisible { get; set; } = true;
+
+    [ObservableProperty] public partial bool ShowFilenameInList { get; set; }
+
+    private ShellPlaybackOrder? _orderOverride;
+
+    public ShellPlaybackOrder CurrentPlaybackOrder
+    {
+        get
+        {
+            if (_orderOverride is ShellPlaybackOrder.ShuffleAlbums or ShellPlaybackOrder.Random)
+                return _orderOverride.Value;
+            if (CurrentRepeatMode == RepeatMode.RepeatOne) return ShellPlaybackOrder.RepeatTrack;
+            if (IsShuffleEnabled) return ShellPlaybackOrder.ShuffleTracks;
+            if (CurrentRepeatMode == RepeatMode.RepeatAll) return ShellPlaybackOrder.RepeatPlaylist;
+            return ShellPlaybackOrder.Default;
+        }
+    }
 
     public ObservableRangeCollection<PlayerButtonSetting> MainTransportButtons { get; } = new();
     public ObservableRangeCollection<PlayerButtonSetting> SecondaryControlsButtons { get; } = new();
@@ -357,15 +404,70 @@ public partial class PlayerViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Previous()
+    private void Play()
     {
-        _ = _playbackService.PreviousAsync();
+        if (!_playbackService.IsPlaying)
+            _ = _playbackService.PlayPauseAsync();
+    }
+
+    /// <summary>
+    ///     Classic transport: Pause toggles, so a second press resumes. After Stop there is no
+    ///     current track and Pause does nothing; Play starts playback instead.
+    /// </summary>
+    [RelayCommand]
+    private void Pause()
+    {
+        if (_playbackService.IsPlaying || _playbackService.CurrentTrack != null)
+            _ = _playbackService.PlayPauseAsync();
+    }
+
+    /// <summary>
+    ///     When the playback queue is a single track (or empty), the shell can supply the open album list.
+    ///     Return true if navigation was handled.
+    /// </summary>
+    public Func<bool, Task<bool>>? ExpandQueueForTransport { get; set; }
+
+    private Song? _idlePreview;
+
+    /// <summary>
+    ///     Shown in the player and tray when nothing is playing: first track of the open album.
+    /// </summary>
+    public void SetIdlePreview(Song? song)
+    {
+        _idlePreview = song;
+        if (_playbackService.CurrentTrack != null) return;
+        ApplyIdlePreview();
     }
 
     [RelayCommand]
-    private void Next()
+    private async Task Previous()
     {
-        _ = _playbackService.NextAsync();
+        if (ShouldExpandTransportQueue() && ExpandQueueForTransport is not null &&
+            await ExpandQueueForTransport(false).ConfigureAwait(true))
+            return;
+
+        await _playbackService.PreviousAsync().ConfigureAwait(true);
+    }
+
+    [RelayCommand]
+    private async Task Next()
+    {
+        if (ShouldExpandTransportQueue() && ExpandQueueForTransport is not null &&
+            await ExpandQueueForTransport(true).ConfigureAwait(true))
+            return;
+
+        await _playbackService.NextAsync().ConfigureAwait(true);
+    }
+
+    private bool ShouldExpandTransportQueue()
+    {
+        return _playbackService.PlaybackQueue.Count <= 1;
+    }
+
+    [RelayCommand]
+    private void Stop()
+    {
+        _ = _playbackService.StopAsync();
     }
 
     [RelayCommand]
@@ -390,6 +492,46 @@ public partial class PlayerViewModel : ObservableObject
     private Task ToggleMuteAsync()
     {
         return _playbackService.ToggleMuteAsync();
+    }
+
+    public void SetPlaybackOrder(ShellPlaybackOrder order)
+    {
+        _orderOverride = order is ShellPlaybackOrder.ShuffleAlbums or ShellPlaybackOrder.Random ? order : null;
+        switch (order)
+        {
+            case ShellPlaybackOrder.Default:
+                _ = _playbackService.SetShuffleAsync(false);
+                _ = _playbackService.SetRepeatModeAsync(RepeatMode.Off);
+                break;
+            case ShellPlaybackOrder.RepeatPlaylist:
+                _ = _playbackService.SetShuffleAsync(false);
+                _ = _playbackService.SetRepeatModeAsync(RepeatMode.RepeatAll);
+                break;
+            case ShellPlaybackOrder.RepeatTrack:
+                _ = _playbackService.SetShuffleAsync(false);
+                _ = _playbackService.SetRepeatModeAsync(RepeatMode.RepeatOne);
+                break;
+            case ShellPlaybackOrder.ShuffleTracks:
+            case ShellPlaybackOrder.ShuffleAlbums:
+            case ShellPlaybackOrder.Random:
+                _ = _playbackService.SetShuffleAsync(true);
+                _ = _playbackService.SetRepeatModeAsync(RepeatMode.Off);
+                break;
+        }
+
+        OnPropertyChanged(nameof(CurrentPlaybackOrder));
+    }
+
+    [RelayCommand]
+    private void ToggleEqualizer()
+    {
+        IsEqualizerVisible = !IsEqualizerVisible;
+    }
+
+    [RelayCommand]
+    private void ToggleVisualizer()
+    {
+        IsVisualizerVisible = !IsVisualizerVisible;
     }
 
     [RelayCommand]
@@ -510,6 +652,7 @@ public partial class PlayerViewModel : ObservableObject
             CurrentTimeText = timeSpan.TotalHours >= 1
                 ? timeSpan.ToString(@"h\:mm\:ss")
                 : timeSpan.ToString(@"m\:ss");
+            UpdateStatusTime();
         }
 
         if (_isUpdatingFromService || IsUserDraggingSlider) return;
@@ -539,7 +682,21 @@ public partial class PlayerViewModel : ObservableObject
         TotalDurationText = timeSpan.TotalHours >= 1
             ? timeSpan.ToString(@"h\:mm\:ss")
             : timeSpan.ToString(@"m\:ss");
+        UpdateStatusTime();
     }
+
+    private void UpdateStatusTime()
+    {
+        var position = TimeSpan.FromSeconds(Math.Max(0, CurrentPosition));
+        var total = TimeSpan.FromSeconds(Math.Max(0, TotalDuration));
+        var value = ShowRemaining ? total - position : position;
+        if (value < TimeSpan.Zero) value = TimeSpan.Zero;
+        StatusTimeText = value.TotalHours >= 1
+            ? value.ToString(@"hh\:mm\:ss")
+            : value.ToString(@"mm\:ss");
+    }
+
+    partial void OnShowRemainingChanged(bool value) => UpdateStatusTime();
 
     private void UpdateEfficiencyMode()
     {
@@ -566,15 +723,55 @@ public partial class PlayerViewModel : ObservableObject
         {
             SongTitle = song.Title;
             ArtistName = song.ArtistName;
+            AlbumName = song.Album?.Title ?? string.Empty;
+            var genre = song.Genres?.FirstOrDefault()?.Name;
+            GenreYearText = string.Join(" / ", new[] { genre, song.Year?.ToString() ?? song.Album?.Year?.ToString() }
+                .Where(s => !string.IsNullOrWhiteSpace(s)));
             AlbumArtUri = ImageUriHelper.GetUriWithCacheBuster(song.AlbumArtUriFromTrack);
+            IsLossless = LosslessExtensions.Contains(Path.GetExtension(song.FilePath));
+            BitrateKbps = song.Bitrate ?? 0;
         }
         else
         {
+            // Keep the track that just stopped. Idle preview is only for a player that has not
+            // shown a real track yet; otherwise the tray jumps back to the open album's first cover.
+            CurrentPlayingTrack = null;
+            if (string.IsNullOrEmpty(SongTitle) || SongTitle == Strings.Status_NoTrackPlaying)
+                ApplyIdlePreview();
+        }
+    }
+
+    private void ApplyIdlePreview()
+    {
+        var song = _idlePreview;
+        CurrentPlayingTrack = null;
+        if (song is null)
+        {
             SongTitle = Strings.Status_NoTrackPlaying;
             ArtistName = string.Empty;
+            AlbumName = string.Empty;
+            GenreYearText = string.Empty;
             AlbumArtUri = null;
             TotalDuration = 0;
+            IsLossless = false;
+            BitrateKbps = 0;
+            QueuePosition = 0;
+            QueueTotal = 0;
+            return;
         }
+
+        SongTitle = song.Title;
+        ArtistName = string.IsNullOrWhiteSpace(song.ArtistName) ? song.Album?.ArtistName ?? string.Empty : song.ArtistName;
+        AlbumName = song.Album?.Title ?? string.Empty;
+        var genre = song.Genres?.FirstOrDefault()?.Name;
+        GenreYearText = string.Join(" / ", new[] { genre, song.Year?.ToString() ?? song.Album?.Year?.ToString() }
+            .Where(s => !string.IsNullOrWhiteSpace(s)));
+        AlbumArtUri = ImageUriHelper.GetUriWithCacheBuster(song.AlbumArtUriFromTrack);
+        TotalDuration = song.Duration.TotalSeconds;
+        IsLossless = !string.IsNullOrEmpty(song.FilePath) && LosslessExtensions.Contains(Path.GetExtension(song.FilePath));
+        BitrateKbps = song.Bitrate ?? 0;
+        QueuePosition = 0;
+        QueueTotal = 0;
     }
 
     private void UpdateCurrentQueueDisplay()
@@ -604,7 +801,12 @@ public partial class PlayerViewModel : ObservableObject
 
             if (sourceQueue.Count == 0)
             {
-                CurrentQueue.Clear();
+                RunOnUIThread(() =>
+                {
+                    CurrentQueue.Clear();
+                    QueuePosition = 0;
+                    QueueTotal = 0;
+                });
                 return;
             }
 
@@ -666,6 +868,11 @@ public partial class PlayerViewModel : ObservableObject
             {
                 CurrentQueue.ReplaceRange(newDisplayQueue);
             }
+
+            QueueTotal = sourceQueue.Count;
+            QueuePosition = sourceQueue.Count == 0
+                ? 0
+                : Math.Clamp(currentTrackIndexInSource + 1, 1, sourceQueue.Count);
         }
         catch (OperationCanceledException)
         {
@@ -813,6 +1020,13 @@ public partial class PlayerViewModel : ObservableObject
         RunOnUIThread(() =>
         {
             IsShuffleEnabled = _playbackService.IsShuffleEnabled;
+            if (_orderOverride is ShellPlaybackOrder.ShuffleAlbums or ShellPlaybackOrder.Random &&
+                !_playbackService.IsShuffleEnabled)
+            {
+                _orderOverride = null;
+            }
+
+            OnPropertyChanged(nameof(CurrentPlaybackOrder));
             UpdateCurrentQueueDisplay();
         });
     }

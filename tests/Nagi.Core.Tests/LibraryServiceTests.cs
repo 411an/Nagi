@@ -32,8 +32,6 @@ public class LibraryServiceTests : IDisposable
     private readonly IFileSystemService _fileSystem;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly TestHttpMessageHandler _httpMessageHandler;
-    private readonly ILastFmMetadataService _lastFmService;
-
     /// <summary>
     ///     The instance of the service under test.
     /// </summary>
@@ -47,9 +45,6 @@ public class LibraryServiceTests : IDisposable
     private readonly ISettingsService _settingsService;
     private readonly IReplayGainService _replayGainService;
     private readonly IMusicBrainzService _musicBrainzService;
-    private readonly IFanartTvService _fanartTvService;
-    private readonly ITheAudioDbService _theAudioDbService;
-    private readonly IApiKeyService _apiKeyService;
     private readonly IImageProcessor _imageProcessor;
     private readonly ProviderPipelineProvider _pipelines;
 
@@ -62,18 +57,12 @@ public class LibraryServiceTests : IDisposable
     {
         _fileSystem = Substitute.For<IFileSystemService>();
         _metadataService = Substitute.For<IMetadataService>();
-        _lastFmService = Substitute.For<ILastFmMetadataService>();
         _httpClientFactory = Substitute.For<IHttpClientFactory>();
         _serviceScopeFactory = Substitute.For<IServiceScopeFactory>();
         _pathConfig = Substitute.For<IPathConfiguration>();
         _settingsService = Substitute.For<ISettingsService>();
         _replayGainService = Substitute.For<IReplayGainService>();
         _musicBrainzService = Substitute.For<IMusicBrainzService>();
-        _fanartTvService = Substitute.For<IFanartTvService>();
-        _theAudioDbService = Substitute.For<ITheAudioDbService>();
-        _apiKeyService = Substitute.For<IApiKeyService>();
-        _theAudioDbService = Substitute.For<ITheAudioDbService>();
-        _apiKeyService = Substitute.For<IApiKeyService>();
         _imageProcessor = Substitute.For<IImageProcessor>();
         _httpMessageHandler = new TestHttpMessageHandler();
         _logger = Substitute.For<ILogger<LibraryService>>();
@@ -94,16 +83,12 @@ public class LibraryServiceTests : IDisposable
             _dbHelper.ContextFactory,
             _fileSystem,
             _metadataService,
-            _lastFmService,
             _musicBrainzService,
-            _fanartTvService,
-            _theAudioDbService,
             _httpClientFactory,
             _serviceScopeFactory,
             _pathConfig,
             _settingsService,
             _replayGainService,
-            _apiKeyService,
             _imageProcessor,
             _pipelines,
             _logger);
@@ -134,53 +119,41 @@ public class LibraryServiceTests : IDisposable
     public void Constructor_WithNullDependency_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() => new LibraryService(null!, _fileSystem, _metadataService,
-            _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig, _settingsService,
-            _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _musicBrainzService, _httpClientFactory, _serviceScopeFactory, _pathConfig, _settingsService,
+            _replayGainService, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, null!, _metadataService,
-            _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig, _settingsService,
-            _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _musicBrainzService, _httpClientFactory, _serviceScopeFactory, _pathConfig, _settingsService,
+            _replayGainService, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem, null!,
-            _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig, _settingsService,
-            _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _musicBrainzService, _httpClientFactory, _serviceScopeFactory, _pathConfig, _settingsService,
+            _replayGainService, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, null!, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _metadataService, null!, _httpClientFactory, _serviceScopeFactory, _pathConfig,
+            _settingsService, _replayGainService, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, null!, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _metadataService, _musicBrainzService, null!, _serviceScopeFactory, _pathConfig, _settingsService,
+            _replayGainService, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, null!, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _metadataService, _musicBrainzService, _httpClientFactory, null!, _pathConfig, _settingsService,
+            _replayGainService, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, null!, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _metadataService, _musicBrainzService, _httpClientFactory, _serviceScopeFactory, null!,
+            _settingsService, _replayGainService, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, null!, _serviceScopeFactory, _pathConfig, _settingsService,
-            _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _metadataService, _musicBrainzService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
+            null!, _replayGainService, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, null!, _pathConfig, _settingsService,
-            _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _metadataService, _musicBrainzService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
+            _settingsService, null!, _imageProcessor, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, null!,
-            _settingsService, _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _metadataService, _musicBrainzService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
+            _settingsService, _replayGainService, null!, _pipelines, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            null!, _replayGainService, _apiKeyService, _imageProcessor, _pipelines, _logger));
+            _metadataService, _musicBrainzService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
+            _settingsService, _replayGainService, _imageProcessor, null!, _logger));
         Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, null!, _apiKeyService, _imageProcessor, _pipelines, _logger));
-        Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, _replayGainService, null!, _imageProcessor, _pipelines, _logger));
-        Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, _replayGainService, _apiKeyService, null!, _pipelines, _logger));
-        Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, _replayGainService, _apiKeyService, _imageProcessor, null!, _logger));
-        Assert.Throws<ArgumentNullException>(() => new LibraryService(_dbHelper.ContextFactory, _fileSystem,
-            _metadataService, _lastFmService, _musicBrainzService, _fanartTvService, _theAudioDbService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
-            _settingsService, _replayGainService, _apiKeyService, _imageProcessor, _pipelines, null!));
+            _metadataService, _musicBrainzService, _httpClientFactory, _serviceScopeFactory, _pathConfig,
+            _settingsService, _replayGainService, _imageProcessor, _pipelines, null!));
     }
 
     #endregion
@@ -371,6 +344,34 @@ public class LibraryServiceTests : IDisposable
         // Assert: The service should have attempted to delete the associated cache files.
         _fileSystem.Received(1).DeleteFile("C:\\cache\\albumart\\art1.jpg");
         _fileSystem.Received(1).DeleteFile("C:\\cache\\lrc\\lyrics1.lrc");
+    }
+
+    /// <summary>
+    ///     The library tree shows an expander only next to folders that have subfolders, so the
+    ///     query must name exactly those children, and nothing from elsewhere in the library.
+    /// </summary>
+    [Fact]
+    public async Task GetSubFolderIdsWithChildrenAsync_NamesOnlyChildrenThatHaveSubfolders()
+    {
+        var root = new Folder { Name = "Music", Path = "C:\\Music" };
+        var withOne = new Folder { Name = "A", Path = "C:\\Music\\A", ParentFolder = root };
+        var empty = new Folder { Name = "B", Path = "C:\\Music\\B", ParentFolder = root };
+        var withTwo = new Folder { Name = "C", Path = "C:\\Music\\C", ParentFolder = root };
+        var other = new Folder { Name = "Other", Path = "D:\\Other" };
+        await using (var context = _dbHelper.ContextFactory.CreateDbContext())
+        {
+            context.Folders.AddRange(root, withOne, empty, withTwo, other,
+                new Folder { Name = "A1", Path = "C:\\Music\\A\\A1", ParentFolder = withOne },
+                new Folder { Name = "C1", Path = "C:\\Music\\C\\C1", ParentFolder = withTwo },
+                new Folder { Name = "C2", Path = "C:\\Music\\C\\C2", ParentFolder = withTwo },
+                new Folder { Name = "Other1", Path = "D:\\Other\\1", ParentFolder = other });
+            await context.SaveChangesAsync();
+        }
+
+        var result = await _libraryService.GetSubFolderIdsWithChildrenAsync(root.Id);
+
+        result.Should().BeEquivalentTo(new[] { withOne.Id, withTwo.Id });
+        (await _libraryService.GetSubFolderIdsWithChildrenAsync(empty.Id)).Should().BeEmpty();
     }
 
     #endregion
@@ -748,49 +749,28 @@ public class LibraryServiceTests : IDisposable
         _settingsService.GetEnabledServiceProvidersAsync(ServiceCategory.Metadata)
             .Returns(new List<ServiceProviderSetting>
             {
-                new() { Id = ServiceProviderIds.LastFm, IsEnabled = true, Category = ServiceCategory.Metadata }
+                new() { Id = ServiceProviderIds.MusicBrainz, IsEnabled = true, Category = ServiceCategory.Metadata }
             });
 
-        // Arrange: Mock successful responses from remote metadata services.
-        _lastFmService.GetArtistInfoAsync(artist.Name, Arg.Any<string?>(), Arg.Any<CancellationToken>())
-            .Returns(ServiceResult<ArtistInfo>.FromSuccess(new ArtistInfo
-            { Biography = "A cool bio.", ImageUrl = "http://example.com/image.jpg" }));
+        _musicBrainzService.SearchArtistAsync(artist.Name, Arg.Any<CancellationToken>())
+            .Returns("mbid-123");
 
-        // Arrange: Configure file system mocks for image caching.
-        var artistCachePath = _pathConfig.ArtistImageCachePath;
-        var artistImageFilename = $"{artist.Id}.fetched.jpg";
-        var expectedImagePath = Path.Combine(artistCachePath, artistImageFilename);
-        _fileSystem.Combine(artistCachePath, artistImageFilename).Returns(expectedImagePath);
-        _fileSystem.FileExists(expectedImagePath).Returns(false);
-        _fileSystem.WriteAllBytesAsync(expectedImagePath, Arg.Any<byte[]>()).Returns(Task.CompletedTask);
-
-        // Arrange: Mock a successful HTTP response for the image download.
-        _httpMessageHandler.SendAsyncFunc = (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = new ByteArrayContent(new byte[] { 1, 2, 3 })
-        });
-
-        // Arrange: Set up an event handler to verify the ArtistMetadataUpdated event is raised correctly.
         var eventFired = false;
         _libraryService.ArtistMetadataUpdated += (sender, args) =>
         {
             eventFired = true;
             args.ArtistId.Should().Be(artist.Id);
-            args.NewLocalImageCachePath.Should().Be(expectedImagePath);
         };
 
         // Act
         var result = await _libraryService.GetArtistDetailsAsync(artist.Id, true);
 
-        // Assert: The returned artist object and database record should be updated.
+        // Assert: MusicBrainz ID is stored; image/biography providers were removed in the portable cut.
         result.Should().NotBeNull();
-        result!.Biography.Should().Be("A cool bio.");
-        result.LocalImageCachePath.Should().Be(expectedImagePath);
+        result!.MusicBrainzId.Should().Be("mbid-123");
+        result.Biography.Should().BeNull();
         result.MetadataLastCheckedUtc.Should().NotBeNull();
         eventFired.Should().BeTrue();
-
-        // Assert: The service should have written the downloaded image to the cache.
-        await _fileSystem.Received(1).WriteAllBytesAsync(expectedImagePath, Arg.Any<byte[]>());
     }
 
     /// <summary>
@@ -816,7 +796,7 @@ public class LibraryServiceTests : IDisposable
         result!.Biography.Should().BeNull();
 
         // Assert: No network calls should have been made.
-        await _lastFmService.DidNotReceive().GetArtistInfoAsync(Arg.Any<string>(), Arg.Any<string?>(), Arg.Any<CancellationToken>());
+        await _musicBrainzService.DidNotReceive().SearchArtistAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     #endregion

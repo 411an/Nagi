@@ -7,6 +7,7 @@ using Windows.Storage.Streams;
 using LibVLCSharp;
 using Microsoft.Extensions.Logging;
 using Nagi.Core.Models;
+using Nagi.Core.Helpers;
 using Nagi.Core.Services.Abstractions;
 using System.Threading;
 using Nagi.WinUI.Services.Abstractions;
@@ -266,15 +267,17 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
 
     public event Action? PlaybackEnded, PositionChanged, StateChanged, VolumeChanged, MediaOpened, DurationChanged;
     public event Action<string>? ErrorOccurred;
-    public event Action? SmtcNextButtonPressed, SmtcPreviousButtonPressed;
+    public event Action? SmtcNextButtonPressed, SmtcPreviousButtonPressed, SmtcPlayButtonPressed, SmtcPauseButtonPressed;
 
     public bool IsPlaying => !_isDisposed && _isInitialized && !_isPausing && _mediaPlayer?.State == VLCState.Playing;
     public TimeSpan CurrentPosition => _isDisposed || !_isInitialized
         ? TimeSpan.Zero
-        : FromVlcMicroseconds(_mediaPlayer?.Time ?? 0);
+        : _currentSong is { } song
+            ? CuePlayback.ToTrackPosition(song, FromVlcMicroseconds(_mediaPlayer?.Time ?? 0))
+            : FromVlcMicroseconds(_mediaPlayer?.Time ?? 0);
     public TimeSpan Duration => _isDisposed || !_isInitialized
         ? TimeSpan.Zero
-        : FromVlcMicroseconds(_mediaPlayer?.Length ?? 0);
+        : _currentSong is { IsCueTrack: true } song ? song.Duration : FromVlcMicroseconds(_mediaPlayer?.Length ?? 0);
     public double Volume => _isDisposed || !_isInitialized ? 0 : _userVolume;
     public bool IsMuted => !_isDisposed && _isInitialized && (_mediaPlayer?.Mute ?? false);
 
@@ -356,6 +359,8 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
                 var useNativeDemuxer = UsesNativeDemuxer(extension);
 
                 _currentMedia = new Media(song.FilePath, FromType.FromPath);
+                foreach (var option in CuePlayback.GetMediaOptions(song))
+                    _currentMedia.AddOption(option);
 
                 // Native Ogg and Matroska demuxers integrate more safely with VLC's player clock.
                 // FFmpeg remains preferred for the other formats because it handles edge-case MP3s
@@ -672,7 +677,11 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
         }
 
         if (_mediaPlayer.IsSeekable)
-            _mediaPlayer.SeekTo(position, true);
+        {
+            var song = _currentSong;
+            _mediaPlayer.SeekTo(song is not null ? CuePlayback.ToSeekPosition(song, position) : position,
+                fast: song?.IsCueTrack != true);
+        }
         else
             _logger.LogWarning("Seek command received, but media is not seekable.");
         return Task.CompletedTask;
@@ -995,7 +1004,9 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
     {
         if (_isDisposed || _libVlc is null) return;
 
-        // Mark as explicit stop to prevent double PlaybackEnded (error handler fires it below)
+        // LibVLC stops on its own after an error. Suppress the PlaybackEnded the state change
+        // would raise: the playback service decides what follows an error, and a second
+        // "ended" racing its recovery used to restart the same broken file.
         _isExplicitStop = true;
 
         var lastVlcError = _libVlc.LastLibVLCError;
@@ -1007,7 +1018,6 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
         {
             if (_isDisposed) return;
             ErrorOccurred?.Invoke(errorMessage);
-            PlaybackEnded?.Invoke();
         });
     }
 
@@ -1090,16 +1100,19 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
         {
             try
             {
-                await _dispatcherService.EnqueueAsync(async () =>
+                // Every button goes to the playback service, which owns the queue, listen sessions
+                // and ReplayGain. Calling LibVLC directly here skipped all of that.
+                await _dispatcherService.EnqueueAsync(() =>
                 {
-                    if (_isDisposed) return;
+                    if (_isDisposed) return Task.CompletedTask;
                     switch (args.Button)
                     {
-                        case SystemMediaTransportControlsButton.Play: await PlayAsync(); break;
-                        case SystemMediaTransportControlsButton.Pause: await PauseAsync(); break;
+                        case SystemMediaTransportControlsButton.Play: SmtcPlayButtonPressed?.Invoke(); break;
+                        case SystemMediaTransportControlsButton.Pause: SmtcPauseButtonPressed?.Invoke(); break;
                         case SystemMediaTransportControlsButton.Next: SmtcNextButtonPressed?.Invoke(); break;
                         case SystemMediaTransportControlsButton.Previous: SmtcPreviousButtonPressed?.Invoke(); break;
                     }
+                    return Task.CompletedTask;
                 });
             }
             catch (Exception ex) when (ex.HResult == unchecked((int)0x80000013)) // RO_E_CLOSED

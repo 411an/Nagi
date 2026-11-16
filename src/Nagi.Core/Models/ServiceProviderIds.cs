@@ -21,27 +21,9 @@ public static class ServiceProviderIds
     /// <summary>MusicBrainz - Open music encyclopedia, provides artist/release IDs.</summary>
     public const string MusicBrainz = "musicbrainz";
 
-    /// <summary>TheAudioDB - High-quality artist images and biographies. Requires MusicBrainz ID.</summary>
-    public const string TheAudioDb = "theaudiodb";
-
-    /// <summary>Fanart.tv - Fan-contributed artist artwork. Requires MusicBrainz ID.</summary>
-    public const string FanartTv = "fanarttv";
-
-    /// <summary>Last.fm - Fallback for artist images and biographies.</summary>
-    public const string LastFm = "lastfm";
-
-    /// <summary>Last.fm API Secret name for retrieval.</summary>
-    public const string LastFmSecret = "lastfm-secret";
-
-    /// <summary>ListenBrainz - Open scrobbling service from MetaBrainz.</summary>
-    public const string ListenBrainz = "listenbrainz";
-
     #endregion
 
     #region Internal Providers
-
-    /// <summary>Nagi's own API server (key bootstrap). Not a third-party provider.</summary>
-    public const string NagiApi = "nagi-api";
 
     /// <summary>
     ///     Generic bucket for cover-art / artist-image downloads from third-party CDNs.

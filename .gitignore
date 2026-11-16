@@ -54,7 +54,14 @@ tools/romanization-packs/dist/catalog.unsigned.json
 [Aa]ppsettings.json
 [Ll]ocal.settings.json
 
+# Local test publishes (folder stays in git, binaries do not)
+/out/*
+!/out/.gitkeep
+
 # Build output and temp files
 build_output.txt
 *_sub
 *.bak
+
+# Local notes (plans, history), not published
+/notes/

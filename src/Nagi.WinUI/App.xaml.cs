@@ -11,9 +11,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Storage;
 using Windows.UI;
 using Windows.Globalization;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +29,6 @@ using Nagi.Core.Http.Pipelines;
 using Nagi.Core.Models;
 using Nagi.Core.Services.Abstractions;
 using Nagi.Core.Services.Implementations;
-using Nagi.Core.Services.Implementations.Presence;
 using Nagi.Core.Services.Implementations.Romanization;
 using Nagi.WinUI.Helpers;
 using Nagi.WinUI.Pages;
@@ -41,9 +40,6 @@ using Serilog.Events;
 using WinRT;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
-
-
-
 
 namespace Nagi.WinUI;
 
@@ -98,7 +94,7 @@ public partial class App : Application
     /// <summary>
     ///     Gets Nagi's default brand accent color, derived from the app logo.
     /// </summary>
-    public static Color DefaultAccentColor { get; } = Color.FromArgb(255, 0x21, 0x94, 0x4B);
+    public static Color DefaultAccentColor { get; } = Color.FromArgb(255, 0x1E, 0xB8, 0xC8);
 
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
@@ -106,7 +102,7 @@ public partial class App : Application
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
-        var tempPathConfig = new PathConfiguration(configuration);
+        var tempPathConfig = new PathConfiguration();
 
         _currentLogFilePath = Path.Combine(tempPathConfig.LogsDirectory, "log.txt");
 
@@ -134,7 +130,8 @@ public partial class App : Application
         {
             InitializeWindowAndServices(configuration);
             _logger = Services!.GetRequiredService<ILogger<App>>();
-            _logger.LogInformation("Application starting up.");
+            _logger.LogInformation("Application starting up. Data directory: {Root} ({Source})",
+                AppDataLocator.Location.Root, AppDataLocator.Location.Source);
 
             InitializeSystemIntegration();
 
@@ -157,7 +154,7 @@ public partial class App : Application
                 _window?.Activate();
                 if (_window?.AppWindow is not null) _window.AppWindow.IsShownInSwitchers = true;
             }
-            HandleInitialActivation(args.UWPLaunchActivatedEventArgs);
+            HandleInitialActivation(args);
 
             // Pre-build MainPage on the UI thread while core services initialize in background.
             // MainPage's constructor only resolves already-registered DI singletons; it does not
@@ -187,20 +184,25 @@ public partial class App : Application
         }
     }
 
-    private void HandleInitialActivation(IActivatedEventArgs args)
+    private void HandleInitialActivation(LaunchActivatedEventArgs args)
     {
         string? filePath = null;
 
-        if (args.Kind == ActivationKind.File)
+        try
         {
-            var fileArgs = args.As<IFileActivatedEventArgs>();
-            if (fileArgs.Files.Any()) filePath = fileArgs.Files[0].Path;
+            var uwpArgs = args.UWPLaunchActivatedEventArgs;
+            if (uwpArgs.Kind == ActivationKind.File)
+            {
+                var fileArgs = uwpArgs.As<IFileActivatedEventArgs>();
+                if (fileArgs.Files.Any()) filePath = fileArgs.Files[0].Path;
+            }
         }
-        else if (args.Kind == ActivationKind.Launch)
+        catch (Exception)
         {
-            var commandLineArgs = Environment.GetCommandLineArgs();
-            if (commandLineArgs.Length > 1) filePath = commandLineArgs[1];
+            // Unpackaged activation has no package identity / UWP file contract.
         }
+
+        filePath ??= CommandLineArgs.TryGetFilePath(Environment.GetCommandLineArgs());
 
         if (!string.IsNullOrEmpty(filePath)) _fileActivationQueue.Enqueue(filePath);
     }
@@ -346,23 +348,17 @@ public partial class App : Application
             await windowTask;
 
             // 2. Services Phase: start services that don't depend on EF or playback state.
-            var presenceTask = Services.GetRequiredService<IPresenceManager>().InitializeAsync();
             var trayTask = Services.GetRequiredService<TrayIconViewModel>().InitializeAsync();
             var appInfoTask = Services.GetRequiredService<IAppInfoService>().InitializeAsync();
 
             // playback and settings both need EF ready. LoadSettingsAsync also reads
             // CurrentEqualizerSettings from the playback service, so settings starts after playback.
-            // Offline scrobbling queries ListenHistory, including columns added by recent migrations,
-            // so start it only after database migration/backfill has completed.
             await dbTask;
-            var offlineScrobbleService = Services.GetRequiredService<IOfflineScrobbleService>();
-            offlineScrobbleService.Start();
-            var scrobbleTask = offlineScrobbleService.ProcessQueueAsync();
             var playbackTask = Services.GetRequiredService<IMusicPlaybackService>().InitializeAsync(restoreSession);
             await playbackTask;
             var settingsTask = Services.GetRequiredService<SettingsViewModel>().LoadSettingsAsync();
 
-            await Task.WhenAll(presenceTask, trayTask, scrobbleTask, appInfoTask, settingsTask);
+            await Task.WhenAll(trayTask, appInfoTask, settingsTask);
 
             _logger?.LogInformation("Core services initialized successfully.");
         }
@@ -381,8 +377,6 @@ public partial class App : Application
 
         services.AddSingleton(configuration);
         services.AddSingleton<IPathConfiguration, PathConfiguration>();
-        // Register the pre-warmed ApplicationDataContainer so SettingsService doesn't pay
-        // the ~275ms first-access cost during its constructor.
         services.AddHttpClient();
 
         // Configure the default HTTP client with standardized settings:
@@ -428,7 +422,6 @@ public partial class App : Application
 
     private static void ConfigureAppSettingsServices(IServiceCollection services)
     {
-        services.AddSingleton<ICredentialLockerService, CredentialLockerService>();
         services.AddSingleton<SettingsService>();
         services.AddSingleton<IUISettingsService>(sp => sp.GetRequiredService<SettingsService>());
         services.AddSingleton<ISettingsService>(sp => sp.GetRequiredService<SettingsService>());
@@ -439,7 +432,8 @@ public partial class App : Application
         services.AddDbContextFactory<MusicDbContext>((serviceProvider, options) =>
         {
             var pathConfig = serviceProvider.GetRequiredService<IPathConfiguration>();
-            options.UseSqlite($"Data Source={pathConfig.DatabasePath}");
+            var builder = new SqliteConnectionStringBuilder { DataSource = pathConfig.DatabasePath };
+            options.UseSqlite(builder.ConnectionString);
         });
 
         services.AddSingleton<LibraryService>();
@@ -450,13 +444,14 @@ public partial class App : Application
         services.AddSingleton<IPlaylistService>(sp => sp.GetRequiredService<LibraryService>());
 
         services.AddSingleton<IMusicPlaybackService, MusicPlaybackService>();
-        services.AddSingleton<IOfflineScrobbleService, OfflineScrobbleService>();
         services.AddSingleton<IFileSystemService, FileSystemService>();
-        services.AddSingleton<IImageProcessor, ImageSharpProcessor>();
+        services.AddSingleton<IImageProcessor, CoverArtFileStore>();
         services.AddSingleton<IMetadataService, AtlMetadataService>();
         services.AddSingleton<ILrcService, LrcService>();
+        services.AddSingleton<ILyricsTextService, LyricsTextService>();
 
-        services.AddSingleton<IApiKeyService, ApiKeyService>();
+        services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
+        services.AddSingleton<INetEaseLyricsService, NetEaseLyricsService>();
 
         services.AddProviderPipelines(builder =>
         {
@@ -472,52 +467,6 @@ public partial class App : Application
                     MaxConcurrent = 1,
                     MaxRetries = 3,
                     BaseRetryDelay = TimeSpan.FromSeconds(1),
-                },
-            });
-
-            builder.AddProvider(new ProviderPolicy
-            {
-                ProviderId = ServiceProviderIds.TheAudioDb,
-                // Free tier: 30 req/min. Once breached, the key is locked out for a full
-                // minute — short retry delays just waste calls. Wait the full minute, once.
-                Channel = new ChannelPolicy
-                {
-                    PermitsPerWindow = 1,
-                    Window = TimeSpan.FromSeconds(2),
-                    MaxConcurrent = 2,
-                    MaxRetries = 1,
-                    BaseRetryDelay = TimeSpan.FromSeconds(60),
-                    MaxRetryDelay = TimeSpan.FromSeconds(75),
-                },
-            });
-
-            // Last.fm: metadata, auth, and scrobbling all run through a single provider so an
-            // auth-trip on one of them pauses the others (shared breaker). Last.fm's limits
-            // are undisclosed/dynamic; 5 RPS/IP is the long-standing convention.
-            builder.AddProvider(new ProviderPolicy
-            {
-                ProviderId = ServiceProviderIds.LastFm,
-                Channel = new ChannelPolicy
-                {
-                    PermitsPerWindow = 5,
-                    Window = TimeSpan.FromSeconds(1),
-                    MaxConcurrent = 4,
-                    MaxRetries = 3,
-                    BaseRetryDelay = TimeSpan.FromSeconds(5),
-                },
-            });
-
-            // Fanart.tv: effectively unlimited for normal use (token bucket, 429 rare). The
-            // pipeline auto-honors Retry-After if the service ever pushes back.
-            builder.AddProvider(new ProviderPolicy
-            {
-                ProviderId = ServiceProviderIds.FanartTv,
-                Channel = new ChannelPolicy
-                {
-                    PermitsPerWindow = 10,
-                    Window = TimeSpan.FromSeconds(1),
-                    MaxConcurrent = 8,
-                    MaxRetries = 3,
                 },
             });
 
@@ -548,34 +497,6 @@ public partial class App : Application
                 },
             });
 
-            // ListenBrainz: dynamic limit advertised via X-RateLimit-* headers. The pipeline
-            // honors X-RateLimit-Reset-In on 429 (alongside Retry-After), so we can run at a
-            // healthy steady-state and let the server tell us when to back off.
-            builder.AddProvider(new ProviderPolicy
-            {
-                ProviderId = ServiceProviderIds.ListenBrainz,
-                Channel = new ChannelPolicy
-                {
-                    PermitsPerWindow = 5,
-                    Window = TimeSpan.FromSeconds(1),
-                    MaxConcurrent = 4,
-                    MaxRetries = 3,
-                },
-            });
-
-            // Nagi's own API server (key bootstrap). Internal infra; conservative retry.
-            builder.AddProvider(new ProviderPolicy
-            {
-                ProviderId = ServiceProviderIds.NagiApi,
-                Channel = new ChannelPolicy
-                {
-                    PermitsPerWindow = 5,
-                    Window = TimeSpan.FromSeconds(1),
-                    MaxConcurrent = 4,
-                    MaxRetries = 3,
-                },
-            });
-
             // Generic CDN image downloads. Provider id is shared by all artist/album image
             // fetches because the source CDN isn't always knowable from the URL.
             builder.AddProvider(new ProviderPolicy
@@ -591,22 +512,6 @@ public partial class App : Application
             });
         });
 
-        services.AddSingleton<ILastFmMetadataService, LastFmMetadataService>();
-        services.AddSingleton<ILastFmAuthService, LastFmAuthService>();
-        services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
-        services.AddSingleton<IFanartTvService, FanartTvService>();
-        services.AddSingleton<ITheAudioDbService, TheAudioDbService>();
-        services.AddSingleton<INetEaseLyricsService, NetEaseLyricsService>();
-        services.AddSingleton<LastFmScrobblerService>();
-        services.AddSingleton<ILastFmScrobblerService>(sp => sp.GetRequiredService<LastFmScrobblerService>());
-        services.AddSingleton<IListenSubmitter>(sp => sp.GetRequiredService<LastFmScrobblerService>());
-        services.AddSingleton<ListenBrainzScrobblerService>();
-        services.AddSingleton<IListenBrainzScrobblerService>(sp => sp.GetRequiredService<ListenBrainzScrobblerService>());
-        services.AddSingleton<IListenSubmitter>(sp => sp.GetRequiredService<ListenBrainzScrobblerService>());
-        services.AddSingleton<IPresenceManager, PresenceManager>();
-        services.AddSingleton<IPresenceService, DiscordPresenceService>();
-        services.AddSingleton<IPresenceService, LastFmPresenceService>();
-        services.AddSingleton<IPresenceService, ListenBrainzPresenceService>();
         services.AddSingleton<ISmartPlaylistService, SmartPlaylistService>();
         services.AddSingleton<IOnlineLyricsService, LrcLibService>();
         services.AddSingleton<IRomanizationProvider, JapaneseRomanizationProvider>();
@@ -623,6 +528,7 @@ public partial class App : Application
         services.AddSingleton<IFFmpegService, FFmpegService>();
         services.AddSingleton<IPcmExtractor, FFmpegPcmExtractor>();
         services.AddSingleton<IReplayGainService, ReplayGainService>();
+        services.AddSingleton<ITrackSpectrumService, TrackSpectrumService>();
 
 
     }
@@ -672,6 +578,8 @@ public partial class App : Application
         services.AddSingleton<LibraryViewModel>();
         services.AddSingleton<PlaylistViewModel>();
         services.AddSingleton<FolderViewModel>();
+        services.AddSingleton<LibraryTreeViewModel>();
+        services.AddSingleton<BrowseSongListViewModel>();
         services.AddSingleton<ArtistViewModel>();
         services.AddSingleton<AlbumViewModel>();
         services.AddSingleton<GenreViewModel>();
@@ -795,6 +703,7 @@ public partial class App : Application
             // Kick off EF warmup immediately after DI is ready, but only if the DB already
             // exists — on first launch the DB hasn't been created yet so the query would fail.
             var pathConfig = Services.GetRequiredService<IPathConfiguration>();
+            ConfigureImageExCache(pathConfig);
             if (File.Exists(pathConfig.DatabasePath))
             {
                 _efWarmupTask = Task.Run(async () =>
@@ -812,6 +721,18 @@ public partial class App : Application
         {
             Log.Fatal(ex, "Failed to initialize window and services.");
             throw;
+        }
+    }
+
+    private static void ConfigureImageExCache(IPathConfiguration pathConfig)
+    {
+        try
+        {
+            Directory.CreateDirectory(pathConfig.ImageCachePath);
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Failed to initialize ImageEx cache at {CachePath}", pathConfig.ImageCachePath);
         }
     }
 
@@ -840,6 +761,9 @@ public partial class App : Application
 
         try
         {
+            if (settingsService.AreWritesFrozen)
+                return;
+
             if (await settingsService.GetRestorePlaybackStateEnabledAsync())
                 await musicPlaybackService.SavePlaybackStateAsync();
             else
@@ -897,10 +821,7 @@ public partial class App : Application
                 Services.GetRequiredService<PlayerViewModel>().Cleanup();
                 Services.GetRequiredService<TrayIconViewModel>().Cleanup();
 
-                var presenceTask = Services.GetRequiredService<IPresenceManager>().ShutdownAsync();
-                var saveStateTask = SaveApplicationStateAsync(Services);
-
-                await Task.WhenAll(presenceTask, saveStateTask);
+                await SaveApplicationStateAsync(Services);
             }
         }
         catch (Exception ex)
@@ -990,7 +911,7 @@ public partial class App : Application
                         Nagi.WinUI.Resources.Strings.CrashReport_Title,
                         Nagi.WinUI.Resources.Strings.CrashReport_Message,
                         fullCrashReport,
-                        "https://github.com/Anthonyy232/Nagi/issues"
+                        "https://github.com/411an/Nagi/issues"
                     );
 
                     if (result == CrashReportResult.Reset)
@@ -1024,7 +945,7 @@ public partial class App : Application
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", true, true)
                 .Build();
-            var pathConfig = new PathConfiguration(configuration);
+            var pathConfig = new PathConfiguration();
 
             if (Services != null)
             {
@@ -1073,17 +994,6 @@ public partial class App : Application
     {
         try
         {
-            // 1. Packaged apps store settings in LocalSettings, not settings.json
-            try
-            {
-                ApplicationData.Current.LocalSettings.Values.Clear();
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex, "Failed to clear LocalSettings.");
-            }
-
-            // 2. Clear known settings and state files
             SafelyDeleteFile(pathConfig.SettingsFilePath);
             SafelyDeleteFile(pathConfig.PlaybackStateFilePath);
 
@@ -1096,6 +1006,7 @@ public partial class App : Application
             SafelyDeleteDir(pathConfig.PlaylistImageCachePath);
             SafelyDeleteDir(pathConfig.LrcCachePath);
             SafelyDeleteDir(pathConfig.RomanizationPacksPath);
+            SafelyDeleteDir(pathConfig.ImageCachePath);
 
             Log.Information("Manual file reset completed.");
         }
@@ -1178,10 +1089,8 @@ public partial class App : Application
         if (RootWindow is MainWindow mainWindow)
         {
             // 2. Fetch the user's saved theme and apply it to the root element.
-            var settingsService = Services.GetRequiredService<IUISettingsService>();
             var themeService = Services.GetRequiredService<IThemeService>();
-            var savedTheme = await settingsService.GetThemeAsync();
-            themeService.ApplyTheme(savedTheme);
+            themeService.ApplyTheme(ElementTheme.Dark);
 
             // 3. Notify the MainWindow that content is loaded and themed, so it can
             //    update its custom title bar and backdrop to match.
@@ -1197,7 +1106,6 @@ public partial class App : Application
             if (RootWindow?.Content is not FrameworkElement rootElement) return;
 
             rootElement.RequestedTheme = themeToApply;
-            Services?.GetRequiredService<IThemeService>().ReapplyCurrentDynamicThemeAsync();
 
             if (RootWindow is MainWindow mainWindow) mainWindow.InitializeCustomTitleBar();
         }, nameof(ApplyThemeInternal));

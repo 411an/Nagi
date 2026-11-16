@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Reflection;
-using Windows.ApplicationModel;
 using Microsoft.Extensions.Logging;
 using Nagi.Core.Services.Abstractions;
 
@@ -11,6 +13,8 @@ namespace Nagi.WinUI.Services.Implementations;
 public class AppInfoService : IAppInfoService
 {
     private readonly ILogger<AppInfoService> _logger;
+    private readonly SemaphoreSlim _languageCacheLock = new(1, 1);
+    private IReadOnlyList<string>? _cachedAvailableLanguages;
 
     public AppInfoService(ILogger<AppInfoService> logger)
     {
@@ -19,18 +23,33 @@ public class AppInfoService : IAppInfoService
 
     public string GetAppName()
     {
-        return Package.Current.DisplayName;
+        return Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyProductAttribute>()?.Product
+               ?? "Nagi";
     }
 
     public string GetAppVersion()
     {
-        var version = Package.Current.Id.Version;
-        return $"{version.Major}.{version.Minor}.{version.Build}";
+        var informational = Assembly.GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        if (!string.IsNullOrEmpty(informational))
+        {
+            var plus = informational.IndexOf('+');
+            return plus >= 0 ? informational[..plus] : informational;
+        }
+
+        var path = Environment.ProcessPath;
+        if (!string.IsNullOrEmpty(path))
+        {
+            var fileVersion = FileVersionInfo.GetVersionInfo(path).ProductVersion;
+            if (!string.IsNullOrEmpty(fileVersion))
+            {
+                var plus = fileVersion.IndexOf('+');
+                return plus >= 0 ? fileVersion[..plus] : fileVersion;
+            }
+        }
+
+        return Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
     }
-
-
-    private IReadOnlyList<string>? _cachedAvailableLanguages;
-    private readonly System.Threading.SemaphoreSlim _languageCacheLock = new(1, 1);
 
     public async System.Threading.Tasks.Task<IReadOnlyList<string>> GetAvailableLanguagesAsync()
     {
@@ -43,28 +62,32 @@ public class AppInfoService : IAppInfoService
             if (_cachedAvailableLanguages != null)
                 return _cachedAvailableLanguages;
 
-            // Discover supported languages by scanning package subdirectories for satellite assemblies.
-            // ManifestLanguages only reflects WinRT (.resw) resources; this app uses .resx satellite
-            // assemblies. StorageFolder is used instead of Directory.EnumerateFiles because MSIX's VFS
-            // blocks Win32 filesystem enumeration inside WindowsApps install directories.
             var satelliteName = Assembly.GetEntryAssembly()?.GetName().Name + ".resources.dll";
-            var installFolder = Package.Current.InstalledLocation;
-            _logger.LogDebug("Language scan: installFolder={Path}, satellite={Satellite}", installFolder.Path, satelliteName);
+            var installFolder = AppContext.BaseDirectory;
+            _logger.LogDebug("Language scan: installFolder={Path}, satellite={Satellite}", installFolder, satelliteName);
 
             var results = new List<string>();
-            var subFolders = await installFolder.GetFoldersAsync();
-            _logger.LogDebug("Language scan: {Count} subfolders found", subFolders.Count);
-
-            foreach (var folder in subFolders)
+            if (!Directory.Exists(installFolder))
             {
-                try { _ = new CultureInfo(folder.Name); }
-                catch (CultureNotFoundException) { continue; }
+                _cachedAvailableLanguages = results;
+                return _cachedAvailableLanguages;
+            }
 
-                var item = await folder.TryGetItemAsync(satelliteName);
-                _logger.LogDebug("Language scan: {Folder}/{Satellite} -> {Found}", folder.Name, satelliteName, item != null ? "found" : "missing");
-                if (item == null) continue;
+            foreach (var directory in Directory.EnumerateDirectories(installFolder))
+            {
+                var name = Path.GetFileName(directory);
+                try
+                {
+                    _ = new CultureInfo(name);
+                }
+                catch (CultureNotFoundException)
+                {
+                    continue;
+                }
 
-                results.Add(folder.Name);
+                var satellitePath = Path.Combine(directory, satelliteName);
+                if (!File.Exists(satellitePath)) continue;
+                results.Add(name);
             }
 
             _logger.LogDebug("Language scan: completed with {Count} languages", results.Count);
@@ -73,7 +96,7 @@ public class AppInfoService : IAppInfoService
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Failed to enumerate available languages from package.");
+            _logger.LogWarning(ex, "Failed to enumerate available languages from the install folder.");
             return Array.Empty<string>();
         }
         finally
@@ -81,9 +104,9 @@ public class AppInfoService : IAppInfoService
             _languageCacheLock.Release();
         }
     }
+
     public async System.Threading.Tasks.Task InitializeAsync()
     {
-        // Pre-cache languages
         await GetAvailableLanguagesAsync();
     }
 }

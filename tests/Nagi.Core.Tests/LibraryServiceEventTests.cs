@@ -31,27 +31,19 @@ public class LibraryServiceEventTests : IDisposable
     private readonly ISettingsService _settingsService;
     private readonly IReplayGainService _replayGainService;
     private readonly IMusicBrainzService _musicBrainzService;
-    private readonly IFanartTvService _fanartTvService;
-    private readonly ITheAudioDbService _theAudioDbService;
-    private readonly IApiKeyService _apiKeyService;
     private readonly IImageProcessor _imageProcessor;
-    private readonly ILastFmMetadataService _lastFmService;
     private readonly ProviderPipelineProvider _pipelines;
 
     public LibraryServiceEventTests()
     {
         _fileSystem = Substitute.For<IFileSystemService>();
         _metadataService = Substitute.For<IMetadataService>();
-        _lastFmService = Substitute.For<ILastFmMetadataService>();
         _httpClientFactory = Substitute.For<IHttpClientFactory>();
         _serviceScopeFactory = Substitute.For<IServiceScopeFactory>();
         _pathConfig = Substitute.For<IPathConfiguration>();
         _settingsService = Substitute.For<ISettingsService>();
         _replayGainService = Substitute.For<IReplayGainService>();
         _musicBrainzService = Substitute.For<IMusicBrainzService>();
-        _fanartTvService = Substitute.For<IFanartTvService>();
-        _theAudioDbService = Substitute.For<ITheAudioDbService>();
-        _apiKeyService = Substitute.For<IApiKeyService>();
         _imageProcessor = Substitute.For<IImageProcessor>();
         _httpMessageHandler = new TestHttpMessageHandler();
         _logger = Substitute.For<ILogger<LibraryService>>();
@@ -67,16 +59,12 @@ public class LibraryServiceEventTests : IDisposable
             _dbHelper.ContextFactory,
             _fileSystem,
             _metadataService,
-            _lastFmService,
             _musicBrainzService,
-            _fanartTvService,
-            _theAudioDbService,
             _httpClientFactory,
             _serviceScopeFactory,
             _pathConfig,
             _settingsService,
             _replayGainService,
-            _apiKeyService,
             _imageProcessor,
             _pipelines,
             _logger);

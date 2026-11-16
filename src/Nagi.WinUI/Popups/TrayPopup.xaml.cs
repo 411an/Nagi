@@ -77,8 +77,11 @@ public sealed partial class TrayPopup : Window
     }
 
     /// <summary>
-    ///     Calculates the desired height of the popup's content for a given width.
+    ///     Repaints the cover from the current track. Call when showing the popup so a cover
+    ///     that changed while the window was hidden is not left on screen.
     /// </summary>
+    public void RefreshCoverArt() => UpdateCoverArtVisibility();
+
     public double GetContentDesiredHeight(double targetWidthDips)
     {
         if (Content is FrameworkElement rootElement)
@@ -111,8 +114,10 @@ public sealed partial class TrayPopup : Window
         var shouldBeVisible = _isCoverArtInFlyoutEnabled && !string.IsNullOrEmpty(ViewModel.AlbumArtUri);
         CoverArtBackground.Visibility = shouldBeVisible ? Visibility.Visible : Visibility.Collapsed;
 
-        // Update the brush source safely - SafeGetImageSource handles null/empty strings
-        CoverArtBrush.Source = ImageUriHelper.SafeGetImageSource(ViewModel.AlbumArtUri)!;
+        // Drop the previous bitmap first. A hidden window keeps the last painted cover
+        // if the source is only replaced while the popup is not visible.
+        CoverArtBrush.Source = null;
+        CoverArtBrush.Source = ImageUriHelper.SafeGetImageSource(ViewModel.AlbumArtUri);
 
         _logger.LogTrace("Cover art visibility updated to {Visibility}", CoverArtBackground.Visibility);
     }

@@ -207,6 +207,17 @@ public class LrcService : ILrcService, IDisposable
     }
 
     /// <inheritdoc />
+    public string? FindLocalLyricsPath(Song song)
+    {
+        ArgumentNullException.ThrowIfNull(song);
+        if (!string.IsNullOrWhiteSpace(song.LrcFilePath) && _fileSystemService.FileExists(song.LrcFilePath))
+            return song.LrcFilePath;
+
+        // A CUE track shares its audio file with the whole album, so a file named after it is not its own.
+        return song.IsCueTrack ? null : FindExternalLyricsPath(song.FilePath);
+    }
+
+    /// <inheritdoc />
     public Task SaveLyricsAsync(Song song, string lrcContent)
     {
         ArgumentNullException.ThrowIfNull(song);
@@ -221,7 +232,7 @@ public class LrcService : ILrcService, IDisposable
         if (!HasCachedLyrics(song)) return false;
 
         var cachedPath = song.LrcFilePath!;
-        var sidecarPath = FindExternalLyricsPath(song.FilePath);
+        var sidecarPath = song.IsCueTrack ? null : FindExternalLyricsPath(song.FilePath);
         if (_fileSystemService.FileExists(cachedPath)) _fileSystemService.DeleteFile(cachedPath);
 
         song.LrcFilePath = sidecarPath;
@@ -252,7 +263,9 @@ public class LrcService : ILrcService, IDisposable
 
     private async Task WriteLyricsCacheAsync(Song song, string lrcContent, bool isOverride)
     {
-        var cacheIdentity = string.IsNullOrWhiteSpace(song.FilePath) ? song.Id.ToString("N") : song.FilePath;
+        var cacheIdentity = song.IsCueTrack
+            ? $"{song.FilePath}#cue-{song.CueTrackNumber}"
+            : string.IsNullOrWhiteSpace(song.FilePath) ? song.Id.ToString("N") : song.FilePath;
         var cacheFileName = isOverride
             ? FileNameHelper.GenerateLrcOverrideFileName(cacheIdentity)
             : FileNameHelper.GenerateLrcCacheFileName(
@@ -279,7 +292,9 @@ public class LrcService : ILrcService, IDisposable
 
         if (!IsCachePath(song.LrcFilePath)) return false;
 
-        var cacheIdentity = string.IsNullOrWhiteSpace(song.FilePath) ? song.Id.ToString("N") : song.FilePath;
+        var cacheIdentity = song.IsCueTrack
+            ? $"{song.FilePath}#cue-{song.CueTrackNumber}"
+            : string.IsNullOrWhiteSpace(song.FilePath) ? song.Id.ToString("N") : song.FilePath;
         var candidate = PathCanonicalizer.Normalize(song.LrcFilePath);
         return !FileNameHelper.MatchesLrcCacheIdentity(candidate, cacheIdentity);
     }

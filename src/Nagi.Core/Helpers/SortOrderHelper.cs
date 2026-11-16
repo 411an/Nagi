@@ -78,6 +78,7 @@ public static class SortOrderHelper
         SongSortOrder.TitleAsc => SortByTitleAsc,
         SongSortOrder.TitleDesc => SortByTitleDesc,
         SongSortOrder.AlbumAsc => SortByAlbumAsc,
+        SongSortOrder.AlbumGroupedAsc => SortByAlbumAsc,
         SongSortOrder.AlbumDesc => SortByAlbumDesc,
         SongSortOrder.YearAsc => SortByYearOldest,
         SongSortOrder.YearDesc => SortByYearNewest,
@@ -178,10 +179,12 @@ public static class SortOrderHelper
     ///     counterpart (e.g. <see cref="SongSortOrder.PlaylistOrder" />).
     /// </summary>
     public static SmartPlaylistSortOrder MapToSmartPlaylistSortOrder(SongSortOrder sortOrder) =>
-        sortOrder != SongSortOrder.PlaylistOrder &&
-        Enum.TryParse<SmartPlaylistSortOrder>(sortOrder.ToString(), out var mapped)
-            ? mapped
-            : SmartPlaylistSortOrder.TitleAsc;
+        sortOrder == SongSortOrder.AlbumGroupedAsc
+            ? SmartPlaylistSortOrder.AlbumAsc
+            : sortOrder != SongSortOrder.PlaylistOrder &&
+              Enum.TryParse<SmartPlaylistSortOrder>(sortOrder.ToString(), out var mapped)
+                ? mapped
+                : SmartPlaylistSortOrder.TitleAsc;
 
     /// <summary>
     ///     Maps a <see cref="SmartPlaylistSortOrder" /> to the equivalent <see cref="SongSortOrder" /> by matching

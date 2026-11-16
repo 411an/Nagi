@@ -489,27 +489,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>பயன்பாட்டு தரவை மீட்டமைக்கும்போது ஒரு பிழை ஏற்பட்டது: {0}. தயவுசெய்து பயன்பாட்டை கைமுறையாக மறுதொடக்கம் செய்ய முயற்சிக்கவும்.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>பிழை</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Last.fm உடன் இணைக்க முடியவில்லை. தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும்.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>அங்கீகாரம் தோல்வியடைந்தது</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Last.fm இலிருந்து ஒரு அமர்வை பெற முடியவில்லை. தயவுசெய்து மீண்டும் இணைக்க முயற்சிக்கவும்.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Last.fm துண்டிப்பு</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>உங்கள் Last.fm கணக்கைத் துண்டிக்க விரும்புகிறீர்களா? உங்கள் ஸ்க்ரோப்ளிங் வரலாறு Last.fm இல் பாதுகாக்கப்படும், ஆனால் நாகி இனி ஸ்க்ரோப் செய்ய முடியாது.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>துண்டிப்பு</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>ஏற்றுமதி வெற்றிகரமாக முடிந்தது</value>
   </data>
@@ -725,17 +704,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>கலைஞர் ஐடிகளைப் பெறுகிறது (TheAudioDB மற்றும் Fanart.tv க்கு தேவை)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>உயர்தர கலைஞர் படங்கள் மற்றும் சுயசரிதைகள் (MusicBrainz தேவை)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>உயர்தர கலைஞர் படங்கள் மட்டும் (MusicBrainz தேவை)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>கலைஞர் படங்கள் மட்டும்</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>கலைஞர் சுயசரிதைகள் மற்றும் படங்கள் (பின்வாங்கல்)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>நாகி</value>
@@ -1063,9 +1033,6 @@
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>நாகி இசை பிளேயருடன் திற</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>நாகி தொடக்கம்</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>முந்தையது</value>
@@ -1829,90 +1796,6 @@
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>அனைத்து தரவுகளையும் மீட்டமை</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>ஒருங்கிணைப்புகள்</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Last.fm இல் பாடல்களை ஸ்க்ரோபிள் செய்யவும், தற்போது இயங்கும் பாடலைக் காட்டவும் உங்கள் Last.fm கணக்கை இணைக்கவும்.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>இணை</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>முடிந்தது</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>ரத்துசெய்</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>துண்டி</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>ஸ்க்ரோப்ளிங்கை இயக்கு</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>நாகியில் நீங்கள் கேட்கும் பாடல்களை தானாகவே உங்கள் Last.fm சுயவிவரத்தில் சேர்க்கவும்.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>'இப்போது இயங்குகிறது' என்பதைப் புதுப்பி</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Last.fm இல் உங்கள் நண்பர்களுக்கு நீங்கள் தற்போது எதைக் கேட்கிறீர்கள் என்பதை உண்மையான நேரத்தில் காட்டுங்கள்.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>லிசன் பிரைன்ஸ்</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>உங்கள் கேட்புகளை லிசன் பிரைன்ஸ்-க்குச் சமர்ப்பிக்கவும் (Last.fm-க்கு ஒரு திறந்த மாற்று).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>பயனர் டோக்கன்</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>listenbrainz.org/settings இலிருந்து உங்கள் டோக்கனை ஒட்டவும்</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>இணைப்பைச் சோதிக்கவும்</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>{0} ஆக இணைக்கப்பட்டுள்ளது</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>இணைப்பு தோல்வியடைந்தது: {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>கேட்புகளைச் சமர்ப்பி (ஸ்க்ரோப்லிங்)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>"தற்போது இயங்கிக் கொண்டிருக்கிறது" புதுப்பிப்புகளைச் சமர்ப்பி</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>மேம்பட்டது</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>சேவையக URL</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>லிசன் பிரைன்ஸ்-லிருந்து துண்டிக்கவா?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>இது உங்கள் சேமித்த டோக்கனை அகற்றும். நீங்கள் எந்த நேரத்திலும் மீண்டும் இணைக்கலாம்.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>துண்டி</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>டிஸ்கார்ட்</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>டிஸ்கார்டில் உங்கள் தற்போதைய கேட்புச் செயல்பாட்டை உங்கள் நிலையாகக் காட்டுங்கள்.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>ஸ்மார்ட் பிளேலிஸ்ட்</value>
   </data>
@@ -2239,5 +2122,104 @@
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}நி {1}வி</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>துணைக் கோப்புறைகளுடன் இயக்கு</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>துணைக் கோப்புறைகளுடன் சேர்</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>பின்செல்</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>நிறுத்து</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>தேடு</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>பட்டியல்</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>பிளேலிஸ்ட்கள்</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>வரிசை</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>ஸ்பெக்ட்ரம்</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>தலைப்பு</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>கலைஞர்</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ஆல்பம்</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>வகை / ஆண்டு</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>வரிசைப்படி</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>பிளேலிஸ்ட்டை மீண்டும் இயக்கு</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>பாடலை மீண்டும் இயக்கு</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>பாடல்களைக் கலக்கு</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>ஆல்பங்களைக் கலக்கு</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>சீரற்ற</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>குறிச்சொல் / கோப்புப் பெயர்</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>இழப்பற்றது</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>பாடல்</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>மொத்தம்</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>கடந்தது</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>மீதம்</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBPS</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>தலைப்பு</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>கால அளவு</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>பாடல்கள்: {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>கோப்புத் தகவல்</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>கோப்புத் தகவல்</value>
   </data>
 </root>

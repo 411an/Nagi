@@ -49,7 +49,7 @@ public class BackupRestoreService : IBackupRestoreService
                     var dbPath = Path.Combine(sourcePath, "nagi.db");
                     if (File.Exists(dbPath) && IsSqliteDatabase(dbPath))
                     {
-                        using (var connection = new SqliteConnection($"Data Source={dbPath}"))
+                        using (var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = dbPath }.ConnectionString))
                         {
                             connection.Open();
                             using var cmd = connection.CreateCommand();

@@ -54,6 +54,21 @@ public class Song
     [Required][MaxLength(1000)] public string FilePath { get; set; } = string.Empty;
 
     /// <summary>
+    ///     Cue track identity within an external CUE file; 0 represents the whole file and positive values identify a track.
+    /// </summary>
+    public int CueTrackNumber { get; set; }
+
+    /// <summary>
+    ///     Absolute start position of this track in the physical audio file, in ticks; 0 is the beginning.
+    /// </summary>
+    public long StartOffsetTicks { get; set; }
+
+    [MaxLength(1000)] public string? CueFilePath { get; set; }
+    public DateTime? CueFileModifiedDate { get; set; }
+
+    [NotMapped] public bool IsCueTrack => CueTrackNumber > 0;
+
+    /// <summary>
     ///     The directory path where the song file is located. This is used for efficient
     ///     folder hierarchy navigation and querying songs by directory.
     /// </summary>

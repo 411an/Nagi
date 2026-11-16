@@ -6,6 +6,24 @@
 public class SongFileMetadata
 {
     public string FilePath { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Cue track identity within an external CUE file; 0 represents the whole file and positive values identify a track.
+    /// </summary>
+    public int CueTrackNumber { get; set; }
+
+    /// <summary>
+    ///     Absolute start position of this track in the physical audio file, in ticks; 0 is the beginning.
+    /// </summary>
+    public long StartOffsetTicks { get; set; }
+
+    public string? CueFilePath { get; set; }
+    public DateTime? CueFileModifiedDate { get; set; }
+    public IReadOnlyList<SongFileMetadata> CueTracks { get; set; } = [];
+    public bool CueReadFailed { get; set; }
+
+    internal SongFileMetadata CloneForCueTrack() => (SongFileMetadata)MemberwiseClone();
+
     public string Title { get; set; } = string.Empty;
     public List<string> Artists { get; set; } = new();
     public string? Album { get; set; } = string.Empty;

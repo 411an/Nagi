@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Nagi.Core.Services.Abstractions;
+using Nagi.WinUI.Helpers;
 using Nagi.WinUI.Services.Abstractions;
-using Microsoft.Windows.AppLifecycle;
 
 namespace Nagi.WinUI.Services.Implementations;
 
@@ -55,7 +55,8 @@ public class ApplicationLifecycle : IApplicationLifecycle
             _logger.LogDebug("Playback queue has been cleared.");
 
             _logger.LogInformation("Application reset completed successfully. Restarting...");
-            AppInstance.Restart("");
+            await settingsService.FlushAsync();
+            AppRestart.Restart();
         }
         catch (Exception ex)
         {

@@ -8,6 +8,7 @@ public enum SongSortOrder
     TitleAsc,
     TitleDesc,
     AlbumAsc,
+    AlbumGroupedAsc,
     AlbumDesc,
     ArtistAsc,
     ArtistDesc,

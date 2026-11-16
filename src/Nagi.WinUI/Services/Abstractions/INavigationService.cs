@@ -20,4 +20,13 @@ public interface INavigationService
     /// <param name="pageType">The type of the destination page.</param>
     /// <param name="parameter">Optional parameter to pass to the destination page.</param>
     void Navigate(Type pageType, object? parameter = null);
+
+    bool CanGoBack { get; }
+
+    void GoBack();
+
+    /// <summary>
+    ///     Clears the overlay frame so the next Navigate is not treated as a duplicate.
+    /// </summary>
+    void Reset();
 }

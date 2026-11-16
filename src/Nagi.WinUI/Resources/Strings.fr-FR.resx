@@ -487,27 +487,6 @@
   <data name="Settings_ResetError_Message" xml:space="preserve">
     <value>Une erreur est survenue lors de la réinitialisation des données de l'application : {0}. Veuillez essayer de redémarrer l'application manuellement.</value>
   </data>
-  <data name="Settings_LastFm_AuthError_Title" xml:space="preserve">
-    <value>Erreur</value>
-  </data>
-  <data name="Settings_LastFm_AuthError_Message" xml:space="preserve">
-    <value>Impossible de se connecter à Last.fm. Veuillez réessayer plus tard.</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Title" xml:space="preserve">
-    <value>Échec de l'authentification</value>
-  </data>
-  <data name="Settings_LastFm_FinalizeError_Message" xml:space="preserve">
-    <value>Impossible d'obtenir une session de Last.fm. Veuillez essayer de vous connecter à nouveau.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Title" xml:space="preserve">
-    <value>Déconnecter Last.fm</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Message" xml:space="preserve">
-    <value>Êtes-vous sûr de vouloir déconnecter votre compte Last.fm ? Votre historique de scrobbling sera préservé sur Last.fm, mais Nagi ne pourra plus scrobbler.</value>
-  </data>
-  <data name="Settings_LastFm_Disconnect_Button" xml:space="preserve">
-    <value>Déconnecter</value>
-  </data>
   <data name="Settings_Export_Success_Title" xml:space="preserve">
     <value>Exportation réussie</value>
   </data>
@@ -723,17 +702,8 @@
   <data name="Settings_Provider_MusicBrainz_Desc" xml:space="preserve">
     <value>Récupère les identifiants d'artiste (requis pour TheAudioDB et Fanart.tv)</value>
   </data>
-  <data name="Settings_Provider_TheAudioDB_Desc" xml:space="preserve">
-    <value>Images et biographies d'artistes de haute qualité (nécessite MusicBrainz)</value>
-  </data>
-  <data name="Settings_Provider_FanartTv_Desc" xml:space="preserve">
-    <value>Uniquement des images d'artistes de haute qualité (nécessite MusicBrainz)</value>
-  </data>
   <data name="Settings_Provider_Spotify_Desc" xml:space="preserve">
     <value>Uniquement des images d'artistes</value>
-  </data>
-  <data name="Settings_Provider_LastFm_Desc" xml:space="preserve">
-    <value>Biographies et images d'artistes (solution de repli)</value>
   </data>
   <data name="App_Name_Default" xml:space="preserve">
     <value>Nagi</value>
@@ -1061,9 +1031,6 @@ Erreur : {1}</value>
   </data>
   <data name="AppInfoTip" xml:space="preserve">
     <value>Ouvrir avec Nagi Lecteur de musique</value>
-  </data>
-  <data name="StartupTaskDisplayName" xml:space="preserve">
-    <value>Démarrage de Nagi</value>
   </data>
   <data name="Player_PreviousButton_ToolTip" xml:space="preserve">
     <value>Précédent</value>
@@ -1827,90 +1794,6 @@ Erreur : {1}</value>
   <data name="SettingsPage_ResetButton_Content" xml:space="preserve">
     <value>Réinitialiser toutes les données</value>
   </data>
-  <data name="SettingsPage_Section_Integrations" xml:space="preserve">
-    <value>Intégrations</value>
-  </data>
-  <data name="SettingsPage_LastFm_Header" xml:space="preserve">
-    <value>Last.fm</value>
-  </data>
-  <data name="SettingsPage_LastFm_Description" xml:space="preserve">
-    <value>Connectez votre compte Last.fm pour scrobbler les pistes et afficher votre chanson en cours de lecture.</value>
-  </data>
-  <data name="SettingsPage_LastFm_Connect_Content" xml:space="preserve">
-    <value>Connecter</value>
-  </data>
-  <data name="SettingsPage_LastFm_Complete_Content" xml:space="preserve">
-    <value>Terminé</value>
-  </data>
-  <data name="SettingsPage_LastFm_Cancel_Content" xml:space="preserve">
-    <value>Annuler</value>
-  </data>
-  <data name="SettingsPage_LastFm_Disconnect_Content" xml:space="preserve">
-    <value>Déconnecter</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Header" xml:space="preserve">
-    <value>Activer le scrobbling</value>
-  </data>
-  <data name="SettingsPage_LastFm_Scrobbling_Description" xml:space="preserve">
-    <value>Ajouter automatiquement les pistes que vous écoutez sur Nagi à votre profil Last.fm.</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Header" xml:space="preserve">
-    <value>Mettre à jour 'En lecture'</value>
-  </data>
-  <data name="SettingsPage_LastFm_NowPlaying_Description" xml:space="preserve">
-    <value>Montrez à vos amis sur Last.fm ce que vous écoutez actuellement en temps réel.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Header" xml:space="preserve">
-    <value>Paramètres ListenBrainz</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Description" xml:space="preserve">
-    <value>Soumettre vos écoutes à ListenBrainz (une alternative ouverte à Last.fm).</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenLabel" xml:space="preserve">
-    <value>Jeton utilisateur</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TokenPlaceholder" xml:space="preserve">
-    <value>Collez votre jeton depuis listenbrainz.org/settings</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_TestConnection" xml:space="preserve">
-    <value>Tester la connexion</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Connected" xml:space="preserve">
-    <value>Connecté en tant que {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ConnectionFailed" xml:space="preserve">
-    <value>Échec de la connexion : {0}</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ScrobblingToggle" xml:space="preserve">
-    <value>Soumettre les écoutes (scrobbling)</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_NowPlayingToggle" xml:space="preserve">
-    <value>Soumettre les mises à jour "en cours de lecture"</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_AdvancedHeader" xml:space="preserve">
-    <value>Avancé</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlLabel" xml:space="preserve">
-    <value>URL du serveur</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_ServerUrlPlaceholder" xml:space="preserve">
-    <value>https://api.listenbrainz.org</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Title" xml:space="preserve">
-    <value>Se déconnecter de ListenBrainz ?</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Content" xml:space="preserve">
-    <value>Ceci supprimera votre jeton enregistré. Vous pourrez vous reconnecter à tout moment.</value>
-  </data>
-  <data name="SettingsPage_ListenBrainz_Disconnect_Button" xml:space="preserve">
-    <value>Se déconnecter</value>
-  </data>
-  <data name="SettingsPage_Discord_Header" xml:space="preserve">
-    <value>Discord</value>
-  </data>
-  <data name="SettingsPage_Discord_Description" xml:space="preserve">
-    <value>Affichez votre activité d'écoute actuelle comme statut sur Discord.</value>
-  </data>
   <data name="SmartPlaylistSongViewPage_Header_Caption" xml:space="preserve">
     <value>Liste de lecture intelligente</value>
   </data>
@@ -2237,5 +2120,104 @@ Erreur : {1}</value>
   </data>
   <data name="Insights_Format_MinutesSeconds" xml:space="preserve">
     <value>{0}m {1}s</value>
+  </data>
+  <data name="Shell_PlayRecursively" xml:space="preserve">
+    <value>Lire avec les sous-dossiers</value>
+  </data>
+  <data name="Shell_AddRecursively" xml:space="preserve">
+    <value>Ajouter avec les sous-dossiers</value>
+  </data>
+  <data name="Shell_Back" xml:space="preserve">
+    <value>Retour</value>
+  </data>
+  <data name="Shell_Stop" xml:space="preserve">
+    <value>Arrêter</value>
+  </data>
+  <data name="Shell_SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="Shell_TabList" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="Shell_TabPlaylist" xml:space="preserve">
+    <value>Playlists</value>
+  </data>
+  <data name="Shell_Eq" xml:space="preserve">
+    <value>EQ</value>
+  </data>
+  <data name="Shell_Queue" xml:space="preserve">
+    <value>File d'attente</value>
+  </data>
+  <data name="Shell_Vis" xml:space="preserve">
+    <value>Spectre</value>
+  </data>
+  <data name="Shell_MetaTitle" xml:space="preserve">
+    <value>TITRE</value>
+  </data>
+  <data name="Shell_MetaArtist" xml:space="preserve">
+    <value>ARTISTE</value>
+  </data>
+  <data name="Shell_MetaAlbum" xml:space="preserve">
+    <value>ALBUM</value>
+  </data>
+  <data name="Shell_MetaGenreYear" xml:space="preserve">
+    <value>GENRE / ANNÉE</value>
+  </data>
+  <data name="Shell_Order_Default" xml:space="preserve">
+    <value>Dans l'ordre</value>
+  </data>
+  <data name="Shell_Order_RepeatPlaylist" xml:space="preserve">
+    <value>Répéter la playlist</value>
+  </data>
+  <data name="Shell_Order_RepeatTrack" xml:space="preserve">
+    <value>Répéter le morceau</value>
+  </data>
+  <data name="Shell_Order_ShuffleTracks" xml:space="preserve">
+    <value>Mélanger les morceaux</value>
+  </data>
+  <data name="Shell_Order_ShuffleAlbums" xml:space="preserve">
+    <value>Mélanger les albums</value>
+  </data>
+  <data name="Shell_Order_Random" xml:space="preserve">
+    <value>Aléatoire</value>
+  </data>
+  <data name="Shell_TagFilename" xml:space="preserve">
+    <value>Tag / nom de fichier</value>
+  </data>
+  <data name="Shell_Lossless" xml:space="preserve">
+    <value>SANS PERTE</value>
+  </data>
+  <data name="Shell_Track" xml:space="preserve">
+    <value>PISTE</value>
+  </data>
+  <data name="Shell_Total" xml:space="preserve">
+    <value>TOTAL</value>
+  </data>
+  <data name="Shell_Elapsed" xml:space="preserve">
+    <value>ÉCOULÉ</value>
+  </data>
+  <data name="Shell_Remaining" xml:space="preserve">
+    <value>RESTANT</value>
+  </data>
+  <data name="Shell_Kbps" xml:space="preserve">
+    <value>KBIT/S</value>
+  </data>
+  <data name="Shell_ColNumber" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="Shell_ColTitle" xml:space="preserve">
+    <value>Titre</value>
+  </data>
+  <data name="Shell_ColDuration" xml:space="preserve">
+    <value>Durée</value>
+  </data>
+  <data name="Shell_TracksCount" xml:space="preserve">
+    <value>Morceaux : {0}</value>
+  </data>
+  <data name="Shell_FileInfo" xml:space="preserve">
+    <value>Infos du fichier</value>
+  </data>
+  <data name="Shell_FileInfo_Title" xml:space="preserve">
+    <value>Infos du fichier</value>
   </data>
 </root>

@@ -290,9 +290,10 @@ public partial class LyricsPageViewModel : ObservableObject, IDisposable
         {
             // Fetch full song data in parallel with .lrc check since both are local/fast
             var fullSongTask = _libraryReader.GetSongWithFullDataAsync(song.Id);
-            var localLrcTask = !string.IsNullOrWhiteSpace(song.LrcFilePath)
-                ? _lrcService.GetLyricsAsync(song.LrcFilePath)
-                : Task.FromResult<ParsedLrc?>(null);
+            // Also finds a lyrics file put beside the track after the library was scanned.
+            var localLrcTask = Task.Run(() => _lrcService.FindLocalLyricsPath(song) is { } lyricsPath
+                ? _lrcService.GetLyricsAsync(lyricsPath)
+                : Task.FromResult<ParsedLrc?>(null));
 
             await Task.WhenAll(fullSongTask, localLrcTask).ConfigureAwait(false);
             if (cancellationToken.IsCancellationRequested) return;
@@ -509,7 +510,7 @@ public partial class LyricsPageViewModel : ObservableObject, IDisposable
             if (nextSong.LyricsLastCheckedUtc != null) return;
 
             // Skip if a local .lrc sidecar exists — it loads from disk when the track plays
-            if (!string.IsNullOrWhiteSpace(nextSong.LrcFilePath)) return;
+            if (_lrcService.FindLocalLyricsPath(nextSong) is not null) return;
 
             // Skip if embedded lyrics exist — they load from the DB when the track plays
             var fullNextSong = await _libraryReader.GetSongWithFullDataAsync(nextSong.Id).ConfigureAwait(false);
