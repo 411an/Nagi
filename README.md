@@ -19,6 +19,10 @@ Nagi Portable is an unofficial fork of [Nagi](https://github.com/Anthonyy232/Nag
 
 This fork is not affiliated with the original project. Please report problems with this build here, not upstream.
 
+<div align="center">
+  <img src="media/screen.png" alt="Nagi Portable main window" width="900">
+</div>
+
 > [!IMPORTANT]
 > **How the portable build differs from regular Nagi**
 >
