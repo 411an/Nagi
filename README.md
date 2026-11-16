@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/58f7a205-113d-463e-a2f3-d9979b935da1" alt="Nagi Logo">
+  <img src="media/screen.png" alt="Nagi Portable main window" width="900">
 
 # Nagi Portable
 
@@ -18,10 +18,6 @@
 Nagi Portable is an unofficial fork of [Nagi](https://github.com/Anthonyy232/Nagi) by Anthonyy232, a local music player for Windows built with C# and WinUI 3. The fork keeps Nagi's scanner, database, playback engine and lyrics, but runs as a portable app and replaces the main window with a classic three-column player layout.
 
 This fork is not affiliated with the original project. Please report problems with this build here, not upstream.
-
-<div align="center">
-  <img src="media/screen.png" alt="Nagi Portable main window" width="900">
-</div>
 
 > [!IMPORTANT]
 > **How the portable build differs from regular Nagi**
