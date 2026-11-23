@@ -70,7 +70,12 @@ public partial class LibraryTreeViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task ReloadAsync()
+    public Task ReloadAsync() => ReloadCoreAsync(preserveNodes: false);
+
+    /// <summary>Refreshes loaded branches without collapsing the tree on background scans.</summary>
+    public Task RefreshAsync() => ReloadCoreAsync(preserveNodes: true);
+
+    private async Task ReloadCoreAsync(bool preserveNodes)
     {
         _searchCts?.Cancel();
         _searchCts = new CancellationTokenSource();
@@ -87,8 +92,13 @@ public partial class LibraryTreeViewModel : ObservableObject
 
             if (token.IsCancellationRequested) return;
 
-            RootNodes.Clear();
-            foreach (var node in nodes) RootNodes.Add(node);
+            if (preserveNodes)
+                await SynchronizeNodesAsync(RootNodes, nodes, token);
+            else
+            {
+                RootNodes.Clear();
+                foreach (var node in nodes) RootNodes.Add(node);
+            }
         }
         catch (OperationCanceledException)
         {
@@ -105,46 +115,10 @@ public partial class LibraryTreeViewModel : ObservableObject
 
         try
         {
-            if (node.Kind == LibraryTreeNodeKind.Folder)
-            {
-                var children = (await _libraryService.GetSubFoldersAsync(node.FolderEntityId).ConfigureAwait(true))
-                    .OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase)
-                    .ThenBy(f => f.Path, StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-
-                var withChildren = await _libraryService.GetSubFolderIdsWithChildrenAsync(node.FolderEntityId)
-                    .ConfigureAwait(true);
-
-                node.Children.Clear();
-                foreach (var folder in children)
-                    node.Children.Add(CreateFolderNode(folder, node.RootFolderId, isRoot: false,
-                        hasChildren: withChildren.Contains(folder.Id)));
-            }
-            else if (node.Kind == LibraryTreeNodeKind.Artist && node.ArtistId is { } artistId)
-            {
-                // Expander only when SongCount > 1; children are albums for that album artist.
-                var albums = (await _libraryService.GetTopAlbumsForArtistAsync(artistId, 500).ConfigureAwait(true))
-                    .OrderBy(a => a.Title, StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-
-                node.Children.Clear();
-                foreach (var album in albums)
-                {
-                    node.Children.Add(new LibraryTreeNode
-                    {
-                        Kind = LibraryTreeNodeKind.Album,
-                        AlbumId = album.Id,
-                        ArtistId = artistId,
-                        Name = album.Title,
-                        HasUnrealizedChildren = false
-                    });
-                }
-            }
-            else
-            {
-                return;
-            }
-
+            if (node.Kind is not (LibraryTreeNodeKind.Folder or LibraryTreeNodeKind.Artist)) return;
+            var children = await ReadChildrenAsync(node, CancellationToken.None);
+            node.Children.Clear();
+            foreach (var child in children) node.Children.Add(child);
             node.IsChildrenLoaded = true;
             node.HasUnrealizedChildren = node.Children.Count > 0;
         }
@@ -153,6 +127,66 @@ public partial class LibraryTreeViewModel : ObservableObject
             _logger.LogError(ex, "Failed to load children for {Name}", node.Name);
         }
     }
+
+    private async Task<IReadOnlyList<LibraryTreeNode>> ReadChildrenAsync(LibraryTreeNode node, CancellationToken token)
+    {
+        if (node.Kind == LibraryTreeNodeKind.Folder)
+        {
+            var children = (await _libraryService.GetSubFoldersAsync(node.FolderEntityId, token).ConfigureAwait(true))
+                .OrderBy(folder => folder.Name, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(folder => folder.Path, StringComparer.OrdinalIgnoreCase);
+            var withChildren = await _libraryService.GetSubFolderIdsWithChildrenAsync(node.FolderEntityId, token)
+                .ConfigureAwait(true);
+            return children.Select(folder => CreateFolderNode(folder, node.RootFolderId, isRoot: false,
+                hasChildren: withChildren.Contains(folder.Id))).ToList();
+        }
+        if (node.Kind == LibraryTreeNodeKind.Artist && node.ArtistId is { } artistId)
+        {
+            var albums = await _libraryService.GetTopAlbumsForArtistAsync(artistId, 500).ConfigureAwait(true);
+            token.ThrowIfCancellationRequested();
+            return albums.OrderBy(album => album.Title, StringComparer.OrdinalIgnoreCase).Select(album => new LibraryTreeNode
+            {
+                Kind = LibraryTreeNodeKind.Album, AlbumId = album.Id, ArtistId = artistId,
+                Name = album.Title, HasUnrealizedChildren = false
+            }).ToList();
+        }
+        return [];
+    }
+
+    private async Task SynchronizeNodesAsync(ObservableCollection<LibraryTreeNode> target,
+        IReadOnlyList<LibraryTreeNode> incoming, CancellationToken token)
+    {
+        for (var index = 0; index < incoming.Count; index++)
+        {
+            token.ThrowIfCancellationRequested();
+            var fresh = incoming[index];
+            var existing = target.FirstOrDefault(node => SameNode(node, fresh) &&
+                node.Name == fresh.Name && node.Subtitle == fresh.Subtitle);
+            if (existing is null)
+            {
+                target.Insert(index, fresh);
+                continue;
+            }
+
+            var oldIndex = target.IndexOf(existing);
+            if (oldIndex != index) target.Move(oldIndex, index);
+            existing.HasUnrealizedChildren = fresh.HasUnrealizedChildren;
+            if (existing.IsChildrenLoaded)
+            {
+                var children = await ReadChildrenAsync(existing, token);
+                await SynchronizeNodesAsync(existing.Children, children, token);
+                existing.HasUnrealizedChildren = existing.Children.Count > 0;
+            }
+        }
+        token.ThrowIfCancellationRequested();
+        while (target.Count > incoming.Count) target.RemoveAt(target.Count - 1);
+    }
+
+    private static bool SameNode(LibraryTreeNode left, LibraryTreeNode right) =>
+        left.Kind == right.Kind && left.RootFolderId == right.RootFolderId &&
+        left.FolderEntityId == right.FolderEntityId && left.ArtistId == right.ArtistId &&
+        left.AlbumId == right.AlbumId && left.PlaylistId == right.PlaylistId && left.SongId == right.SongId &&
+        string.Equals(left.Path, right.Path, StringComparison.OrdinalIgnoreCase);
 
     [RelayCommand]
     private async Task AddFolderAsync()

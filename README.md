@@ -70,6 +70,8 @@ This fork is not affiliated with the original project. Please report problems wi
 ### Library and tags
 
 - **CUE albums:** a single audio file with a single-file `.cue` sheet next to it appears as separate tracks, with their own titles, durations, seeking and queue navigation. Rescan an existing library to pick up CUE sheets. UTF-8 and legacy Cyrillic encodings are supported; embedded CUE sheets and multi-file CUE albums are not yet supported.
+- **Album editions:** editions of the same album in separate folders get separate groups with folder labels and consistent track/queue order when browsing a parent folder.
+- **Automatic library updates:** new subfolders and added, renamed or removed music files inside registered music folders are picked up while Nagi is running, including in the tray. Changes made while Nagi was closed are checked at startup. The folder tree and track list refresh automatically; disconnected drives stay in the library and are checked again when available.
 - **Russian tags:** ID3 text written in Windows-1251 but stored as Latin-1 is detected and decoded correctly. A Cyrillic file name counts as an extra hint.
 - **Missing tags:** when artist or title is missing, they are taken from the file name: the track number is dropped and `Artist - Title` is split at a spaced dash. If the name has no such dash, it becomes the title and the artist is taken from the top folder under the library root.
 - Album and artist images are stored as the original bytes. ImageSharp is removed, so images are no longer resized and no colors are extracted from them.

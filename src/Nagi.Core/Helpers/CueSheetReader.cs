@@ -14,6 +14,8 @@ namespace Nagi.Core.Helpers;
 /// </summary>
 internal static class CueSheetReader
 {
+    // ATL 7.16.0 uses a shared non-thread-safe encoding cache while reading CUE files.
+    private static readonly object AtlCueReadLock = new();
     private static readonly Regex FileLine = new("^FILE\\s+(?:\"(?<path>[^\"]+)\"|(?<path>.+?))\\s+\\S+\\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex TrackLine = new("^TRACK\\s+(?<number>\\d+)\\s+(?<type>\\S+)\\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     private static readonly Regex IndexLine = new("^INDEX\\s+01\\s+(?<minutes>\\d+):(?<seconds>\\d+):(?<frames>\\d+)\\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -121,7 +123,10 @@ internal static class CueSheetReader
                 }
             }
 
-            return new Cue(temporaryPath);
+            lock (AtlCueReadLock)
+            {
+                return new Cue(temporaryPath);
+            }
         }
         finally
         {

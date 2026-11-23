@@ -71,6 +71,40 @@ public sealed class AtlCueSheetTests : IDisposable
     }
 
     [Fact]
+    public async Task ExpandAsync_ConcurrentMetadataReadsRemainComplete()
+    {
+        var audioPath = CreateWav("concurrent.wav");
+        var cuePath = WriteCue("concurrent.cue", """
+            FILE "concurrent.wav" WAVE
+              TRACK 01 AUDIO
+                TITLE "First"
+                INDEX 01 00:00:00
+              TRACK 02 AUDIO
+                TITLE "Second"
+                INDEX 01 00:01:10
+            """);
+        ConfigureCueFiles(cuePath);
+
+        var results = await Task.WhenAll(Enumerable.Range(0, 32).Select(_ => Task.Run(async () =>
+        {
+            var metadata = CreateMetadata(audioPath);
+            await CueSheetReader.ExpandAsync(metadata, _fileSystem, _logger);
+            return metadata;
+        })));
+
+        results.Should().HaveCount(32);
+        results.Should().AllSatisfy(metadata =>
+        {
+            metadata.CueReadFailed.Should().BeFalse();
+            metadata.CueTracks.Should().HaveCount(2);
+            metadata.CueTracks.Select(track => track.CueTrackNumber).Should().Equal(1, 2);
+            metadata.CueTracks.Select(track => track.Title).Should().Equal("First", "Second");
+            metadata.CueTracks.Select(track => track.StartOffsetTicks).Should().Equal(
+                0, TimeSpan.TicksPerSecond + 10 * TimeSpan.TicksPerSecond / 75);
+        });
+    }
+
+    [Fact]
     public async Task ExpandAsync_IgnoresIndex00BeforePlaybackIndex()
     {
         var audioPath = CreateWav("index00.wav");

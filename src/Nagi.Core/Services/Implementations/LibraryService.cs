@@ -756,6 +756,14 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
         return await RescanFolderForMusicAsync(folderId, false, progress, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <inheritdoc />
+    public Task<bool> RefreshFolderInBackgroundAsync(Guid folderId, CancellationToken cancellationToken = default)
+    {
+        return RescanFolderForMusicAsync(folderId, forceFullScan: false,
+            allowFolderRemovalOnMissing: false, progress: null, cancellationToken,
+            registerAsActiveScan: false);
+    }
+
     /// <summary>
     ///     Rescans a specific folder for music files with optional force full scan.
     /// </summary>
@@ -6107,11 +6115,13 @@ public class LibraryService : ILibraryService, ILibraryReader, IDisposable
                 ? query.OrderBy(s => s.Album != null ? s.Album.SortTitle : string.Empty)
                     .ThenBy(s => s.Album != null ? s.Album.PrimaryArtistSortName : string.Empty)
                     .ThenBy(s => s.AlbumId)
+                    .ThenBy(s => s.DirectoryPath)
                     .ThenBy(s => s.DiscNumber ?? 0).ThenBy(s => s.TrackNumber)
                     .ThenBy(s => s.SortTitle).ThenBy(s => s.Id)
                 : query.OrderBy(s => s.Album != null ? s.Album.Title : string.Empty)
                     .ThenBy(s => s.Album != null ? s.Album.PrimaryArtistName : string.Empty)
                     .ThenBy(s => s.AlbumId)
+                    .ThenBy(s => s.DirectoryPath)
                     .ThenBy(s => s.DiscNumber ?? 0).ThenBy(s => s.TrackNumber)
                     .ThenBy(s => s.Title).ThenBy(s => s.Id),
             SongSortOrder.AlbumDesc => ia

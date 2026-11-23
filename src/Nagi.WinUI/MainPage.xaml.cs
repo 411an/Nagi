@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Nagi.Core.Constants;
 using Nagi.Core.Models;
 using Nagi.Core.Services.Abstractions;
+using Nagi.Core.Services.Data;
 using Nagi.WinUI.Controls;
 using Nagi.WinUI.Helpers;
 using Nagi.WinUI.Models;
@@ -25,6 +26,9 @@ public sealed partial class MainPage : UserControl
     private readonly ILogger<MainPage> _logger;
     private readonly INavigationService _navigationService;
     private readonly IUISettingsService _settingsService;
+    private readonly ILibraryScanner _libraryScanner;
+    private readonly IDispatcherService _dispatcherService;
+    private readonly Debouncer _libraryRefresh = new(TimeSpan.FromMilliseconds(500));
     private bool _isUnloaded;
 
     public MainPage()
@@ -35,6 +39,8 @@ public sealed partial class MainPage : UserControl
         Settings = App.Services!.GetRequiredService<SettingsViewModel>();
         _navigationService = App.Services!.GetRequiredService<INavigationService>();
         _settingsService = App.Services!.GetRequiredService<IUISettingsService>();
+        _libraryScanner = App.Services!.GetRequiredService<ILibraryScanner>();
+        _dispatcherService = App.Services!.GetRequiredService<IDispatcherService>();
         _logger = App.Services!.GetRequiredService<ILogger<MainPage>>();
 
         InitializeComponent();
@@ -70,6 +76,7 @@ public sealed partial class MainPage : UserControl
     private async void OnMainPageLoaded(object sender, RoutedEventArgs e)
     {
         Loaded -= OnMainPageLoaded;
+        _libraryScanner.LibraryContentChanged += OnLibraryContentChanged;
         if (App.RootWindow is MainWindow mainWindow)
             mainWindow.ApplyShellMinimumSize();
 
@@ -229,8 +236,32 @@ public sealed partial class MainPage : UserControl
     private void OnMainPageUnloaded(object sender, RoutedEventArgs e)
     {
         _isUnloaded = true;
+        _libraryScanner.LibraryContentChanged -= OnLibraryContentChanged;
+        _libraryRefresh.Dispose();
         ContentFrame.Navigated -= OnContentFrameNavigated;
         Unloaded -= OnMainPageUnloaded;
+    }
+
+    private void OnLibraryContentChanged(object? sender, LibraryContentChangedEventArgs e)
+    {
+        _libraryRefresh.Trigger(async token =>
+        {
+            try
+            {
+                await _dispatcherService.EnqueueAsync(async () =>
+                {
+                    if (_isUnloaded || token.IsCancellationRequested) return;
+                    await Tree.RefreshAsync();
+                    if (_isUnloaded || token.IsCancellationRequested) return;
+                    if (Tree.SelectedNode is { } node)
+                        await LoadBrowseAsync(node, persist: false, scrollToSelection: false);
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to refresh the shell after a library change.");
+            }
+        });
     }
 
     private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -373,7 +404,7 @@ public sealed partial class MainPage : UserControl
         _ = Tree.PlayRecursiveCommand.ExecuteAsync(node);
     }
 
-    private async Task LoadBrowseAsync(LibraryTreeNode node, bool persist = true)
+    private async Task LoadBrowseAsync(LibraryTreeNode node, bool persist = true, bool scrollToSelection = true)
     {
         try
         {
@@ -399,10 +430,13 @@ public sealed partial class MainPage : UserControl
             if (persist)
                 await _settingsService.SetShellBrowseStateAsync(FromNode(Tree.Mode, BrowseStateNode(node)));
 
-            if (node.Kind == LibraryTreeNodeKind.Song && node.SongId is { } songId)
-                SongList.ScrollToSong(songId);
-            else
-                SongList.ScrollToNowPlaying();
+            if (scrollToSelection)
+            {
+                if (node.Kind == LibraryTreeNodeKind.Song && node.SongId is { } songId)
+                    SongList.ScrollToSong(songId);
+                else
+                    SongList.ScrollToNowPlaying();
+            }
             if (ViewModel.CurrentPlayingTrack is null)
                 ViewModel.SetIdlePreview(Browse.FirstSong);
         }

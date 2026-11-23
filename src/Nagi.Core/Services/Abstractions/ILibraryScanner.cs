@@ -18,6 +18,12 @@ public interface ILibraryScanner
     Task<bool> RescanFolderForMusicAsync(Guid folderId, IProgress<ScanProgress>? progress = null,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    ///     Performs an incremental background refresh without cancelling a manual scan.
+    ///     Unreachable library roots are retained.
+    /// </summary>
+    Task<bool> RefreshFolderInBackgroundAsync(Guid folderId, CancellationToken cancellationToken = default);
+
     Task<bool> RefreshAllFoldersAsync(IProgress<ScanProgress>? progress = null,
         CancellationToken cancellationToken = default);
 

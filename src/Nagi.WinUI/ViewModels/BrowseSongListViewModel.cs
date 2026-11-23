@@ -160,7 +160,7 @@ public partial class BrowseSongListViewModel : ObservableObject
 
         try
         {
-            var page = await fetch().ConfigureAwait(false);
+            var page = await fetch().ConfigureAwait(true);
             if (token.IsCancellationRequested) return;
 
             TotalCount = page.TotalCount;
@@ -184,11 +184,22 @@ public partial class BrowseSongListViewModel : ObservableObject
 
     private IReadOnlyList<BrowseListItem> BuildItems(IEnumerable<Song> songs, bool groupByAlbum)
     {
+        var songList = songs.ToList();
         var showFilename = _player.ShowFilenameInList;
         var playingId = _player.CurrentPlayingTrack?.Id;
         var items = new List<BrowseListItem>();
 
-        Guid? currentAlbum = Guid.Empty;
+        var albumDirectories = songList
+            .GroupBy(song => song.AlbumId ?? Guid.Empty)
+            .ToDictionary(
+                group => group.Key,
+                group => group
+                    .Select(song => song.DirectoryPath ?? string.Empty)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList());
+
+        Guid? currentAlbum = null;
+        string? currentDirectory = null;
         var albumSongs = new List<Song>();
 
         void FlushAlbum()
@@ -196,6 +207,19 @@ public partial class BrowseSongListViewModel : ObservableObject
             if (albumSongs.Count == 0) return;
             var first = albumSongs[0];
             var title = first.Album?.Title ?? string.Empty;
+            var albumId = first.AlbumId ?? Guid.Empty;
+            if (albumDirectories.TryGetValue(albumId, out var directories) && directories.Count > 1)
+            {
+                var directory = first.DirectoryPath ?? string.Empty;
+                var folderName = Path.GetFileName(directory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+                if (string.IsNullOrEmpty(folderName)) folderName = directory;
+
+                var hasDuplicateFolderName = directories
+                    .Select(path => Path.GetFileName(path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)))
+                    .GroupBy(name => name, StringComparer.OrdinalIgnoreCase)
+                    .Any(group => group.Count() > 1 && string.Equals(group.Key, folderName, StringComparison.OrdinalIgnoreCase));
+                title += $" ({(hasDuplicateFolderName ? directory : folderName)})";
+            }
             var year = first.Album?.Year ?? first.Year;
             var artist = first.Album?.ArtistName ?? first.ArtistName;
             var subtitleParts = new List<string>();
@@ -217,15 +241,17 @@ public partial class BrowseSongListViewModel : ObservableObject
             albumSongs.Clear();
         }
 
-        foreach (var song in songs)
+        foreach (var song in songList)
         {
             if (groupByAlbum)
             {
                 var albumId = song.AlbumId ?? Guid.Empty;
-                if (currentAlbum != albumId)
+                var directory = song.DirectoryPath ?? string.Empty;
+                if (currentAlbum != albumId || !string.Equals(currentDirectory, directory, StringComparison.OrdinalIgnoreCase))
                 {
                     FlushAlbum();
                     currentAlbum = albumId;
+                    currentDirectory = directory;
                 }
 
                 albumSongs.Add(song);
