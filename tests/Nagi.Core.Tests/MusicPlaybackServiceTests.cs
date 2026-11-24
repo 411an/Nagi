@@ -1563,7 +1563,8 @@ public class MusicPlaybackServiceTests
     public async Task RemoveFromQueueAsync_WhenRemovingCurrentTrack_CapturesPositionBeforePlayerStops()
     {
         await _service.InitializeAsync();
-        _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(2001L);
+        _libraryService.StartListenSessionAsync(_testSongs[1].Id, Arg.Any<PlaybackContext>()).Returns(2001L);
+        _libraryService.StartListenSessionAsync(_testSongs[2].Id, Arg.Any<PlaybackContext>()).Returns(2002L);
         await _service.PlayAsync(_testSongs, 1);
 
         var position = TimeSpan.FromSeconds(73);
@@ -1573,7 +1574,6 @@ public class MusicPlaybackServiceTests
             position = TimeSpan.Zero;
             return Task.CompletedTask;
         });
-        _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(2002L);
 
         await _service.RemoveFromQueueAsync(_testSongs[1]);
         await _service.FlushPendingFinalizationAsync();
@@ -1589,7 +1589,8 @@ public class MusicPlaybackServiceTests
     public async Task RemoveRangeFromQueueAsync_WhenRemovingCurrentTrack_CapturesPositionBeforePlayerStops()
     {
         await _service.InitializeAsync();
-        _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(2101L);
+        _libraryService.StartListenSessionAsync(_testSongs[1].Id, Arg.Any<PlaybackContext>()).Returns(2101L);
+        _libraryService.StartListenSessionAsync(_testSongs[2].Id, Arg.Any<PlaybackContext>()).Returns(2102L);
         await _service.PlayAsync(_testSongs, 1);
 
         var position = TimeSpan.FromSeconds(91);
@@ -1599,7 +1600,6 @@ public class MusicPlaybackServiceTests
             position = TimeSpan.Zero;
             return Task.CompletedTask;
         });
-        _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(2102L);
 
         await _service.RemoveRangeFromQueueAsync(new[] { _testSongs[1].Id });
         await _service.FlushPendingFinalizationAsync();
