@@ -141,6 +141,57 @@ public sealed class LibraryServiceBackgroundRefreshTests : IDisposable
         (await context.Songs.CountAsync(s => s.FolderId == folder.Id)).Should().Be(1);
     }
 
+    [Fact]
+    public async Task LibraryStartupRefresh_IsOneTimeUntilExplicitRescan()
+    {
+        var folder = new Folder { Id = Guid.NewGuid(), Name = "Music", Path = @"C:\Music" };
+        var initial = Path.Combine(folder.Path, "initial.flac");
+        var nested = Path.Combine(folder.Path, "Artist", "Album", "nested.flac");
+        var initialModified = DateTime.UtcNow.AddMinutes(-1);
+        var nestedModified = DateTime.UtcNow;
+        await SeedAsync(folder);
+        _fileSystem.DirectoryExists(folder.Path).Returns(true);
+        _diskEntries.Add((initial, initialModified));
+        _metadataService.ExtractMetadataAsync(Arg.Any<string>(), Arg.Any<string?>(), Arg.Any<bool>())
+            .Returns(call =>
+            {
+                var path = call.ArgAt<string>(0);
+                var modified = path == initial ? initialModified : nestedModified;
+                return new SongFileMetadata
+                {
+                    FilePath = path, FileModifiedDate = modified, Title = Path.GetFileNameWithoutExtension(path),
+                    Artists = ["Artist"], AlbumArtists = ["Artist"], Album = "Album", TrackNumber = 1
+                };
+            });
+
+        await using var startup = new LibraryStartupRefresh(
+            _libraryService, _fileSystem, Substitute.For<ILogger<LibraryStartupRefresh>>());
+        await startup.StartAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        Guid originalId;
+        await using (var context = _dbHelper.ContextFactory.CreateDbContext())
+        {
+            var original = await context.Songs.SingleAsync(s => s.FilePath == initial);
+            originalId = original.Id;
+            (await context.Songs.CountAsync(s => s.FolderId == folder.Id)).Should().Be(1);
+        }
+
+        _diskEntries.Add((nested, nestedModified));
+        await startup.StartAsync().WaitAsync(TimeSpan.FromSeconds(5));
+        await using (var context = _dbHelper.ContextFactory.CreateDbContext())
+            (await context.Songs.CountAsync(s => s.FolderId == folder.Id)).Should().Be(1);
+
+        (await _libraryService.RescanFolderForMusicAsync(folder.Id)).Should().BeTrue();
+        await using (var context = _dbHelper.ContextFactory.CreateDbContext())
+        {
+            var songs = await context.Songs.Where(s => s.FolderId == folder.Id).ToListAsync();
+            songs.Should().HaveCount(2);
+            songs.Single(s => s.FilePath == initial).Id.Should().Be(originalId);
+            songs.Single(s => s.FilePath == nested).DirectoryPath.Should().Be(Path.GetDirectoryName(nested));
+            songs.Select(s => s.Id).Should().OnlyHaveUniqueItems();
+        }
+    }
+
     private async Task SeedAsync(Folder folder, params Song[] songs)
     {
         await using var context = _dbHelper.ContextFactory.CreateDbContext();

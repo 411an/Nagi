@@ -437,7 +437,7 @@ public partial class App : Application
         });
 
         services.AddSingleton<LibraryService>();
-        services.AddSingleton<LibraryMonitor>();
+        services.AddSingleton<LibraryStartupRefresh>();
         services.AddSingleton<ILibraryService>(sp => sp.GetRequiredService<LibraryService>());
         services.AddSingleton<ILibraryReader>(sp => sp.GetRequiredService<LibraryService>());
         services.AddSingleton<ILibraryWriter>(sp => sp.GetRequiredService<LibraryService>());
@@ -752,7 +752,7 @@ public partial class App : Application
 
     private void PerformPostLaunchTasks()
     {
-        Services?.GetRequiredService<LibraryMonitor>().Start();
+        _ = Services?.GetRequiredService<LibraryStartupRefresh>().StartAsync();
         EnqueuePostLaunchTasks();
     }
 
@@ -818,7 +818,7 @@ public partial class App : Application
             if (Services is not null)
             {
                 _logger?.LogInformation("Window is closing. Shutting down services.");
-                await Services.GetRequiredService<LibraryMonitor>().StopAsync();
+                await Services.GetRequiredService<LibraryStartupRefresh>().StopAsync();
 
                 // Clean up singleton ViewModels
                 Services.GetRequiredService<PlayerViewModel>().Cleanup();

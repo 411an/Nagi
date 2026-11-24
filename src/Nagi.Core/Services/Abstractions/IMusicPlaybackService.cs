@@ -14,7 +14,8 @@ public interface IMusicPlaybackService : IDisposable, IAsyncDisposable
     Song? CurrentTrack { get; }
 
     /// <summary>
-    ///     Gets the unique database ID for the current listening session.
+    ///     Gets the unique database ID for the current listening session, or null while
+    ///     its background write is pending or the track is not in the library.
     ///     This is used to link playback events to a specific entry in the ListenHistory table.
     /// </summary>
     long? CurrentListenHistoryId { get; }

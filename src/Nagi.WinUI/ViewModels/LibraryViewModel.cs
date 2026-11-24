@@ -15,11 +15,11 @@ using Nagi.Core.Helpers;
 namespace Nagi.WinUI.ViewModels;
 
 /// <summary>
-///     Manages the main library view, displaying all songs and handling the initial library scan.
+///     Manages the main library view and displays songs already indexed in the database.
 /// </summary>
 public partial class LibraryViewModel : SongListViewModelBase
 {
-    private static bool _isInitialScanTriggered;
+    private static bool _isDeduplicationTriggered;
     private CancellationTokenSource? _debouncer;
     private bool _hasInitialized;
     private bool _pendingLibraryRefresh;
@@ -69,37 +69,26 @@ public partial class LibraryViewModel : SongListViewModelBase
     public async Task InitializeAsync()
     {
         _logger.LogDebug("Initializing LibraryViewModel");
-        var shouldTriggerScan = !_isInitialScanTriggered;
-        _isInitialScanTriggered = true;
+        var shouldDeduplicate = !_isDeduplicationTriggered;
+        _isDeduplicationTriggered = true;
         _hasInitialized = true;
 
         CurrentSortOrder = await _settingsService.GetSortOrderAsync<SongSortOrder>(SortOrderHelper.LibrarySortOrderKey);
         await RefreshOrSortSongsCommand.ExecuteAsync(null);
 
-        if (!shouldTriggerScan) return;
+        if (!shouldDeduplicate) return;
 
-        _logger.LogDebug("Starting initial background library refresh");
-        // We don't await this because we want the UI to be responsive.
-        // The LibraryContentChanged event will trigger a refresh when it finishes.
+        // This only repairs database identities. Disk scanning belongs to app startup
+        // and explicit user commands, so opening this view must not start another scan.
         _ = Task.Run(async () =>
         {
             try
             {
-                // Run the dedup pass before refresh so the UI doesn't briefly show duplicate
-                // entries from a prior (pre-canonicalization) run.
                 await _libraryService.DeduplicateLibraryAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Library deduplication pass failed during startup.");
-            }
-            try
-            {
-                await _libraryService.RefreshAllFoldersAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Initial background library refresh failed.");
+                _logger.LogError(ex, "Library deduplication pass failed.");
             }
         });
     }

@@ -265,6 +265,7 @@ public partial class LibraryTreeViewModel : ObservableObject
     private async Task RescanRootAsync(LibraryTreeNode? node)
     {
         if (node is not { Kind: LibraryTreeNodeKind.Folder } || node.RootFolderId == Guid.Empty) return;
+        await _folderViewModel.LoadFoldersCommand.ExecuteAsync(null);
         await _folderViewModel.RescanFolderCommand.ExecuteAsync(node.RootFolderId);
         await ReloadAsync();
     }

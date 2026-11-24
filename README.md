@@ -64,6 +64,7 @@ This fork is not affiliated with the original project. Please report problems wi
 
 ### Playback
 
+- **Track transitions:** the next queue item is prepared in LibVLC while the current item plays, including CUE tracks inside one file. Listen-history writes run in the background. Manual track selection and Stop cancel obsolete preparation so a late automatic transition cannot override the user's choice.
 - **Real spectrum visualizer.** The 28 bars in the top-left panel show the spectrum of the playing track, from 40 Hz to 11 kHz, in step with the playback position. When a track starts, FFmpeg decodes it in the background at low priority: the first bars are ready at once, and a four-minute song is done in about a second on a laptop i3. Nothing is written to disk. The spectrum of the current track is kept in memory (about 150 KB) and dropped when the next track starts or the visualizer is hidden. The bars show the file itself, so volume, ReplayGain and the equalizer do not change them. Without [FFmpeg](https://ffmpeg.org/download.html) on the `PATH`, or for a file FFmpeg cannot read, the bars play a decorative animation instead.
 - **Unplayable files are skipped.** When a file cannot be played, Nagi moves on to the next track the way the Next button does, also in Repeat track mode. If nothing in the queue plays, it stops after one pass (at most ten files in a row) instead of retrying the same file.
 
@@ -71,7 +72,7 @@ This fork is not affiliated with the original project. Please report problems wi
 
 - **CUE albums:** a single audio file with a single-file `.cue` sheet next to it appears as separate tracks, with their own titles, durations, seeking and queue navigation. Rescan an existing library to pick up CUE sheets. UTF-8 and legacy Cyrillic encodings are supported; embedded CUE sheets and multi-file CUE albums are not yet supported.
 - **Album editions:** editions of the same album in separate folders get separate groups with folder labels and consistent track/queue order when browsing a parent folder.
-- **Automatic library updates:** new subfolders and added, renamed or removed music files inside registered music folders are picked up while Nagi is running, including in the tray. Changes made while Nagi was closed are checked at startup. The folder tree and track list refresh automatically; disconnected drives stay in the library and are checked again when available.
+- **Library refresh:** registered music folders are checked once at startup. During the session, use the folder menu's **Rescan** command to pick up added, changed or removed music files and subfolders. Nagi does not watch folders or periodically rescan them while running. The folder tree and track list refresh after a scan; disconnected drives stay in the library during the startup check.
 - **Russian tags:** ID3 text written in Windows-1251 but stored as Latin-1 is detected and decoded correctly. A Cyrillic file name counts as an extra hint.
 - **Missing tags:** when artist or title is missing, they are taken from the file name: the track number is dropped and `Artist - Title` is split at a spaced dash. If the name has no such dash, it becomes the title and the artist is taken from the top folder under the library root.
 - Album and artist images are stored as the original bytes. ImageSharp is removed, so images are no longer resized and no colors are extracted from them.
@@ -89,7 +90,7 @@ Still online when you enable it: lyrics from LRCLIB and NetEase.
 
 - **Lyrics**: Read the lyrics of the playing track in the main window, from the lyrics tag or a `.lrc` file. Click them to open the full view, where synced lyrics follow the song and tapping a line jumps to that moment.
 - **Resizable Mini-Player**: An always-on-top mini-player with playback controls and album art.
-- **Folder-Based Library**: Add your music folders and Nagi automatically scans, organizes, and keeps your collection up to date.
+- **Folder-Based Library**: Add your music folders and browse your collection. Update the library at startup or with **Rescan**.
 - **Playlists & Smart Playlists**: Create custom playlists or rule-based smart playlists that update as your library grows.
 - **Queue Management**: Drop files or folders onto the queue panel to add them to the queue without importing them into your library.
 - **10-Band Equalizer**: Shown in the main window (it can be hidden), with pregain control.
@@ -148,7 +149,9 @@ To publish the portable folder:
 dotnet publish src/Nagi.WinUI/Nagi.WinUI.csproj -c Release -r win-x64 --self-contained -p:Platform=x64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -o out/win-x64
 ```
 
-Data is written to `<publish-dir>/datadir`, so the folder next to `Nagi.exe` must be writable. Delete `datadir` from the published folder before you zip it for others.
+Use `out/win-x64` as the single local publish directory and update it in place for each version. Build release archives from this directory instead of creating a separate publish folder for each release.
+
+Data is written to `<publish-dir>/datadir`, so the folder next to `Nagi.exe` must be writable. Before packaging, check for `datadir` and `portable.json` and exclude them from the archive if present; keep any existing user data on disk.
 
 ### Development
 

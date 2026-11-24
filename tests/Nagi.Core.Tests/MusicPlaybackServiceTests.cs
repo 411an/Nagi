@@ -803,6 +803,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayAsync(_testSongs[0]);
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         _service.CurrentListenHistoryId.Should().Be(100L);
@@ -812,7 +813,7 @@ public class MusicPlaybackServiceTests
     }
 
     [Fact]
-    public async Task PlayAsync_RaisesTrackChanged_AfterListenSessionIdIsSet()
+    public async Task PlayAsync_RaisesTrackChanged_WithoutWaitingForListenHistory()
     {
         // Arrange
         await _service.InitializeAsync();
@@ -831,8 +832,9 @@ public class MusicPlaybackServiceTests
         await _service.PlayAsync(_testSongs[0]);
 
         // Assert
-        listenHistoryIdSeenByEvent.Should().Be(150L,
-            "TrackChanged consumers (e.g. presence) must always see the active listen session ID");
+        listenHistoryIdSeenByEvent.Should().BeNull("media notifications must not wait for the history database");
+        await _service.FlushPendingFinalizationAsync();
+        _service.CurrentListenHistoryId.Should().Be(150L);
     }
 
     [Fact]
@@ -863,6 +865,7 @@ public class MusicPlaybackServiceTests
         await _service.InitializeAsync();
         _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(300L);
         await _service.PlayAsync(_testSongs, 0); // Play Song 0
+        await _service.FlushPendingFinalizationAsync();
         _audioPlayer.CurrentPosition.Returns(TimeSpan.FromSeconds(45));
 
         // We need to mock StartListenSessionAsync to return a new ID for the NEXT track
@@ -890,6 +893,7 @@ public class MusicPlaybackServiceTests
         await _service.InitializeAsync();
         _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(400L);
         await _service.PlayAsync(_testSongs, 0); // Play Song 0
+        await _service.FlushPendingFinalizationAsync();
 
         // Set the mocked Duration and Position equivalent to reaching the end of the track
         var duration = TimeSpan.FromMinutes(3);
@@ -922,6 +926,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayAlbumAsync(albumId);
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         await _libraryService.Received(1).StartListenSessionAsync(
@@ -936,6 +941,7 @@ public class MusicPlaybackServiceTests
         await _service.InitializeAsync();
         _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(600L);
         await _service.PlayAsync(_testSongs[0]);
+        await _service.FlushPendingFinalizationAsync();
         _audioPlayer.CurrentPosition.Returns(TimeSpan.FromSeconds(15));
 
         // Act
@@ -956,6 +962,7 @@ public class MusicPlaybackServiceTests
         _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(100L); // Previous session
 
         await _service.PlayAsync(_testSongs[0]); // Starts the previous session
+        await _service.FlushPendingFinalizationAsync();
 
         var filePath = "C:\\temp\\transient.mp3";
         var metadata = new SongFileMetadata { Title = "Transient Song", Artists = new List<string> { "Temp Artist" } };
@@ -1010,6 +1017,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayTransientFileAsync(filePath);
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         _service.CurrentListenHistoryId.Should().Be(777L);
@@ -1029,6 +1037,7 @@ public class MusicPlaybackServiceTests
         await _service.InitializeAsync();
         _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(700L); // First Session
         await _service.PlayAsync(_testSongs[0]);
+        await _service.FlushPendingFinalizationAsync();
 
         // Current Track is Song 0. We want to skip to Song 1, but Song 1 is "deleted"
         _audioPlayer.CurrentPosition.Returns(TimeSpan.FromSeconds(15));
@@ -1068,6 +1077,7 @@ public class MusicPlaybackServiceTests
         await _service.InitializeAsync();
         _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(800L);
         await _service.PlayAsync(_testSongs[0]); // Starts the session
+        await _service.FlushPendingFinalizationAsync();
 
         // Add more songs to queue
         await _service.AddToQueueAsync(_testSongs[1]);
@@ -1096,6 +1106,7 @@ public class MusicPlaybackServiceTests
         await _service.InitializeAsync();
         _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(900L);
         await _service.PlayAsync(_testSongs, 1); // Play Song 1 (Index 1)
+        await _service.FlushPendingFinalizationAsync();
 
         _audioPlayer.CurrentPosition.Returns(TimeSpan.FromSeconds(2)); // Under 3 seconds
 
@@ -1124,6 +1135,7 @@ public class MusicPlaybackServiceTests
         await _service.InitializeAsync();
         _libraryService.StartListenSessionAsync(Arg.Any<Guid>(), Arg.Any<PlaybackContext>()).Returns(1000L);
         await _service.PlayAsync(_testSongs, 1); // Play Song 1
+        await _service.FlushPendingFinalizationAsync();
 
         _audioPlayer.CurrentPosition.Returns(TimeSpan.FromSeconds(10)); // Over 3 seconds
         _libraryService.ClearReceivedCalls(); // Clear the PlayAsync StartListenSessionAsync call
@@ -1157,6 +1169,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayPlaylistAsync(playlistId);
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         await _libraryService.Received(1).StartListenSessionAsync(
@@ -1178,6 +1191,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayArtistAsync(artistId);
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         await _libraryService.Received(1).StartListenSessionAsync(
@@ -1198,6 +1212,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayFolderAsync(folderId);
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         await _libraryService.Received(1).StartListenSessionAsync(
@@ -1218,6 +1233,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayGenreAsync(genreId);
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         await _libraryService.Received(1).StartListenSessionAsync(
@@ -1237,6 +1253,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayAsync(_testSongs.Select(s => s.Id).ToList(), 0, null, context);
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         await _libraryService.Received(1).StartListenSessionAsync(
@@ -1254,6 +1271,7 @@ public class MusicPlaybackServiceTests
 
         // Act
         await _service.PlayAsync(_testSongs.Select(s => s.Id).ToList());
+        await _service.FlushPendingFinalizationAsync();
 
         // Assert
         await _libraryService.Received(1).StartListenSessionAsync(

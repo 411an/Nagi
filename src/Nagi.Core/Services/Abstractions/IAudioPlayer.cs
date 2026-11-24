@@ -15,6 +15,10 @@ public interface IAudioPlayer : IDisposable
     /// </summary>
     event Action? PlaybackEnded;
 
+    /// <summary>Raised when the engine starts a prepared successor, without stopping playback.
+    /// The identifier belongs to the preparation request, not to a file or song.</summary>
+    event Action<long>? PreparedTrackStarted;
+
     /// <summary>
     ///     Occurs frequently as the playback position changes.
     /// </summary>
@@ -135,6 +139,12 @@ public interface IAudioPlayer : IDisposable
     /// </summary>
     /// <param name="song">The song to load.</param>
     Task LoadAsync(Song song);
+
+    /// <summary>Queues a successor in the engine. Cancellation must discard an obsolete preparation.</summary>
+    Task PrepareNextAsync(Song song, long preparationId, double replayGainDb, CancellationToken cancellationToken);
+
+    /// <summary>Invalidates pending preparation immediately and removes the engine's queued successor.</summary>
+    Task CancelPreparedNextAsync();
 
     /// <summary>
     ///     Starts or resumes playback of the loaded media.

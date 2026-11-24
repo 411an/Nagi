@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Media;
@@ -45,6 +45,12 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
 
     private Media? _currentMedia;
     private Song? _currentSong;
+    private PreparedMedia? _preparedMedia;
+    private long _mediaVersion;
+    private long _preparationVersion;
+    private readonly object _nativeEventsLock = new();
+    private Task _nativeEvents = Task.CompletedTask;
+    private sealed record PreparedMedia(Media Media, Song Song, long Id, long Version, double Gain, CancellationToken Token);
     private SystemMediaTransportControls? _smtc;
 
     private bool _isDisposed;
@@ -187,7 +193,7 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
         _mediaPlayer.PositionChanged += OnMediaPlayerPositionChanged;
         _mediaPlayer.Playing += OnMediaPlayerStateChanged;
         _mediaPlayer.Paused += OnMediaPlayerStateChanged;
-        _mediaPlayer.Stopped += OnMediaPlayerStateChanged;
+        _mediaPlayer.Stopped += OnMediaPlayerStopped;
         _mediaPlayer.EncounteredError += OnMediaPlayerEncounteredError;
         _mediaPlayer.MediaChanged += OnMediaPlayerMediaChanged;
         _mediaPlayer.LengthChanged += OnMediaPlayerLengthChanged;
@@ -267,6 +273,7 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
 
     public event Action? PlaybackEnded, PositionChanged, StateChanged, VolumeChanged, MediaOpened, DurationChanged;
     public event Action<string>? ErrorOccurred;
+    public event Action<long>? PreparedTrackStarted;
     public event Action? SmtcNextButtonPressed, SmtcPreviousButtonPressed, SmtcPlayButtonPressed, SmtcPauseButtonPressed;
 
     public bool IsPlaying => !_isDisposed && _isInitialized && !_isPausing && _mediaPlayer?.State == VLCState.Playing;
@@ -320,94 +327,130 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
         }
     }
 
+    private static Media CreateMedia(Song song)
+    {
+        var media = new Media(song.FilePath, FromType.FromPath);
+        try
+        {
+            foreach (var option in CuePlayback.GetMediaOptions(song)) media.AddOption(option);
+            var extension = System.IO.Path.GetExtension(song.FilePath).ToLowerInvariant();
+            if (!UsesNativeDemuxer(extension))
+            {
+                media.AddOption(":demux=avcodec");
+                var format = GetAvFormatHint(extension);
+                if (format != null) media.AddOption($":avformat-format={format}");
+            }
+            return media;
+        }
+        catch { media.Dispose(); throw; }
+    }
+
     public async Task LoadAsync(Song song)
     {
         if (_isDisposed) return;
-        EnsureInitialized();
+        await EnsureInitializedAsync().ConfigureAwait(false);
         if (_isDisposed || _mediaPlayer is null) return;
-
-        // Cancel any previous in-flight load immediately (cancel-and-supersede pattern).
-        // When user rapidly skips tracks, only the final destination's VLC work executes.
-        _loadCts?.Cancel();
-        _loadCts?.Dispose();
+        var version = Interlocked.Increment(ref _mediaVersion);
+        Interlocked.Increment(ref _preparationVersion);
         var cts = new CancellationTokenSource();
-        _loadCts = cts;
+        var previous = Interlocked.Exchange(ref _loadCts, cts);
+        previous?.Cancel();
+        previous?.Dispose();
+        var oldFade = Interlocked.Exchange(ref _fadeCts, null);
+        oldFade?.Cancel();
+        oldFade?.Dispose();
+        _isPausing = false;
+        _isFading = false;
         var token = cts.Token;
-
-        _currentSong = song;
 
         await _vlcOperationLock.WaitAsync().ConfigureAwait(false);
         try
         {
-            // If a newer LoadAsync call superseded us while we waited for the lock, skip entirely.
-            token.ThrowIfCancellationRequested();
-
-            _logger.LogDebug("Loading media for song '{SongTitle}' from path: {FilePath}", song.Title,
-                song.FilePath);
-
-            // Offload to thread pool to prevent blocking the UI thread.
-            // VLC's Media constructor and Media setter internally parse file headers
-            // and initialize demuxers, which can block for 2-3 seconds on large FLAC files.
+            if (_isDisposed || token.IsCancellationRequested) return;
+            ClearPreparedMedia();
+            // An explicit selection must replace the active input. In LibVLC 4,
+            // assigning Media and issuing Play while already playing can leave the
+            // old input running. Only manual loads use this stop; prepared handoffs do not.
+            _isExplicitStop = true;
+            await StopNativePlaybackAsync(_mediaPlayer).ConfigureAwait(false);
+            if (_isDisposed || token.IsCancellationRequested || version != Volatile.Read(ref _mediaVersion)) return;
             await Task.Run(() =>
             {
-                if (_isDisposed) return;
-
-                DisposeCurrentMedia("replacement load");
-
-                // Create new media and store reference
-                var extension = System.IO.Path.GetExtension(song.FilePath).ToLowerInvariant();
-                var useNativeDemuxer = UsesNativeDemuxer(extension);
-
-                _currentMedia = new Media(song.FilePath, FromType.FromPath);
-                foreach (var option in CuePlayback.GetMediaOptions(song))
-                    _currentMedia.AddOption(option);
-
-                // Native Ogg and Matroska demuxers integrate more safely with VLC's player clock.
-                // FFmpeg remains preferred for the other formats because it handles edge-case MP3s
-                // better than VLC's native elementary-stream demuxer.
-                if (!useNativeDemuxer)
+                var media = CreateMedia(song);
+                if (_isDisposed || token.IsCancellationRequested || version != Volatile.Read(ref _mediaVersion))
                 {
-                    _currentMedia.AddOption(":demux=avcodec");
-
-                    var formatHint = GetAvFormatHint(extension);
-
-                    if (formatHint != null)
-                    {
-                        _currentMedia.AddOption($":avformat-format={formatHint}");
-                    }
+                    media.Dispose();
+                    return;
                 }
-
-                _mediaPlayer!.Media = _currentMedia;
-                // Do NOT dispose the media immediately - let it be disposed when no longer needed
+                DisposeCurrentMedia("replacement load");
+                _currentSong = song;
+                _currentMedia = media;
+                _mediaPlayer.Media = media;
             }).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException)
-        {
-            // Superseded by a newer LoadAsync call — this is expected during rapid skipping.
-            _logger.LogDebug("LoadAsync for '{SongTitle}' was superseded by a newer load request.", song.Title);
         }
         catch (Exception ex)
         {
-            var errorMessage = string.Format(Resources.Strings.Player_Error_LoadFailed, song.Title);
+            if (version != Volatile.Read(ref _mediaVersion)) return;
             _logger.LogError(ex, "Failed to load song '{SongTitle}' from path: {FilePath}", song.Title, song.FilePath);
-            _dispatcherService.TryEnqueue(() => ErrorOccurred?.Invoke(errorMessage));
+            _isExplicitStop = true;
             _currentSong = null;
+            _mediaPlayer.Media = null;
+            DisposeCurrentMedia("load failure");
+            _dispatcherService.TryEnqueue(() =>
+            {
+                if (!_isDisposed && version == Volatile.Read(ref _mediaVersion))
+                    ErrorOccurred?.Invoke(string.Format(Resources.Strings.Player_Error_LoadFailed, song.Title));
+            });
+        }
+        finally { _vlcOperationLock.Release(); }
+    }
 
+    public async Task PrepareNextAsync(Song song, long preparationId, double replayGainDb, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (_isDisposed || !_isInitialized || _mediaPlayer is null) return;
+        var version = Interlocked.Increment(ref _preparationVersion);
+        var currentVersion = Volatile.Read(ref _mediaVersion);
+        // Construction/probing runs away from the UI and native audio callbacks.
+        var media = await Task.Run(() => CreateMedia(song), cancellationToken).ConfigureAwait(false);
+        try
+        {
+            await _vlcOperationLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
-                if (_mediaPlayer is not null) _mediaPlayer.Media = null;
+                if (_isDisposed || cancellationToken.IsCancellationRequested
+                    || version != Volatile.Read(ref _preparationVersion)
+                    || currentVersion != Volatile.Read(ref _mediaVersion)
+                    || _currentMedia is null) return;
+                ClearPreparedMedia();
+                _preparedMedia = new PreparedMedia(media, song, preparationId, version, replayGainDb, cancellationToken);
+                _mediaPlayer.NextMedia = media;
+                media = null!; // Ownership transferred to the queued media, then to _currentMedia.
             }
-            catch (Exception detachEx)
-            {
-                _logger.LogWarning(detachEx, "Failed to detach media after a load failure.");
-            }
+            finally { _vlcOperationLock.Release(); }
+        }
+        finally { media?.Dispose(); }
+    }
 
-            DisposeCurrentMedia("load failure");
-        }
-        finally
+    public async Task CancelPreparedNextAsync()
+    {
+        var version = Interlocked.Increment(ref _preparationVersion);
+        if (_isDisposed || !_isInitialized) return;
+        await _vlcOperationLock.WaitAsync().ConfigureAwait(false);
+        try
         {
-            _vlcOperationLock.Release();
+            if (!_isDisposed && version == Volatile.Read(ref _preparationVersion)) ClearPreparedMedia();
         }
+        finally { _vlcOperationLock.Release(); }
+    }
+
+    // Call only under _vlcOperationLock. MediaPlayer retains any media already in use.
+    private void ClearPreparedMedia()
+    {
+        if (_mediaPlayer != null) _mediaPlayer.NextMedia = null;
+        var prepared = _preparedMedia;
+        _preparedMedia = null;
+        prepared?.Media.Dispose();
     }
 
     public async Task PlayAsync()
@@ -452,6 +495,7 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
                     _mediaPlayer.SetVolume((int)Math.Clamp(_userVolume * 100, 0, 100));
                 }
 
+                _isExplicitStop = false;
                 // LibVLC 4 queues the start command and returns immediately.
                 if (_mediaPlayer.Play())
                 {
@@ -559,6 +603,8 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
     {
         if (_isDisposed || !_isInitialized || _mediaPlayer is null) return;
 
+        Interlocked.Increment(ref _mediaVersion);
+        Interlocked.Increment(ref _preparationVersion);
         _logger.LogDebug("Stop command received.");
 
         // Cancel any active fade immediately so audio stops without delay
@@ -579,6 +625,7 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
         {
             if (_isDisposed || _mediaPlayer is null) return;
 
+            ClearPreparedMedia();
             // LibVLC 4 stop is asynchronous. Wait for the native Stopped event before
             // releasing the media so a subsequent load cannot race the old pipeline.
             await StopNativePlaybackAsync(_mediaPlayer).ConfigureAwait(false);
@@ -905,7 +952,7 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
                 _mediaPlayer.PositionChanged -= OnMediaPlayerPositionChanged;
                 _mediaPlayer.Playing -= OnMediaPlayerStateChanged;
                 _mediaPlayer.Paused -= OnMediaPlayerStateChanged;
-                _mediaPlayer.Stopped -= OnMediaPlayerStateChanged;
+                _mediaPlayer.Stopped -= OnMediaPlayerStopped;
                 _mediaPlayer.EncounteredError -= OnMediaPlayerEncounteredError;
                 _mediaPlayer.MediaChanged -= OnMediaPlayerMediaChanged;
                 _mediaPlayer.LengthChanged -= OnMediaPlayerLengthChanged;
@@ -929,6 +976,7 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
 
             // Release Nagi's media reference. MediaPlayer retains its own reference until
             // it is disposed below, so this ordering is safe even during shutdown.
+            ClearPreparedMedia();
             DisposeCurrentMedia("audio service disposal");
 
             // Dispose LibVLC components if initialized
@@ -976,18 +1024,79 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
         GC.SuppressFinalize(this);
     }
 
+    // Serialize native notifications away from VLC's callback thread. Never call player
+    // mutators in the callback itself: VLC may hold its own player lock there.
+    private void QueueNativeEvent(Func<Task> action)
+    {
+        lock (_nativeEventsLock)
+            _nativeEvents = _nativeEvents.ContinueWith(async _ =>
+            {
+                try { if (!_isDisposed) await action().ConfigureAwait(false); }
+                catch (Exception ex) { if (!_isDisposed) _logger.LogError(ex, "Native playback event failed."); }
+            }, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.Default).Unwrap();
+    }
+
     private void OnMediaPlayerMediaChanged(object? sender, MediaPlayerMediaChangedEventArgs e)
     {
-        if (_isDisposed) return;
-        if (e.Media is not null)
+        if (_isDisposed || e.Media is null) return;
+        var handle = e.Media.NativeReference;
+        var version = Volatile.Read(ref _mediaVersion);
+        QueueNativeEvent(async () =>
         {
+            Song? song;
+            PreparedMedia? successor = null;
+            await _vlcOperationLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                if (_isDisposed || version != Volatile.Read(ref _mediaVersion)) return;
+                if (_preparedMedia is { } prepared && prepared.Media.NativeReference == handle
+                    && prepared.Version == Volatile.Read(ref _preparationVersion) && !prepared.Token.IsCancellationRequested)
+                {
+                    _preparedMedia = null;
+                    DisposeCurrentMedia("prepared transition");
+                    _currentMedia = prepared.Media;
+                    _currentSong = prepared.Song;
+                    _replayGainOffset = prepared.Gain;
+                    ApplyCombinedPreamp();
+                    successor = prepared;
+                }
+                if (_currentMedia?.NativeReference != handle) return;
+                song = _currentSong;
+            }
+            finally { _vlcOperationLock.Release(); }
             _dispatcherService.TryEnqueue(() =>
             {
-                if (_isDisposed) return;
-                MediaOpened?.Invoke();
+                if (_isDisposed || version != Volatile.Read(ref _mediaVersion) || !ReferenceEquals(song, _currentSong)) return;
+                if (successor != null)
+                {
+                    if (successor.Token.IsCancellationRequested || successor.Version != Volatile.Read(ref _preparationVersion)) return;
+                    PreparedTrackStarted?.Invoke(successor.Id);
+                    DurationChanged?.Invoke();
+                    StateChanged?.Invoke();
+                }
+                else MediaOpened?.Invoke();
             });
             _ = UpdateSmtcDisplayAsync();
-        }
+        });
+    }
+
+    private void OnMediaPlayerStopped(object? sender, EventArgs e)
+    {
+        var version = Volatile.Read(ref _mediaVersion);
+        var explicitStop = _isExplicitStop;
+        QueueNativeEvent(() =>
+        {
+            if (_isDisposed || version != Volatile.Read(ref _mediaVersion)) return Task.CompletedTask;
+            var song = _currentSong;
+            _dispatcherService.TryEnqueue(() =>
+            {
+                if (_isDisposed || version != Volatile.Read(ref _mediaVersion) || !ReferenceEquals(song, _currentSong)) return;
+                StateChanged?.Invoke();
+                if (!explicitStop && !_isExplicitStop && song != null) PlaybackEnded?.Invoke();
+            });
+            UpdateSmtcPlaybackStatus();
+            return Task.CompletedTask;
+        });
     }
 
     private void OnMediaPlayerLengthChanged(object? sender, MediaPlayerLengthChangedEventArgs e)
@@ -1003,6 +1112,7 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
     private void OnMediaPlayerEncounteredError(object? sender, EventArgs e)
     {
         if (_isDisposed || _libVlc is null) return;
+        var version = Volatile.Read(ref _mediaVersion);
 
         // LibVLC stops on its own after an error. Suppress the PlaybackEnded the state change
         // would raise: the playback service decides what follows an error, and a second
@@ -1014,40 +1124,25 @@ public sealed class LibVlcAudioPlayerService : IAudioPlayer, IDisposable
             ? Resources.Strings.Player_Error_LibVLC_Unspecified
             : string.Format(Resources.Strings.Player_Error_LibVLC_WithDetails, lastVlcError);
         _logger.LogError("Playback error occurred. {ErrorMessage}", errorMessage);
-        _dispatcherService.TryEnqueue(() =>
+        QueueNativeEvent(() =>
         {
-            if (_isDisposed) return;
-            ErrorOccurred?.Invoke(errorMessage);
+            _dispatcherService.TryEnqueue(() =>
+            {
+                if (!_isDisposed && version == Volatile.Read(ref _mediaVersion)) ErrorOccurred?.Invoke(errorMessage);
+            });
+            return Task.CompletedTask;
         });
     }
 
     private void OnMediaPlayerStateChanged(object? sender, EventArgs e)
     {
         if (_isDisposed || _mediaPlayer is null) return;
-
-        // Capture volatile fields before enqueueing to prevent TOCTOU races.
-        // Between the outer check and lambda execution, Dispose/Stop could null these fields.
-        var currentSong = _currentSong;
-        var isExplicitStop = _isExplicitStop;
-
+        var version = Volatile.Read(ref _mediaVersion);
         _dispatcherService.TryEnqueue(() =>
         {
-            if (_isDisposed) return;
+            if (_isDisposed || version != Volatile.Read(ref _mediaVersion)) return;
             StateChanged?.Invoke();
-
-            // Only fire PlaybackEnded for natural end of playback, not explicit stops
-            if (_mediaPlayer?.State == VLCState.Stopped && currentSong is not null && !isExplicitStop)
-            {
-                _logger.LogDebug("Detected natural end of playback for song '{SongTitle}'.", currentSong.Title);
-                PlaybackEnded?.Invoke();
-            }
-
-            // Reset flag when playback starts
-            if (_mediaPlayer?.State == VLCState.Playing)
-            {
-                _isExplicitStop = false;
-                _isPausing = false;
-            }
+            if (_mediaPlayer?.State == VLCState.Playing) _isPausing = false;
         });
         UpdateSmtcPlaybackStatus();
     }
